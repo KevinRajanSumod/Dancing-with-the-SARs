@@ -88,7 +88,9 @@ export default function ForestFireChangePage() {
                 <p className="eyebrow">Map layers</p>
                 <h2 className="mt-2 text-2xl">Choose what to see</h2>
               </div>
-              <Layers className="mt-1 h-5 w-5 shrink-0 text-radar" aria-hidden="true" />
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-radar/20 bg-radar/10 text-radar">
+                <Layers className="h-5 w-5" aria-hidden="true" />
+              </span>
             </div>
             <div className="mt-5 space-y-3">
               <ToggleSwitch checked={showDayDetections} onChange={setShowDayDetections}>
