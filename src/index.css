@@ -5,11 +5,13 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    background: #f6f5f1;
+    background: #06111e;
   }
 
   body {
     @apply bg-canvas font-sans text-ink antialiased;
+    background-color: #06111e;
+    background-image: radial-gradient(circle at 85% -10%, rgba(103, 216, 232, 0.08), transparent 27rem);
     font-size: 16px;
     line-height: 1.6;
   }
@@ -23,7 +25,7 @@
   h1,
   h2,
   h3 {
-    @apply font-semibold tracking-tight text-navy;
+    @apply font-semibold tracking-tight text-[#F4FAFD];
     line-height: 1.2;
   }
 
@@ -40,7 +42,7 @@
   }
 
   :focus-visible {
-    outline: 3px solid #16899b;
+    outline: 3px solid #73DCEB;
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -68,7 +70,8 @@
   }
 
   .surface-card {
-    @apply rounded-2xl border border-navy/10 bg-paper shadow-card;
+    @apply rounded-2xl border border-white/10 bg-paper shadow-card;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.035);
   }
 
   .eyebrow {
@@ -79,6 +82,174 @@
     background-image: radial-gradient(rgba(103, 216, 232, 0.18) 0.8px, transparent 0.8px);
     background-size: 13px 13px;
   }
+
+  .glass-panel {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, rgba(14, 35, 52, 0.82), rgba(5, 17, 30, 0.66));
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(22px);
+  }
+
+  .orbit-field {
+    position: absolute;
+    width: min(58rem, 86vw);
+    height: min(58rem, 86vw);
+    border: 1px solid rgba(103, 216, 232, 0.19);
+    border-radius: 9999px;
+    background: radial-gradient(circle at 50% 50%, rgba(103, 216, 232, 0.12), transparent 48%);
+    animation: orbit-drift 14s ease-in-out infinite alternate;
+  }
+
+  .orbit-field::before,
+  .orbit-field::after {
+    position: absolute;
+    border: 1px solid rgba(103, 216, 232, 0.12);
+    border-radius: inherit;
+    content: '';
+  }
+
+  .orbit-field::before { inset: 8%; }
+  .orbit-field::after { inset: 18%; border-color: rgba(216, 102, 61, 0.19); }
+
+  .orbit-dot {
+    position: absolute;
+    top: 13%;
+    left: 73%;
+    width: .75rem;
+    height: .75rem;
+    border-radius: 9999px;
+    background: #67d8e8;
+    box-shadow: 0 0 0 7px rgba(103, 216, 232, .11), 0 0 23px rgba(103, 216, 232, .75);
+    animation: signal-pulse 2.6s ease-in-out infinite;
+  }
+
+  .mission-grid {
+    background-image: linear-gradient(rgba(103, 216, 232, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(103, 216, 232, .07) 1px, transparent 1px);
+    background-size: 2rem 2rem;
+    mask-image: linear-gradient(to bottom, black, transparent 92%);
+  }
+
+  .telemetry-line {
+    background: linear-gradient(90deg, transparent, rgba(103, 216, 232, .9), transparent);
+    background-size: 200% 100%;
+    animation: telemetry-scan 4s linear infinite;
+  }
+}
+
+/* The application uses a dark mission-control palette. These rules cover old utility
+   surfaces and native controls so a light component cannot break the reading rhythm. */
+main {
+  color: #d8e5ed;
+}
+
+main h1,
+main h2,
+main h3 {
+  color: #f4fafd !important;
+}
+
+/* Older page components still carry light-theme text utilities. Remap those
+   utilities explicitly so body copy, legends, and controls stay legible on the
+   dark mission-control surfaces. */
+main [class~="text-navy"],
+main [class*="text-navy/"] {
+  color: #f4fafd !important;
+}
+
+main [class~="text-ink"] {
+  color: #d8e5ed !important;
+}
+
+main [class*="text-ink/45"],
+main [class*="text-ink/50"],
+main [class*="text-ink/55"] {
+  color: #9fb0bd !important;
+}
+
+main [class*="text-ink/60"],
+main [class*="text-ink/65"],
+main [class*="text-ink/70"] {
+  color: #b3c1cc !important;
+}
+
+main [class*="text-ink/75"],
+main [class*="text-ink/80"] {
+  color: #c3ced7 !important;
+}
+
+main [class*="text-white/30"],
+main [class*="text-white/35"],
+main [class*="text-white/40"],
+main [class*="text-white/45"] {
+  color: #9fb0bd !important;
+}
+
+main [class*="text-white/50"],
+main [class*="text-white/55"],
+main [class*="text-white/60"] {
+  color: #b3c1cc !important;
+}
+
+main [class*="text-white/65"],
+main [class*="text-white/70"],
+main [class*="text-white/75"] {
+  color: #c3ced7 !important;
+}
+
+main .bg-white {
+  background-color: #0b1928 !important;
+}
+
+main .bg-canvas {
+  background-color: #06111e !important;
+}
+
+main .bg-paper {
+  background-color: #0b1928 !important;
+}
+
+main [class~="bg-radar"][class~="text-navy"],
+main [class~="bg-radar"][class*="text-navy/"] {
+  color: #071828 !important;
+}
+
+main select,
+main input:not([type='range']):not([type='checkbox']):not([type='radio']) {
+  color: #f4fafd !important;
+  background-color: #0b1928;
+  border-color: rgba(216, 229, 237, 0.24);
+  color-scheme: dark;
+}
+
+main select:focus,
+main input:not([type='range']):not([type='checkbox']):not([type='radio']):focus {
+  border-color: #73dceb;
+}
+
+main option {
+  background: #0b1928;
+  color: #f4fafd;
+}
+
+main input[type='range'] {
+  accent-color: #73dceb;
+}
+
+header [class*="text-white/60"] {
+  color: #b3c1cc !important;
+}
+
+footer [class*="text-white/40"] {
+  color: #9fb0bd !important;
+}
+
+footer [class*="text-white/65"],
+footer [class*="text-white/75"] {
+  color: #c3ced7 !important;
+}
+
+main tbody tr:nth-child(odd) {
+  background-color: #0e2031;
 }
 
 @keyframes radar-flow {
@@ -88,6 +259,21 @@
 @keyframes radar-ripple {
   0% { transform: scale(.8); opacity: .75; }
   100% { transform: scale(1.35); opacity: 0; }
+}
+
+@keyframes orbit-drift {
+  from { transform: translate3d(-2%, -1%, 0) rotate(-4deg); }
+  to { transform: translate3d(3%, 3%, 0) rotate(5deg); }
+}
+
+@keyframes signal-pulse {
+  0%, 100% { transform: scale(.9); opacity: .72; }
+  50% { transform: scale(1.18); opacity: 1; }
+}
+
+@keyframes telemetry-scan {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
 }
 
 .radar-beam {
@@ -125,7 +311,10 @@
 
   .radar-beam,
   .radar-echo,
-  .radar-ripple {
+  .radar-ripple,
+  .orbit-field,
+  .orbit-dot,
+  .telemetry-line {
     animation: none !important;
   }
 }
