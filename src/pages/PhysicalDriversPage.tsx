@@ -12,6 +12,10 @@ const drivers = [
       'Canopy density, branches, trunks, exposed soil, and surface roughness shape how much radar energy returns. Forest disturbance can change that structure, but the direction and size of a backscatter change depend on the site and the acquisition.',
     evidence:
       'Compare calibrated, geocoded time series from the same track and polarization. Use optical imagery, land-cover data, or field observations to check what changed on the ground.',
+    dataset: 'GEDI L4B · 1 km biomass grid',
+    datasetNote: 'Above-ground biomass context from 2019–2021 observations; too coarse and old to confirm a recent local change.',
+    datasetHref: 'https://data.nasa.gov/dataset/gedi-l4b-gridded-aboveground-biomass-density-version-2',
+    datasetTone: 'text-eco',
     source: 'NASA SAR Handbook · Mapping Deforestation',
     href: 'https://earthdata.nasa.gov/s3fs-public/2025-04/SARHB_CH3_Content.pdf',
   },
@@ -22,6 +26,10 @@ const drivers = [
       'Soil moisture, water on leaves, and standing water beneath vegetation can alter backscatter. Rainfall, irrigation, seasonal flooding, and plant water content can therefore create contrast without a lasting land-cover change.',
     evidence:
       'Check rainfall, soil-moisture or water-level records and acquisition timing. A repeated time series helps distinguish short-lived wetness from persistent structural change.',
+    dataset: 'SMAP L4 · 9 km / 3-hourly',
+    datasetNote: 'Surface and root-zone soil moisture for regional context, not a field-scale measurement.',
+    datasetHref: 'https://nsidc.org/data/spl4smgp/versions/8',
+    datasetTone: 'text-radar',
     source: 'NASA SAR Handbook · Environmental effects',
     href: 'https://earthdata.nasa.gov/s3fs-public/2025-04/SARHB_CH5_Content.pdf',
   },
@@ -32,6 +40,10 @@ const drivers = [
       'Fire can alter vegetation structure, but so can logging, harvest, storms, insects, or land conversion. A radar contrast alone cannot identify which process occurred or establish a burn scar.',
     evidence:
       'Use a consistent radar time series with an independently mapped burned-area or disturbance product. Check acquisition dates and validate the interpretation with optical imagery or field evidence.',
+    dataset: 'MODIS MCD64A1 · 500 m monthly',
+    datasetNote: 'Burn-date and quality layers can screen for broader burn evidence; they do not identify cause or confirm individual FIRMS detections.',
+    datasetHref: 'https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/MCD64A1/',
+    datasetTone: 'text-ember',
     source: 'NASA NISAR ecosystem science',
     href: 'https://science.nasa.gov/mission/nisar/ecosystem/',
   },
@@ -71,6 +83,13 @@ export default function PhysicalDriversPage() {
                 <div className="mt-5 border-t border-line pt-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.15em] text-radar">Evidence to check</p>
                   <p className="mt-2 text-sm leading-relaxed text-muted">{driver.evidence}</p>
+                </div>
+                <div className="mt-4 rounded-xl border border-white/10 bg-white/[.025] p-3">
+                  <p className={`text-[10px] font-bold uppercase tracking-[.15em] ${driver.datasetTone}`}>NASA data to explore</p>
+                  <a href={driver.datasetHref} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-ink underline decoration-white/20 underline-offset-4 hover:text-radar">
+                    {driver.dataset}<ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                  <p className="mt-1 text-xs leading-relaxed text-muted">{driver.datasetNote}</p>
                 </div>
                 <a href={driver.href} target="_blank" rel="noopener noreferrer" className={sourceLinkClass}>
                   {driver.source}<span className="sr-only"> (opens in a new tab)</span>

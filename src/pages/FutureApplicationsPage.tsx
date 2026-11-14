@@ -1,4 +1,4 @@
-import { Activity, ArrowRight, CloudRain, Droplets, ExternalLink, Flame, Leaf, Mountain, Tractor } from 'lucide-react';
+import { Activity, ArrowRight, CloudRain, Droplets, ExternalLink, Flame, Layers3, Leaf, Mountain, Satellite, ScanLine, Tractor, Trees, Waves } from 'lucide-react';
 import AppLink from '@/components/AppLink';
 import Card from '@/components/Card';
 import PageIntro from '@/components/PageIntro';
@@ -53,28 +53,76 @@ const applicationIconTones = [
 
 const datasets = [
   {
+    icon: Satellite,
+    tone: 'bg-radar/10 text-radar',
+    meta: 'L-band backscatter · GCOV',
     title: 'NISAR GCOV',
     description: 'Geocoded, radiometrically terrain-corrected backscatter measurements for the available polarization channels. Use the product data and metadata for analysis; browse PNGs are quicklooks.',
     href: 'https://nisar-docs.asf.alaska.edu/gcov/',
     linkLabel: 'Product guide and access',
   },
   {
+    icon: Flame,
+    tone: 'bg-ember/10 text-ember',
+    meta: 'VIIRS / MODIS · near real time',
     title: 'NASA FIRMS active-fire detections',
     description: 'VIIRS and MODIS thermal-anomaly detections for time-and-location context. A detection is not a fire perimeter or burned-area measurement; NASA advises using standard science-quality data for scientific analysis.',
     href: 'https://firms.modaps.eosdis.nasa.gov/active_fire/',
     linkLabel: 'Dataset details and downloads',
   },
   {
+    icon: ScanLine,
+    tone: 'bg-date/10 text-date',
+    meta: '500 m · monthly burn date',
     title: 'MODIS MCD64A1 burned area',
     description: 'A monthly global burned-area product with burn-date and quality layers at 500 m. Its spatial scale and quality flags should be considered when checking a smaller study footprint.',
     href: 'https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/MCD64A1/',
     linkLabel: 'NASA product page',
   },
   {
+    icon: Layers3,
+    tone: 'bg-analysis/10 text-analysis',
     title: 'OPERA DIST-ALERT-HLS',
+    meta: '30 m · optical disturbance alerts',
     description: 'NASA’s land-surface disturbance alert product uses Harmonized Landsat and Sentinel-2 observations. It can provide independent optical disturbance context, but a disturbance alert alone does not identify fire as the cause.',
     href: 'https://www.earthdata.nasa.gov/data/catalog/lpcloud-opera-l3-dist-alert-hls-v1-1',
     linkLabel: 'NASA Earthdata catalog',
+  },
+  {
+    icon: Trees,
+    tone: 'bg-eco/10 text-eco',
+    meta: '1 km grid · observations from 2019–2021',
+    title: 'GEDI L4B biomass density',
+    description: 'ISS lidar-based estimates of mean above-ground biomass density with uncertainty layers. This is broad ecosystem context and is too coarse to confirm recent changes in a small forest patch.',
+    href: 'https://data.nasa.gov/dataset/gedi-l4b-gridded-aboveground-biomass-density-version-2',
+    linkLabel: 'NASA dataset details',
+  },
+  {
+    icon: Droplets,
+    tone: 'bg-radar/10 text-radar',
+    meta: '9 km · 3-hourly global fields',
+    title: 'SMAP L4 soil moisture',
+    description: 'Surface and root-zone soil-moisture fields for regional timing context. Its grid is much larger than individual fields or the project’s radar footprint.',
+    href: 'https://nsidc.org/data/spl4smgp/versions/8',
+    linkLabel: 'NASA data product',
+  },
+  {
+    icon: Waves,
+    tone: 'bg-radar/10 text-radar',
+    meta: '30 m · surface-water classes',
+    title: 'OPERA DSWx-HLS water extent',
+    description: 'Maps open and partial surface water using Harmonized Landsat and Sentinel-2 optical inputs. It complements radar flood analysis, but it is not a NISAR layer.',
+    href: 'https://podaac.jpl.nasa.gov/dataset/OPERA_L3_DSWX-HLS_V1',
+    linkLabel: 'NASA PO.DAAC product page',
+  },
+  {
+    icon: Mountain,
+    tone: 'bg-analysis/10 text-analysis',
+    meta: '1 arc-second · about 30 m elevation',
+    title: 'NASA SRTM elevation',
+    description: 'Global elevation data can provide terrain context and support slope calculations. Slope is a derived layer that this project has not computed.',
+    href: 'https://search.earthdata.nasa.gov/search?q=SRTMGL1',
+    linkLabel: 'Find SRTM in Earthdata Search',
   },
 ];
 
@@ -133,16 +181,20 @@ export default function FutureApplicationsPage() {
 
       <section className="bg-raised py-16 md:py-20" aria-labelledby="data-heading">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <p className="eyebrow">Public products for a fire or disturbance follow-up</p>
-          <h2 id="data-heading" className="mt-3 max-w-3xl">Use complementary data for different questions.</h2>
+          <p className="eyebrow">NASA data products / Ecosystems, water and hazards</p>
+          <h2 id="data-heading" className="mt-3 max-w-3xl">Bring the right evidence to each application.</h2>
           <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
-            These are existing NASA products and documentation for a future analysis. This project has not processed
-            the burned-area or disturbance products below, and no new measurements are presented here.
+            Browse the actual NASA products that could support follow-up work. Their scales and input sensors differ; this project has not downloaded or analyzed them, so the metadata below are product facts rather than findings for the study footprint.
           </p>
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {datasets.map((dataset) => (
-              <Card key={dataset.title} className="h-full">
-                <h3>{dataset.title}</h3>
+              <Card key={dataset.title} className="h-full !p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <span className={`grid h-10 w-10 place-items-center rounded-xl border border-white/10 ${dataset.tone}`}><dataset.icon className="h-5 w-5" aria-hidden="true" /></span>
+                  <span className="eyebrow !text-[10px] !text-subtle">NASA DATA</span>
+                </div>
+                <p className="mt-4 text-[11px] font-semibold uppercase tracking-[.12em] text-ember">{dataset.meta}</p>
+                <h3 className="mt-2">{dataset.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted">{dataset.description}</p>
                 <a href={dataset.href} target="_blank" rel="noopener noreferrer" className={sourceLinkClass}>
                   {dataset.linkLabel}<ArrowRight className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>

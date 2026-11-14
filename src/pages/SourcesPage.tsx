@@ -293,8 +293,8 @@ export default function SourcesPage() {
 
         <div className="min-w-0 max-w-4xl" aria-label="Source notes">
           {blocks.length > 0 ? <MarkdownBlocks blocks={blocks} /> : <p>The source notes are empty.</p>}
-          <a href="https://images.nasa.gov/details/art002e000192" target="_blank" rel="noopener noreferrer" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-radar hover:text-radar">
-            NASA Image and Video Library item <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
+          <a href="https://svs.gsfc.nasa.gov/11474" target="_blank" rel="noopener noreferrer" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-radar hover:text-radar">
+            NASA Earth Illuminated image and video details <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
           </a>
         </div>
       </section>

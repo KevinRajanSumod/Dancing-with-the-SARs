@@ -31,11 +31,12 @@ This story pairs a project-provided radar browse image set with a local snapshot
 - The radar previews and FIRMS points were not matched to a burned-area product or field observations. Radar change is not proven to have been caused by fire.
 - Provenance gap: the supplied notes do not record the exact ASF Vertex access date for the two browse scenes. Add it if you need a complete retrieval log.
 
-## Illustrative NASA image
+## NASA imagery and mission data
 
-- The homepage background uses [Earth From the Perspective of Artemis II](https://images.nasa.gov/details/art002e000192), NASA Image and Video Library, NASA credit.
-- This photograph is illustrative Earth-observation context. It is not the project's NISAR image or data. Dancing with the SARs is an independent project and is not endorsed by NASA or ISRO.
+- The homepage background uses NASA/JSC's [Earth Illuminated](https://svs.gsfc.nasa.gov/11474) still photograph from the International Space Station. It is illustrative Earth-observation context, not the project's NISAR image or data.
 - The SAR basics page includes NASA/JPL-Caltech's [NISAR launch and deployment animation](https://science.nasa.gov/video-detail/amf-ffc8740c-2d65-4712-a4dd-78152649ab49/) and [NISAR image of Mount Desert Island, Maine](https://science.nasa.gov/image-detail/amf-pia26616/). These are mission examples from outside the Central India project footprint; the Maine radar image was acquired during commissioning on 21 August 2025.
+- The home mission cards summarize NASA's [NISAR mission overview](https://science.nasa.gov/mission/nisar/mission-overview/): 12-day exact repeat cycle, approximately 6-day average sampling, mode-dependent 3–10 m SAR resolution, and L- and S-band wavelengths.
+- The Drivers and Applications pages point to NASA datasets for broader context: [GEDI L4B aboveground biomass](https://data.nasa.gov/dataset/gedi-l4b-gridded-aboveground-biomass-density-version-2), [SMAP L4 soil moisture](https://nsidc.org/data/spl4smgp/versions/8), [MODIS MCD64A1 burned area](https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/MCD64A1/), and [OPERA DSWx-HLS surface-water extent](https://podaac.jpl.nasa.gov/dataset/OPERA_L3_DSWX-HLS_V1). These products have different spatial scales, observation periods, and input sensors; the project has not processed them.
 
 ## Mission context
 

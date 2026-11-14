@@ -1,12 +1,11 @@
-import { Activity, ArrowDownRight, ArrowRight, Cloud, Flame, Moon, Pause, Play, Radio, Satellite, ScanLine, Sparkles } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Activity, ArrowDownRight, ArrowRight, Cloud, ExternalLink, Flame, Moon, Pause, Play, Radio, Satellite, ScanLine, Sparkles } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import AppLink, { buttonClass } from '@/components/AppLink';
 import Card from '@/components/Card';
 import Reveal from '@/components/Reveal';
 import { detections } from '@/data/detections';
 
-const NASA_EARTH_IMAGE = 'https://svs.gsfc.nasa.gov/vis/a010000/a011400/a011474/cover-1024.jpg';
-const NASA_EARTH_VIDEO = 'https://svs.gsfc.nasa.gov/vis/a010000/a011400/a011474/Earth_Illuminated-540-MASTER_high.mp4';
+const NASA_EARTH_IMAGE = 'https://svs.gsfc.nasa.gov/vis/a010000/a011400/a011474/cover-1920.jpg';
 
 const journey = [
   { number: '01', label: 'Compare', title: 'Two radar passes', note: 'Start with the archived Sep–Nov views.', href: '/forest-fire-change', color: 'text-radar' },
@@ -49,6 +48,12 @@ const signalRail = [
   { icon: ScanLine, label: 'Reading status', value: 'Qualitative', note: 'Browse contrast is not a change result', color: 'text-analysis' },
 ];
 
+const nisarFacts = [
+  { icon: Satellite, label: 'Exact repeat cycle', value: '12 days', note: 'About 6-day average sampling across ascending and descending passes.', color: 'text-radar' },
+  { icon: ScanLine, label: 'SAR resolution', value: '3–10 m', note: 'Resolution varies by acquisition mode.', color: 'text-ember' },
+  { icon: Radio, label: 'Two radar bands', value: 'L + S', note: '24 cm L-band and 9.4 cm S-band instruments.', color: 'text-analysis' },
+];
+
 function SignalRail() {
   return (
     <section className="relative z-10 mt-4 px-5 sm:px-8" aria-label="Project signal overview">
@@ -65,6 +70,37 @@ function SignalRail() {
               <p className="mt-1 text-base font-semibold text-white">{signal.value}</p>
               <p className="mt-1 text-xs leading-relaxed text-subtle">{signal.note}</p>
             </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function NisarMissionFacts() {
+  return (
+    <section className="mx-auto max-w-7xl px-5 pt-14 sm:px-8 md:pt-18" aria-labelledby="nisar-facts-heading">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow text-ember">NASA–ISRO mission data</p>
+          <h2 id="nisar-facts-heading" className="mt-2 text-2xl text-white md:text-3xl">The instrument behind this story.</h2>
+        </div>
+        <a href="https://science.nasa.gov/mission/nisar/mission-overview/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-radar underline underline-offset-4 hover:text-white">
+          NISAR mission overview <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      </div>
+      <div className="grid gap-3 md:grid-cols-3">
+        {nisarFacts.map((fact, index) => (
+          <Reveal key={fact.label} delayMs={index * 70} className="h-full">
+            <Card className="h-full !p-5">
+              <div className="flex items-center justify-between gap-3">
+                <span className={`grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[.04] ${fact.color}`}><fact.icon className="h-5 w-5" aria-hidden="true" /></span>
+                <span className="eyebrow !text-[10px] !text-subtle">NASA FACT</span>
+              </div>
+              <p className="mt-4 text-xs font-semibold uppercase tracking-[.14em] text-muted">{fact.label}</p>
+              <p className="mt-1 text-2xl font-semibold tracking-tight text-white">{fact.value}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">{fact.note}</p>
+            </Card>
           </Reveal>
         ))}
       </div>
@@ -130,7 +166,6 @@ function ProjectBrief() {
 }
 
 export default function HomePage() {
-  const heroVideoRef = useRef<HTMLVideoElement>(null);
   const [motionEnabled, setMotionEnabled] = useState(false);
 
   useEffect(() => {
@@ -141,38 +176,13 @@ export default function HomePage() {
     return () => preference.removeEventListener('change', syncMotionPreference);
   }, []);
 
-  useEffect(() => {
-    const video = heroVideoRef.current;
-    if (!video) return;
-
-    if (motionEnabled) {
-      video.load();
-      void video.play().catch(() => setMotionEnabled(false));
-    } else {
-      video.pause();
-      video.load();
-    }
-  }, [motionEnabled]);
-
   return (
     <>
       <section
-        className="relative isolate overflow-hidden bg-[#030d18] text-white"
+        className={`relative isolate overflow-hidden bg-[#030d18] text-white ${motionEnabled ? '' : 'motion-paused'}`}
       >
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${NASA_EARTH_IMAGE}")` }} />
-          <video
-            ref={heroVideoRef}
-            className="absolute inset-0 h-full w-full object-cover opacity-40 transition-opacity duration-700"
-            muted
-            loop
-            playsInline
-            src={motionEnabled ? NASA_EARTH_VIDEO : undefined}
-            preload={motionEnabled ? 'metadata' : 'none'}
-            poster={NASA_EARTH_IMAGE}
-            tabIndex={-1}
-            aria-hidden="true"
-          />
           <div
             className="absolute inset-0"
             style={{ backgroundImage: 'linear-gradient(90deg, rgba(3,13,24,.96) 0%, rgba(3,13,24,.87) 42%, rgba(3,13,24,.55) 100%), linear-gradient(0deg, rgba(3,13,24,.96) 0%, rgba(3,13,24,.18) 62%, rgba(3,13,24,.45) 100%)' }}
@@ -228,12 +238,14 @@ export default function HomePage() {
             <span className="hidden sm:inline">{motionEnabled ? 'Pause motion' : 'Play motion'}</span>
           </button>
           <p className="max-w-[30rem] rounded-xl border border-white/10 bg-canvas/80 p-3 text-left text-[11px] leading-relaxed text-muted shadow-lg backdrop-blur-md sm:text-right sm:text-xs">
-            NASA Goddard · <a href="https://svs.gsfc.nasa.gov/11474" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-white">Earth Illuminated ISS video and image</a> (NASA/JSC/Image Science and Analysis Laboratory). Not project radar data; this project is not endorsed by NASA or ISRO.
+            NASA/JSC · <a href="https://svs.gsfc.nasa.gov/11474" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-white">Earth Illuminated · ISS photograph</a> (Image Science and Analysis Laboratory). Illustrative backdrop, not project radar data; this project is not endorsed by NASA or ISRO.
           </p>
         </div>
       </section>
 
       <SignalRail />
+
+      <NisarMissionFacts />
 
       <section className="border-b border-line bg-canvas pt-20" aria-labelledby="journey-heading">
         <div className="mx-auto max-w-7xl px-5 pb-12 sm:px-8 md:pb-16">
