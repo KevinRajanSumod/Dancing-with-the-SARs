@@ -180,10 +180,11 @@ export default function HomePage() {
           <div className="mission-grid absolute inset-0 opacity-35" />
           <div className="orbit-field -right-48 top-12 opacity-70"><span className="orbit-dot" /></div>
           <div className="absolute -bottom-40 -left-48 h-[38rem] w-[38rem] rounded-full bg-radar/10 blur-3xl" />
+          <div className="absolute -bottom-44 -right-40 h-[34rem] w-[34rem] rounded-full bg-ember/10 blur-3xl" />
         </div>
         <div className="relative z-10 mx-auto grid min-h-[700px] max-w-7xl items-center gap-12 px-5 pb-24 pt-20 sm:px-8 md:min-h-[760px] md:pb-28 md:pt-24 lg:grid-cols-[1.1fr_.9fr] lg:gap-16">
           <div className="max-w-3xl">
-            <p className="inline-flex items-center gap-2 rounded-full border border-radar/25 bg-radar/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.17em] text-radar shadow-[0_0_24px_rgba(100,211,223,.08)]">
+            <p className="inline-flex items-center gap-2 rounded-full border border-radar/25 bg-radar/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.17em] text-radar shadow-[0_0_24px_rgba(103,217,236,.1)]">
               <Sparkles className="h-3 w-3" aria-hidden="true" /> Field signal / Central India
             </p>
             <p className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted">

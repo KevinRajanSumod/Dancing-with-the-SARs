@@ -11,7 +11,7 @@
   body {
     @apply bg-canvas font-sans text-ink antialiased;
     background-color: #07131d;
-    background-image: radial-gradient(circle at 85% -10%, rgba(100, 211, 223, 0.08), transparent 27rem);
+    background-image: radial-gradient(circle at 85% -10%, rgba(103, 217, 236, 0.1), transparent 27rem), radial-gradient(circle at 8% 46%, rgba(248, 131, 121, 0.055), transparent 31rem);
     font-size: 16px;
     line-height: 1.6;
   }
@@ -42,7 +42,7 @@
   }
 
   :focus-visible {
-    outline: 3px solid #64D3DF;
+    outline: 3px solid #67D9EC;
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -71,13 +71,14 @@
 
   .lift:hover {
     transform: translateY(-3px);
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(100, 211, 223, 0.12);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(103, 217, 236, 0.14), 0 14px 34px rgba(248, 131, 121, 0.08);
   }
 
   .surface-card {
     @apply rounded-2xl border bg-paper shadow-card;
-    border-color: #3a4a56;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.035);
+    border-color: #405461;
+    background-image: linear-gradient(145deg, rgba(248, 131, 121, 0.035), transparent 48%);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 211, 172, 0.055);
   }
 
   .eyebrow {
@@ -85,13 +86,13 @@
   }
 
   .radar-grain {
-    background-image: radial-gradient(rgba(100, 211, 223, 0.18) 0.8px, transparent 0.8px);
+    background-image: radial-gradient(rgba(103, 217, 236, 0.18) 0.8px, transparent 0.8px);
     background-size: 13px 13px;
   }
 
   .glass-panel {
-    border: 1px solid rgba(184, 196, 204, 0.16);
-    background: linear-gradient(135deg, rgba(21, 38, 51, 0.88), rgba(9, 19, 29, 0.76));
+    border: 1px solid rgba(198, 208, 215, 0.18);
+    background: linear-gradient(135deg, rgba(248, 131, 121, 0.075), rgba(21, 38, 51, 0.9) 38%, rgba(9, 19, 29, 0.8));
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(22px);
   }
@@ -100,22 +101,22 @@
     position: absolute;
     width: min(58rem, 86vw);
     height: min(58rem, 86vw);
-    border: 1px solid rgba(100, 211, 223, 0.19);
+    border: 1px solid rgba(103, 217, 236, 0.19);
     border-radius: 9999px;
-    background: radial-gradient(circle at 50% 50%, rgba(100, 211, 223, 0.12), transparent 48%);
+    background: radial-gradient(circle at 50% 50%, rgba(103, 217, 236, 0.12), transparent 48%);
     animation: orbit-drift 14s ease-in-out infinite alternate;
   }
 
   .orbit-field::before,
   .orbit-field::after {
     position: absolute;
-    border: 1px solid rgba(100, 211, 223, 0.12);
+    border: 1px solid rgba(103, 217, 236, 0.12);
     border-radius: inherit;
     content: '';
   }
 
   .orbit-field::before { inset: 8%; }
-  .orbit-field::after { inset: 18%; border-color: rgba(242, 138, 104, 0.2); }
+  .orbit-field::after { inset: 18%; border-color: rgba(248, 131, 121, 0.24); }
 
   .orbit-dot {
     position: absolute;
@@ -124,19 +125,19 @@
     width: .75rem;
     height: .75rem;
     border-radius: 9999px;
-    background: #64d3df;
-    box-shadow: 0 0 0 7px rgba(100, 211, 223, .11), 0 0 23px rgba(100, 211, 223, .72);
+    background: #67d9ec;
+    box-shadow: 0 0 0 7px rgba(103, 217, 236, .12), 0 0 23px rgba(103, 217, 236, .72);
     animation: signal-pulse 2.6s ease-in-out infinite;
   }
 
   .mission-grid {
-    background-image: linear-gradient(rgba(100, 211, 223, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 211, 223, .07) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(103, 217, 236, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(103, 217, 236, .07) 1px, transparent 1px);
     background-size: 2rem 2rem;
     mask-image: linear-gradient(to bottom, black, transparent 92%);
   }
 
   .telemetry-line {
-    background: linear-gradient(90deg, transparent, rgba(100, 211, 223, .9), transparent);
+    background: linear-gradient(90deg, transparent, rgba(103, 217, 236, .9), transparent);
     background-size: 200% 100%;
     animation: telemetry-scan 4s linear infinite;
   }
@@ -152,7 +153,7 @@ main input:not([type='range']):not([type='checkbox']):not([type='radio']) {
 
 main select:focus,
 main input:not([type='range']):not([type='checkbox']):not([type='radio']):focus {
-  border-color: #64d3df;
+  border-color: #67d9ec;
 }
 
 main option {
@@ -162,7 +163,7 @@ main option {
 
 main input[type='range'] {
   color-scheme: dark;
-  accent-color: #f2c078;
+  accent-color: #f6c463;
 }
 
 .timeline-range {
@@ -172,14 +173,14 @@ main input[type='range'] {
   border: 0;
   background: transparent;
   color-scheme: dark;
-  accent-color: #f2c078;
+  accent-color: #f6c463;
 }
 
 .timeline-range::-webkit-slider-runnable-track {
   height: 0.45rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 9999px;
-  background: linear-gradient(90deg, #f2c078 0%, #f2c078 var(--range-progress), #3a4a56 var(--range-progress), #3a4a56 100%);
+  background: linear-gradient(90deg, #f6c463 0%, #f6c463 var(--range-progress), #405461 var(--range-progress), #405461 100%);
 }
 
 .timeline-range::-webkit-slider-thumb {
@@ -189,8 +190,8 @@ main input[type='range'] {
   margin-top: -0.42rem;
   border: 3px solid #07131d;
   border-radius: 50%;
-  background: #f2c078;
-  box-shadow: 0 0 0 2px rgba(242, 192, 120, 0.28);
+  background: #f6c463;
+  box-shadow: 0 0 0 2px rgba(246, 196, 99, 0.3);
   transition: box-shadow 160ms ease, transform 160ms ease;
 }
 
@@ -204,7 +205,7 @@ main input[type='range'] {
 .timeline-range::-moz-range-progress {
   height: 0.45rem;
   border-radius: 9999px;
-  background: #f2c078;
+  background: #f6c463;
 }
 
 .timeline-range::-moz-range-thumb {
@@ -212,8 +213,8 @@ main input[type='range'] {
   height: 0.9rem;
   border: 3px solid #07131d;
   border-radius: 50%;
-  background: #f2c078;
-  box-shadow: 0 0 0 2px rgba(242, 192, 120, 0.28);
+  background: #f6c463;
+  box-shadow: 0 0 0 2px rgba(246, 196, 99, 0.3);
   transition: box-shadow 160ms ease, transform 160ms ease;
 }
 
@@ -221,7 +222,7 @@ main input[type='range'] {
 .timeline-range:focus-visible::-webkit-slider-thumb,
 .timeline-range:hover::-moz-range-thumb,
 .timeline-range:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 5px rgba(242, 192, 120, 0.2);
+  box-shadow: 0 0 0 5px rgba(246, 196, 99, 0.22);
 }
 
 main tbody tr:nth-child(odd) {

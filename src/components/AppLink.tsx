@@ -7,7 +7,7 @@ const BUTTON_BASE =
   'inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition duration-200 focus-visible:outline-offset-4';
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'bg-radar text-navy shadow-sm hover:-translate-y-0.5 hover:bg-radar-200',
+  primary: 'bg-gradient-to-r from-ember via-ember-300 to-amber text-navy shadow-[0_8px_24px_rgba(248,131,121,.16)] hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_12px_30px_rgba(248,131,121,.26)]',
   secondary: 'border border-line-strong bg-paper text-ink hover:-translate-y-0.5 hover:bg-raised',
 };
 
