@@ -80,7 +80,7 @@ function ProjectBrief() {
           <p className="eyebrow text-radar">Project archive / Central India</p>
           <p className="mt-1 text-sm text-muted">NISAR browse comparison</p>
         </div>
-        <span className="inline-flex items-center gap-2 rounded-full border border-radar/25 bg-radar/10 px-3 py-1.5 text-[11px] font-semibold text-radar">
+              <span className="inline-flex items-center gap-2 rounded-full border border-radar/25 bg-radar/10 px-3 py-1.5 text-[11px] font-semibold text-radar">
           <span className="h-1.5 w-1.5 rounded-full bg-radar" aria-hidden="true" /> ARCHIVE
         </span>
       </div>
@@ -183,7 +183,7 @@ export default function HomePage() {
         </div>
         <div className="relative z-10 mx-auto grid min-h-[700px] max-w-7xl items-center gap-12 px-5 pb-24 pt-20 sm:px-8 md:min-h-[760px] md:pb-28 md:pt-24 lg:grid-cols-[1.1fr_.9fr] lg:gap-16">
           <div className="max-w-3xl">
-            <p className="inline-flex items-center gap-2 rounded-full border border-radar/25 bg-radar/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.17em] text-radar shadow-[0_0_24px_rgba(103,216,232,.08)]">
+            <p className="inline-flex items-center gap-2 rounded-full border border-radar/25 bg-radar/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.17em] text-radar shadow-[0_0_24px_rgba(100,211,223,.08)]">
               <Sparkles className="h-3 w-3" aria-hidden="true" /> Field signal / Central India
             </p>
             <p className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted">
@@ -219,7 +219,7 @@ export default function HomePage() {
             aria-pressed={motionEnabled}
             aria-label={motionEnabled ? 'Pause NASA background motion' : 'Play NASA background motion'}
             title={motionEnabled ? 'Pause background motion' : 'Play background motion'}
-            className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border border-white/20 bg-[#071828]/85 px-3 text-xs font-semibold text-white shadow-lg backdrop-blur-md transition hover:border-radar/60 hover:bg-[#102638] focus-visible:outline-none"
+            className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border border-white/20 bg-canvas/90 px-3 text-xs font-semibold text-white shadow-lg backdrop-blur-md transition hover:border-radar/60 hover:bg-raised focus-visible:outline-none"
           >
             {motionEnabled ? <Pause className="h-3.5 w-3.5" aria-hidden="true" /> : <Play className="h-3.5 w-3.5" aria-hidden="true" />}
             <span className="hidden sm:inline">{motionEnabled ? 'Pause motion' : 'Play motion'}</span>

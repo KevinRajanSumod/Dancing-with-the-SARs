@@ -3,7 +3,7 @@ import { ArrowUpRight, Radar } from 'lucide-react';
 
 export default function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-[#06111e] text-white">
+    <footer className="relative overflow-hidden border-t border-white/10 bg-canvas text-white">
       <div className="pointer-events-none absolute -right-32 top-0 h-80 w-80 rounded-full bg-radar/10 blur-3xl" aria-hidden="true" />
       <div className="relative mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 md:grid-cols-[1.2fr_.8fr] md:py-16">
         <div className="max-w-xl">

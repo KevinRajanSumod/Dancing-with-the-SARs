@@ -45,7 +45,7 @@ export default function DetectionMarkers({ detections }: DetectionMarkersProps) 
             aria-label={`Satellite detection on ${detection.date} at ${detection.time}, show details`}
             aria-pressed={isSelected}
             onClick={() => setSelectedIndex(isSelected ? null : index)}
-            className="pointer-events-auto absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-ember shadow-[0_0_0_1px_rgba(7,24,40,.55)] transition-transform duration-150 hover:scale-150 focus-visible:scale-150"
+            className="pointer-events-auto absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-ember shadow-[0_0_0_1px_rgba(7,19,29,.55)] transition-transform duration-150 hover:scale-150 focus-visible:scale-150"
             style={{ left: `${x}%`, top: `${y}%` }}
           />
         );

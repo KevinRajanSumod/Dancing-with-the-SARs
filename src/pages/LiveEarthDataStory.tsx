@@ -126,7 +126,7 @@ export default function LiveEarthDataStory() {
 
       {!data && loading && (
         <div role="status" className="mt-6 surface-card flex items-center gap-3 p-6 text-sm text-muted">
-          <Loader2 className="h-5 w-5 animate-spin text-radar" aria-hidden="true" /> Connecting to the Bolt data function…
+          <Loader2 className="h-5 w-5 animate-spin text-radar" aria-hidden="true" /> Connecting to the Supabase data function…
         </div>
       )}
 
@@ -166,7 +166,7 @@ export default function LiveEarthDataStory() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="eyebrow">ASF Search API · remote browse preview</p>
-                  <h3 id="live-radar-heading" className="mt-2">Latest compatible scenes</h3>
+                  <h3 id="live-radar-heading" className="mt-2">Latest matched-configuration previews</h3>
                 </div>
                 <a href={data.nisar.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-radar hover:bg-radar/10">
                   Open ASF Search <ExternalLink className="h-4 w-4" aria-hidden="true" />
@@ -175,7 +175,30 @@ export default function LiveEarthDataStory() {
 
               {pair ? (
                 <>
-                  <p className="mt-3 text-sm text-muted">Matched on track, frame, orbit direction, polarization, frequency and collection where ASF provides it; the newest two acquisitions are shown.</p>
+                  <p className="mt-3 text-sm text-muted">Matched on track, frame, orbit direction, polarization, frequency and collection where ASF provides it; the newest two acquisitions are shown. This catalog match is a screening step, not proof that the products are fully compatible for quantitative analysis.</p>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {[pair[0], pair[1]].map((scene, index) => (
+                      <div key={`${scene.sceneName}-${scene.processingVersion}`} className="rounded-xl border border-line bg-raised p-3">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-subtle">{index === 0 ? 'Earlier scene' : 'Later scene'} · {longDate(scene.acquiredAt)}</p>
+                        <p className="mt-2 break-all text-xs leading-relaxed text-ink">{scene.sceneName}</p>
+                        <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+                          <dt className="text-subtle">Polarization</dt><dd className="font-medium text-ink">{scene.polarization}</dd>
+                          <dt className="text-subtle">Frequency</dt><dd className="font-medium text-ink">{scene.frequency}</dd>
+                          <dt className="text-subtle">Processing ID</dt><dd className="font-medium text-ink">{scene.processingVersion}</dd>
+                        </dl>
+                        {scene.sourceUrl && scene.sourceUrl !== data.nisar.sourceUrl && (
+                          <a href={scene.sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-teal underline underline-offset-2">
+                            Open product record <ExternalLink className="h-3 w-3" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {pair[0].processingVersion !== pair[1].processingVersion && (
+                    <p role="note" className="mt-3 rounded-xl border border-ember/25 bg-ember/5 p-3 text-xs leading-relaxed text-muted">
+                      These scenes match the available acquisition settings, but their processing IDs differ ({pair[0].processingVersion} and {pair[1].processingVersion}). Treat this pair as a candidate for review, not a strict calibrated comparison; check product maturity and processing notes before measuring change.
+                    </p>
+                  )}
                   <div className="mt-4">
                     <BeforeAfterSlider
                       beforeSrc={pair[0].browseUrl}
@@ -259,13 +282,41 @@ export default function LiveEarthDataStory() {
               ) : (
                 <div role="status" className="mt-5 rounded-xl bg-canvas p-5 text-sm leading-relaxed text-muted">
                   {data.firms.status === 'configuration-required'
-                    ? 'Add a free NASA FIRMS MAP_KEY to Bolt Cloud Secrets. The request will then run through the server function without exposing the key in the website.'
+                    ? 'Add your NASA FIRMS MAP_KEY to Supabase Edge Function Secrets. The request will then run through the server function without exposing the key in the website.'
                     : data.firms.message || 'No live FIRMS records were returned for the most recent five-day query. This is not evidence that no fire occurred.'}
                 </div>
               )}
               <p className="mt-4 border-t border-line pt-4 text-xs leading-relaxed text-subtle">A thermal detection is a satellite heat signal, not a confirmed fire or unique fire. It does not measure burned area. The five-day feed may be revised during standard processing.</p>
             </section>
           </div>
+
+          <section className="mt-8" aria-labelledby="independent-evidence-heading">
+            <div className="mb-4 max-w-3xl">
+              <p className="eyebrow">Independent evidence · not yet analyzed here</p>
+              <h3 id="independent-evidence-heading" className="mt-2">Check a fire hypothesis with separate products</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">Open each NASA source for the same area and date window. The current app has not downloaded or analyzed these products, so this section reports no burn perimeter, burned area, or disturbance result.</p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card>
+                <p className="eyebrow">Thermal timing</p>
+                <h4 className="mt-2">NASA FIRMS</h4>
+                <p className="mt-2 text-sm leading-relaxed text-muted">Active-fire and thermal-anomaly detections can add time context. They are not a perimeter or burned-area measurement.</p>
+                <a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-teal underline underline-offset-4">Open FIRMS <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
+              </Card>
+              <Card>
+                <p className="eyebrow">Burned area</p>
+                <h4 className="mt-2">MODIS MCD64A1</h4>
+                <p className="mt-2 text-sm leading-relaxed text-muted">Monthly global product with 500 m burn-date and quality layers. Check the month, tile coverage, quality flags, and whether the product is available for the chosen dates.</p>
+                <a href="https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/MCD64A1/" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-teal underline underline-offset-4">Open product and downloads <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
+              </Card>
+              <Card>
+                <p className="eyebrow">Surface disturbance</p>
+                <h4 className="mt-2">OPERA DIST-ALERT-HLS V1</h4>
+                <p className="mt-2 text-sm leading-relaxed text-muted">Optical disturbance alerts can identify vegetation-cover change. A disturbance alert alone does not show that fire caused it.</p>
+                <a href="https://www.earthdata.nasa.gov/data/catalog/lpcloud-opera-l3-dist-alert-hls-v1-1" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-teal underline underline-offset-4">Open NASA Earthdata catalog <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
+              </Card>
+            </div>
+          </section>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 text-xs text-subtle">
             <span>Feeds checked: {new Date(data.fetchedAt).toLocaleString('en-GB')}</span>

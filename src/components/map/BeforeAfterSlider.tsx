@@ -142,7 +142,7 @@ export default function BeforeAfterSlider({
       </div>
 
       <div className="absolute inset-y-0 z-30 w-0" style={{ left: `${position}%` }}>
-        <div className="absolute inset-y-0 w-0.5 -translate-x-1/2 bg-radar shadow-[0_0_18px_rgba(103,216,232,.6)]" aria-hidden="true" />
+        <div className="absolute inset-y-0 w-0.5 -translate-x-1/2 bg-radar shadow-[0_0_18px_rgba(100,211,223,.6)]" aria-hidden="true" />
         <div
           role="slider"
           tabIndex={0}

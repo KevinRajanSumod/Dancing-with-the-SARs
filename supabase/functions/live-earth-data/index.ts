@@ -105,7 +105,7 @@ async function getLiveFirms() {
   if (!mapKey) {
     return {
       status: 'configuration-required' as const,
-      message: 'Add FIRMS_MAP_KEY to Bolt Cloud Secrets to enable live thermal detections.',
+      message: 'Add FIRMS_MAP_KEY to Supabase Edge Function Secrets to enable live thermal detections.',
       records: [] as Detection[],
       sourceUrl,
     };
@@ -127,7 +127,7 @@ async function getLiveFirms() {
     if (records === null) {
       return {
         status: 'unavailable' as const,
-        message: 'NASA FIRMS returned an unexpected response. Verify the MAP_KEY in Bolt Cloud Secrets.',
+        message: 'NASA FIRMS returned an unexpected response. Verify FIRMS_MAP_KEY in Supabase Edge Function Secrets.',
         records: [] as Detection[],
         sourceUrl,
       };

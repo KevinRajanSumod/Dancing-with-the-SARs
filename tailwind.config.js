@@ -17,7 +17,7 @@ export default {
         canvas: '#07131D',
         paper: '#0E1C28',
         raised: '#152633',
-        line: { DEFAULT: '#2A3B47', strong: '#435763' },
+        line: { DEFAULT: '#3A4A56', strong: '#64717B' },
         ink: '#F1F5F7',
         muted: '#B8C4CC',
         subtle: '#A7B4BE',

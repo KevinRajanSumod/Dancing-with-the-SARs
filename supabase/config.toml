@@ -1,2 +1,5 @@
 [functions.live-earth-data]
 verify_jwt = true
+
+[functions.evidence-assistant]
+verify_jwt = true

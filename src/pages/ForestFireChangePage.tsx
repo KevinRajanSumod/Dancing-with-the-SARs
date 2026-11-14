@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { AlertTriangle, ArrowRight, CalendarDays, Flame, Layers, MoveHorizontal } from 'lucide-react';
 import Card from '@/components/Card';
 import SnapshotBadge from '@/components/SnapshotBadge';
@@ -69,10 +70,10 @@ export default function ForestFireChangePage() {
 
       <section className="mx-auto max-w-7xl px-5 pt-6 sm:px-8" aria-label="Choose data view">
         <div className="inline-flex max-w-full flex-wrap gap-2 rounded-2xl border border-line bg-paper p-2 shadow-card" role="group" aria-label="Choose archived or live satellite data">
-          <button type="button" aria-pressed={mode === 'archive'} onClick={() => setMode('archive')} className={`min-h-11 rounded-xl px-4 text-sm font-semibold transition-colors ${mode === 'archive' ? 'bg-navy text-white' : 'text-ink hover:bg-canvas'}`}>
+          <button type="button" aria-pressed={mode === 'archive'} onClick={() => setMode('archive')} className={`min-h-11 rounded-xl px-4 text-sm font-semibold transition-colors ${mode === 'archive' ? 'bg-radar/10 text-radar ring-1 ring-inset ring-radar/25' : 'text-muted hover:bg-raised hover:text-ink'}`}>
             Archive · Sep–Nov 2026
           </button>
-          <button type="button" aria-pressed={mode === 'live'} onClick={() => setMode('live')} className={`min-h-11 rounded-xl px-4 text-sm font-semibold transition-colors ${mode === 'live' ? 'bg-navy text-white' : 'text-ink hover:bg-canvas'}`}>
+          <button type="button" aria-pressed={mode === 'live'} onClick={() => setMode('live')} className={`min-h-11 rounded-xl px-4 text-sm font-semibold transition-colors ${mode === 'live' ? 'bg-radar/10 text-radar ring-1 ring-inset ring-radar/25' : 'text-muted hover:bg-raised hover:text-ink'}`}>
             Live · latest feeds
           </button>
         </div>
@@ -81,7 +82,7 @@ export default function ForestFireChangePage() {
       {mode === 'live' ? <LiveEarthDataStory /> : (
         <>
       <section className="mx-auto max-w-7xl px-5 pt-8 sm:px-8 md:pt-12" aria-label="Map layers and date controls">
-        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="grid items-start gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="surface-card p-5 sm:p-6">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -114,7 +115,7 @@ export default function ForestFireChangePage() {
             </div>
             {timelineDates.length > 0 ? (
               <>
-                <div className="mt-5 flex items-center justify-between gap-4">
+                <div className="mt-5 grid grid-cols-1 items-center gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-4">
                   <label htmlFor="date-range" className="sr-only">Choose a date in the detection snapshot</label>
                   <input
                     id="date-range"
@@ -125,9 +126,10 @@ export default function ForestFireChangePage() {
                     value={selectedIndex}
                     onChange={(event) => setSelectedDate(timelineDates[Number(event.currentTarget.value)])}
                     aria-valuetext={`${longDate(selectedDate)}; ${selectedDetections.length} detections`}
-                    className="h-3 min-w-0 flex-1 cursor-pointer accent-date"
+                    className="timeline-range min-w-0 cursor-pointer"
+                    style={{ '--range-progress': `${(selectedIndex / Math.max(1, timelineDates.length - 1)) * 100}%` } as CSSProperties & { '--range-progress': string }}
                   />
-                  <output htmlFor="date-range" className="min-w-[8.5rem] rounded-lg bg-date px-3 py-2 text-center text-sm font-semibold tabular-nums text-navy">
+                  <output htmlFor="date-range" className="inline-flex min-h-10 min-w-[10rem] items-center justify-center rounded-lg border border-date/30 bg-date/10 px-3 py-2 text-center text-sm font-semibold tabular-nums text-date sm:justify-self-end">
                     {longDate(selectedDate)}
                   </output>
                 </div>
@@ -135,13 +137,13 @@ export default function ForestFireChangePage() {
                   <span>{shortDate(timelineDates[0])}</span>
                   <span>{shortDate(timelineDates[timelineDates.length - 1])}</span>
                 </div>
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+                <div className="mt-4 grid gap-2 border-t border-line pt-4 sm:grid-cols-[minmax(0,1fr)_minmax(14rem,19rem)] sm:items-center sm:gap-4">
                   <label htmlFor="date-select" className="text-sm font-medium text-muted">Jump to a date</label>
                   <select
                     id="date-select"
                     value={selectedDate}
                     onChange={(event) => setSelectedDate(event.currentTarget.value)}
-                    className="min-h-10 max-w-full rounded-lg border border-line bg-raised px-3 text-sm font-medium text-ink focus:border-radar"
+                    className="min-h-11 w-full min-w-0 rounded-lg border border-line-strong bg-raised px-3 text-sm font-medium text-ink focus:border-date"
                   >
                     {timelineDates.map((date) => <option key={date} value={date}>{longDate(date)}{(detectionsByDate.get(date)?.length ?? 0) === 0 ? ' · 0 detections' : ''}</option>)}
                   </select>
@@ -203,19 +205,19 @@ export default function ForestFireChangePage() {
         </div>
         <div className="mt-7 grid gap-4 md:grid-cols-3">
           <Card>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-radar">01 / 30 Sep → 5 Nov</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ember">01 / 30 Sep → 5 Nov</p>
             <p className="mt-4 text-4xl font-semibold tabular-nums text-ink">{detections.length.toLocaleString('en-US')}</p>
             <p className="mt-2 font-medium text-ink">FIRMS thermal detections</p>
             <p className="mt-3 text-sm leading-relaxed text-muted">2,050 records fall inside the project footprint across the 38 daily source files. A row represents one sensor detection, not a unique fire.</p>
           </Card>
           <Card>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-radar">02 / Confidence labels</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-analysis">02 / Confidence labels</p>
             <p className="mt-4 text-4xl font-semibold tabular-nums text-ink">{confidenceCounts.nominal.toLocaleString('en-US')}</p>
             <p className="mt-2 font-medium text-ink">nominal-confidence records</p>
             <p className="mt-3 text-sm leading-relaxed text-muted">The supplied snapshot also includes {confidenceCounts.low.toLocaleString('en-US')} low and {confidenceCounts.high.toLocaleString('en-US')} high-confidence detections. Confidence is a sensor classification, not field confirmation.</p>
           </Card>
           <Card>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-radar">03 / 9 Oct 2026</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-date">03 / 9 Oct 2026</p>
             <p className="mt-4 text-4xl font-semibold tabular-nums text-ink">{octNinthDetections.length}</p>
             <p className="mt-2 font-medium text-ink">detections on one date</p>
             <p className="mt-3 text-sm leading-relaxed text-muted">{octNinthNominalCount} carried nominal confidence. The daily record adds time context; it does not link a thermal point to a visible radar-brightness change.</p>

@@ -25,7 +25,7 @@
   h1,
   h2,
   h3 {
-    @apply font-semibold tracking-tight text-[#F4FAFD];
+    @apply font-semibold tracking-tight text-ink;
     line-height: 1.2;
   }
 
@@ -70,7 +70,8 @@
   }
 
   .surface-card {
-    @apply rounded-2xl border border-line bg-paper shadow-card;
+    @apply rounded-2xl border bg-paper shadow-card;
+    border-color: #3a4a56;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.035);
   }
 
@@ -140,7 +141,7 @@ main select,
 main input:not([type='range']):not([type='checkbox']):not([type='radio']) {
   color: #f1f5f7;
   background-color: #152633;
-  border-color: #2a3b47;
+  border-color: #3a4a56;
   color-scheme: dark;
 }
 
@@ -157,6 +158,65 @@ main option {
 main input[type='range'] {
   color-scheme: dark;
   accent-color: #f2c078;
+}
+
+.timeline-range {
+  appearance: none;
+  width: 100%;
+  height: 1.75rem;
+  border: 0;
+  background: transparent;
+  color-scheme: dark;
+  accent-color: #f2c078;
+}
+
+.timeline-range::-webkit-slider-runnable-track {
+  height: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #f2c078 0%, #f2c078 var(--range-progress), #3a4a56 var(--range-progress), #3a4a56 100%);
+}
+
+.timeline-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: -0.42rem;
+  border: 3px solid #07131d;
+  border-radius: 50%;
+  background: #f2c078;
+  box-shadow: 0 0 0 2px rgba(242, 192, 120, 0.28);
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+
+.timeline-range::-moz-range-track {
+  height: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  background: #3a4a56;
+}
+
+.timeline-range::-moz-range-progress {
+  height: 0.45rem;
+  border-radius: 9999px;
+  background: #f2c078;
+}
+
+.timeline-range::-moz-range-thumb {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 3px solid #07131d;
+  border-radius: 50%;
+  background: #f2c078;
+  box-shadow: 0 0 0 2px rgba(242, 192, 120, 0.28);
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+
+.timeline-range:hover::-webkit-slider-thumb,
+.timeline-range:focus-visible::-webkit-slider-thumb,
+.timeline-range:hover::-moz-range-thumb,
+.timeline-range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 5px rgba(242, 192, 120, 0.2);
 }
 
 main tbody tr:nth-child(odd) {

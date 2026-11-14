@@ -10,9 +10,11 @@ const steps = [
   { icon: ImageIcon, title: 'Build an image', text: 'As the satellite moves, many echoes are combined into a sharper image. Pixels represent radar response, not a photograph.' },
 ];
 
+const stepIconTones = ['bg-radar/10 text-radar', 'bg-eco/10 text-eco', 'bg-ember/10 text-ember', 'bg-analysis/10 text-analysis'];
+
 function RadarPulseDiagram() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#061521] p-4 sm:p-8">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-paper p-4 sm:p-8">
       <svg viewBox="0 0 1000 340" role="img" aria-labelledby="pulse-title pulse-desc" className="h-auto w-full">
         <title id="pulse-title">Illustration of a synthetic aperture radar pulse</title>
         <desc id="pulse-desc">A satellite moves above a textured ground surface, sending a cyan microwave pulse down and receiving an amber echo back.</desc>
@@ -101,7 +103,7 @@ export default function HowSarWorksPage() {
               <Reveal delayMs={index * 70} className="h-full">
                 <Card className="h-full">
                   <div className="flex items-center justify-between">
-                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-radar/10 text-radar"><step.icon className="h-5 w-5" aria-hidden="true" /></span>
+                    <span className={`grid h-10 w-10 place-items-center rounded-xl border border-white/10 ${stepIconTones[index]}`}><step.icon className="h-5 w-5" aria-hidden="true" /></span>
                     <span className="text-xs font-semibold tracking-[0.12em] text-subtle">STEP 0{index + 1}</span>
                   </div>
                   <h3 className="mt-5">{step.title}</h3>
@@ -121,9 +123,9 @@ export default function HowSarWorksPage() {
             <p className="mt-4 text-base leading-relaxed text-muted">Radar brightness is a measured response shaped by the material and the way the radar views it. It is useful evidence, but it does not label a land-cover change on its own.</p>
           </div>
           <div className="mt-9 grid gap-4 md:grid-cols-3">
-            <Reveal className="h-full"><Card className="h-full"><LocateFixed className="h-5 w-5 text-radar" aria-hidden="true" /><h3 className="mt-5">Structure and roughness</h3><p className="mt-3 text-sm leading-relaxed text-muted">Leaves, branches, trunks, bare ground and surface texture scatter microwave energy in different ways.</p></Card></Reveal>
-            <Reveal delayMs={80} className="h-full"><Card className="h-full"><Activity className="h-5 w-5 text-radar" aria-hidden="true" /><h3 className="mt-5">Moisture</h3><p className="mt-3 text-sm leading-relaxed text-muted">Water in soil and vegetation can change the electrical response of a surface and affect the signal returned.</p></Card></Reveal>
-            <Reveal delayMs={160} className="h-full"><Card className="h-full"><ArrowUp className="h-5 w-5 text-radar" aria-hidden="true" /><h3 className="mt-5">Viewing setup</h3><p className="mt-3 text-sm leading-relaxed text-muted">Polarization, orbit geometry, processing and acquisition conditions also matter when two scenes are compared.</p></Card></Reveal>
+            <Reveal className="h-full"><Card className="h-full"><span className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-eco/10 text-eco"><LocateFixed className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-5">Structure and roughness</h3><p className="mt-3 text-sm leading-relaxed text-muted">Leaves, branches, trunks, bare ground and surface texture scatter microwave energy in different ways.</p></Card></Reveal>
+            <Reveal delayMs={80} className="h-full"><Card className="h-full"><span className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-radar/10 text-radar"><Activity className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-5">Moisture</h3><p className="mt-3 text-sm leading-relaxed text-muted">Water in soil and vegetation can change the electrical response of a surface and affect the signal returned.</p></Card></Reveal>
+            <Reveal delayMs={160} className="h-full"><Card className="h-full"><span className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-analysis/10 text-analysis"><ArrowUp className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-5">Viewing setup</h3><p className="mt-3 text-sm leading-relaxed text-muted">Polarization, orbit geometry, processing and acquisition conditions also matter when two scenes are compared.</p></Card></Reveal>
           </div>
           <div className="mt-7 flex items-start gap-3 rounded-xl border border-line bg-canvas p-4 text-sm leading-relaxed text-muted">
             <ArrowDown className="mt-0.5 h-4 w-4 shrink-0 text-ember" aria-hidden="true" />

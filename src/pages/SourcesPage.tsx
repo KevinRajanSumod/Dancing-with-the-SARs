@@ -128,6 +128,41 @@ const resourceGroups = [
 
 const resourceIconTones = ['bg-radar/10 text-radar', 'bg-analysis/10 text-analysis', 'bg-eco/10 text-eco', 'bg-date/10 text-date'];
 
+const evidenceWorkflow = [
+  {
+    icon: Satellite,
+    step: '01 / Inputs',
+    title: 'Radar and thermal records',
+    tone: 'bg-radar/10 text-radar',
+    text: 'The archive pairs two NISAR L-band browse previews with a NASA FIRMS VIIRS NOAA-21 detection snapshot. These are separate observations, not a spatially matched result.',
+    links: [
+      { label: 'ASF Vertex', href: 'https://search.asf.alaska.edu/' },
+      { label: 'NASA FIRMS', href: 'https://firms.modaps.eosdis.nasa.gov/active_fire/' },
+    ],
+  },
+  {
+    icon: Layers3,
+    step: '02 / Preparation',
+    title: 'A visual archive workflow',
+    tone: 'bg-eco/10 text-eco',
+    text: 'The supplied browse previews were georeferenced in QGIS and displayed as grayscale overlays. FIRMS points were filtered by acquisition date and the project footprint; the previews are not calibrated measurements.',
+    links: [
+      { label: 'NISAR Data User Guide', href: 'https://nisar-docs.asf.alaska.edu/' },
+    ],
+  },
+  {
+    icon: BookOpenCheck,
+    step: '03 / Follow-up',
+    title: 'Independent evidence to add',
+    tone: 'bg-analysis/10 text-analysis',
+    text: 'A defensible change assessment needs compatible calibrated radar products plus independent burned-area or disturbance data and field evidence. This project has not processed those validation products.',
+    links: [
+      { label: 'MODIS burned area', href: 'https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/MCD64A1/' },
+      { label: 'OPERA disturbance alerts', href: 'https://www.earthdata.nasa.gov/data/catalog/lpcloud-opera-l3-dist-alert-hls-v1-1' },
+    ],
+  },
+];
+
 export default function SourcesPage() {
   return (
     <>
@@ -154,12 +189,12 @@ export default function SourcesPage() {
         <div className="mt-6 rounded-2xl border border-ember/20 bg-ember/5 p-5 sm:p-6">
           <p className="text-sm font-semibold text-ink">API setup in this project</p>
           <p className="mt-2 max-w-4xl text-sm leading-relaxed text-muted">
-            The code already contains an ASF Search catalog request and a NASA FIRMS request through the Supabase Edge
-            Function. That does not mean the deployed app is connected: connect Bolt Cloud, make sure the project has
-            its Supabase URL and public key, deploy the <code>live-earth-data</code> function, and add the private
-            <code> FIRMS_MAP_KEY</code> in backend Secrets. Never put that key in browser code. ASF quicklook search
-            does not need the FIRMS key. Earthdata Search, the NISAR guide, trainings, StoryMaps, white papers, and
-            postcards are links for people to use; they do not require API keys.
+            The code calls ASF Search and NASA FIRMS through a Supabase Edge Function. Configure this app with your
+            Supabase project URL and publishable key, deploy the <code>live-earth-data</code> function, and add the
+            private <code> FIRMS_MAP_KEY</code> in Supabase Edge Function Secrets. Never put that FIRMS key in browser
+            code. ASF quicklook search does not need it. This project currently uses Supabase for the function and
+            secret runtime; it does not need database tables. Earthdata Search, the NISAR guide, trainings, StoryMaps,
+            white papers, and postcards are links for people to use; they do not require API keys.
           </p>
           <AppLink to="/forest-fire-change" className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-radar underline underline-offset-4 hover:text-radar">
             Open Fire story to check live-feed status <ExternalLink className="h-4 w-4" aria-hidden="true" />
@@ -167,7 +202,7 @@ export default function SourcesPage() {
         </div>
 
         <div className="mt-8 grid gap-5 lg:grid-cols-2">
-          {resourceGroups.map((group) => (
+          {resourceGroups.map((group, index) => (
             <article key={group.title} className="surface-card p-5 sm:p-6">
               <div className="flex items-start gap-3">
                 <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 ${resourceIconTones[index]}`}><group.icon className="h-5 w-5" aria-hidden="true" /></span>
@@ -190,6 +225,40 @@ export default function SourcesPage() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 md:pb-20" aria-labelledby="evidence-workflow-heading">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div className="max-w-3xl">
+            <p className="eyebrow">Resource trail / This project</p>
+            <h2 id="evidence-workflow-heading" className="mt-2">From source data to responsible follow-up</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">A quick map of what enters this story, how the archive is presented, and what evidence a future analysis would need.</p>
+          </div>
+        </div>
+
+        <ol className="mt-6 grid gap-4 lg:grid-cols-3">
+          {evidenceWorkflow.map((step) => (
+            <li key={step.step} className="list-none">
+              <article className="surface-card h-full p-5 sm:p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <span className={`grid h-11 w-11 place-items-center rounded-xl border border-white/10 ${step.tone}`}>
+                    <step.icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-subtle">{step.step}</span>
+                </div>
+                <h3 className="mt-5">{step.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted">{step.text}</p>
+                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4">
+                  {step.links.map((link) => (
+                    <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline decoration-radar/30 underline-offset-4 hover:text-white">
+                      {link.label}<ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  ))}
+                </div>
+              </article>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-8 px-5 pb-20 sm:px-8 md:pb-28 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">

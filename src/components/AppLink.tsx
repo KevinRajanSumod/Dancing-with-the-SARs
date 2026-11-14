@@ -8,7 +8,7 @@ const BUTTON_BASE =
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
   primary: 'bg-radar text-navy shadow-sm hover:-translate-y-0.5 hover:bg-radar-200',
-  secondary: 'border border-line bg-paper text-ink hover:-translate-y-0.5 hover:border-line-strong hover:bg-raised',
+  secondary: 'border border-line-strong bg-paper text-ink hover:-translate-y-0.5 hover:bg-raised',
 };
 
 export function buttonClass(variant: ButtonVariant): string {

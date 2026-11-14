@@ -13,8 +13,8 @@ This story pairs a project-provided radar browse image set with a local snapshot
 
 - Live mode requests public NISAR GCOV catalog metadata from the [ASF Search API](https://docs.asf.alaska.edu/api/basics/). Where ASF returns a browse URL, the page displays that remote quicklook; it does not download a full science product or treat the preview as a calibrated raster.
 - The [NISAR product notes](https://nisar-docs.asf.alaska.edu/product-known-issues/) describe calibration artifacts in some pre-calibration BETA products. The collection and processing metadata for each returned scene should be checked before drawing conclusions; this project does not assume that every live scene is a BETA product.
-- Live thermal detections come from the [NASA FIRMS Area API](https://firms.modaps.eosdis.nasa.gov/api/area), VIIRS NOAA-21 near-real-time, for the latest five-day query. The Bolt server function filters the bounding-box response against the project footprint polygon.
-- The FIRMS API key is stored as the Bolt Cloud secret `FIRMS_MAP_KEY`; it is not sent to the browser. Request a free key at [NASA FIRMS Map Key](https://firms.modaps.eosdis.nasa.gov/api/map_key/).
+- Live thermal detections come from the [NASA FIRMS Area API](https://firms.modaps.eosdis.nasa.gov/api/area), VIIRS NOAA-21 near-real-time, for the latest five-day query. The Supabase Edge Function filters the bounding-box response against the project footprint polygon.
+- The FIRMS API key is stored as the Supabase Edge Function secret `FIRMS_MAP_KEY`; it is not sent to the browser. Request a free key at [NASA FIRMS Map Key](https://firms.modaps.eosdis.nasa.gov/api/map_key/).
 - The historical Sep–Nov archive continues to use the project's georeferenced preview overlays and fixed FIRMS snapshot. Those images and point layers are spatially framed for the archive; remote live browse quicklooks are kept separate because their preview projection is not suitable for an overlay claim.
 
 ## FIRMS thermal detections

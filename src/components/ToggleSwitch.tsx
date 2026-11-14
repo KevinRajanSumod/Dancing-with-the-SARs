@@ -13,7 +13,7 @@ export default function ToggleSwitch({ checked, onChange, children }: ToggleSwit
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className="group flex min-h-14 w-full items-start gap-3 rounded-xl border border-white/10 bg-raised px-4 py-3 text-left text-ink transition-colors hover:border-radar/40 hover:bg-radar/10 focus-visible:outline-offset-2"
+      className="group flex min-h-14 w-full items-start gap-3 rounded-xl border border-line-strong bg-raised px-4 py-3 text-left text-ink transition-colors hover:border-radar/50 hover:bg-radar/10 focus-visible:outline-offset-2"
     >
       <span
         className={`relative mt-0.5 inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors duration-200 ${

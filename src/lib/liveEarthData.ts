@@ -35,7 +35,7 @@ export interface LiveEarthData {
 let supabase: SupabaseClient | null | undefined;
 let pendingRequest: Promise<LiveEarthData> | null = null;
 
-function getBoltClient(): SupabaseClient | null {
+function getSupabaseClient(): SupabaseClient | null {
   if (supabase !== undefined) return supabase;
   const url = import.meta.env.VITE_SUPABASE_URL;
   const publicKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
@@ -51,15 +51,15 @@ function getBoltClient(): SupabaseClient | null {
 
 export async function fetchLiveEarthData(): Promise<LiveEarthData> {
   if (pendingRequest) return pendingRequest;
-  const client = getBoltClient();
+  const client = getSupabaseClient();
   if (!client) {
-    throw new Error('Bolt Cloud is not connected to this app build yet. Open this project in Bolt Cloud and let it add its database connection values.');
+    throw new Error('Supabase is not configured for this app build. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY (or VITE_SUPABASE_ANON_KEY), then restart or rebuild the app.');
   }
 
   pendingRequest = (async () => {
     const { data, error } = await client.functions.invoke<LiveEarthData>('live-earth-data', { method: 'GET' });
-    if (error) throw new Error(error.message || 'The Bolt live-data function could not be reached.');
-    if (!data) throw new Error('The Bolt live-data function returned no data.');
+    if (error) throw new Error(error.message || 'The Supabase live-data function could not be reached.');
+    if (!data) throw new Error('The Supabase live-data function returned no data.');
     return data;
   })();
   try {
