@@ -35,6 +35,7 @@ This story pairs a project-provided radar browse image set with a local snapshot
 
 - The homepage background uses [Earth From the Perspective of Artemis II](https://images.nasa.gov/details/art002e000192), NASA Image and Video Library, NASA credit.
 - This photograph is illustrative Earth-observation context. It is not the project's NISAR image or data. Dancing with the SARs is an independent project and is not endorsed by NASA or ISRO.
+- The SAR basics page includes NASA/JPL-Caltech's [NISAR launch and deployment animation](https://science.nasa.gov/video-detail/amf-ffc8740c-2d65-4712-a4dd-78152649ab49/) and [NISAR image of Mount Desert Island, Maine](https://science.nasa.gov/image-detail/amf-pia26616/). These are mission examples from outside the Central India project footprint; the Maine radar image was acquired during commissioning on 21 August 2025.
 
 ## Mission context
 

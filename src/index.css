@@ -60,6 +60,11 @@
     transform: none;
   }
 
+  .reveal.is-visible svg,
+  .card-in-view svg {
+    animation: icon-pop 520ms cubic-bezier(.2,.8,.2,1) 90ms both;
+  }
+
   .lift {
     transition: transform 200ms ease, box-shadow 200ms ease;
   }
@@ -245,6 +250,12 @@ main tbody tr:nth-child(odd) {
 @keyframes telemetry-scan {
   from { background-position: 200% 0; }
   to { background-position: -200% 0; }
+}
+
+@keyframes icon-pop {
+  0% { opacity: .65; scale: .72; }
+  68% { opacity: 1; scale: 1.14; }
+  100% { opacity: 1; scale: 1; }
 }
 
 .radar-beam {

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { AlertTriangle, ArrowRight, CalendarDays, Flame, Layers, MoveHorizontal } from 'lucide-react';
 import Card from '@/components/Card';
+import Reveal from '@/components/Reveal';
 import SnapshotBadge from '@/components/SnapshotBadge';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import BeforeAfterSlider from '@/components/map/BeforeAfterSlider';
@@ -83,7 +84,8 @@ export default function ForestFireChangePage() {
         <>
       <section className="mx-auto max-w-7xl px-5 pt-8 sm:px-8 md:pt-12" aria-label="Map layers and date controls">
         <div className="grid items-start gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-          <div className="surface-card p-5 sm:p-6">
+          <Reveal className="h-full">
+          <div className="surface-card h-full p-5 sm:p-6">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="eyebrow">Map layers</p>
@@ -102,8 +104,10 @@ export default function ForestFireChangePage() {
               </ToggleSwitch>
             </div>
           </div>
+          </Reveal>
 
-          <div className="surface-card p-5 sm:p-6">
+          <Reveal className="h-full">
+          <div className="surface-card h-full p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="eyebrow">Detection timeline</p>
@@ -162,10 +166,12 @@ export default function ForestFireChangePage() {
               <p role="status" className="mt-5 text-sm text-muted">No dated FIRMS records are available in this snapshot.</p>
             )}
           </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-6 sm:px-8 md:py-8" aria-label="Radar comparison map">
+        <Reveal>
         <div className="surface-card p-3 sm:p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-1 sm:px-2">
             <div>
@@ -196,6 +202,7 @@ export default function ForestFireChangePage() {
             <span>Images: NASA-ISRO NISAR GCOV browse previews via ASF Vertex · FIRMS: NOAA-21 VIIRS</span>
           </div>
         </div>
+        </Reveal>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 pb-8 sm:px-8 md:pb-12" aria-labelledby="story-heading">

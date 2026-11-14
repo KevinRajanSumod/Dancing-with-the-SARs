@@ -51,7 +51,7 @@ const signalRail = [
 
 function SignalRail() {
   return (
-    <section className="relative z-10 -mt-8 px-5 sm:-mt-10 sm:px-8" aria-label="Project signal overview">
+    <section className="relative z-10 mt-4 px-5 sm:px-8" aria-label="Project signal overview">
       <div className="glass-panel mx-auto grid max-w-7xl overflow-hidden rounded-[1.45rem] sm:grid-cols-2 xl:grid-cols-4">
         {signalRail.map((signal, index) => (
           <Reveal key={signal.label} delayMs={index * 70} className="border-b border-white/10 last:border-b-0 sm:odd:border-r sm:even:border-r-0 sm:[&:nth-last-child(2)]:border-b-0 xl:border-b-0 xl:border-r xl:last:border-r-0">
@@ -209,10 +209,12 @@ export default function HomePage() {
               <span>30 Sep — 5 Nov 2026</span>
             </div>
           </div>
-          <ProjectBrief />
+          <Reveal>
+            <ProjectBrief />
+          </Reveal>
         </div>
 
-        <div className="absolute bottom-3 right-4 z-20 flex max-w-[min(94vw,34rem)] items-end gap-3 sm:right-8">
+        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col-reverse gap-3 px-5 pb-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <button
             type="button"
             onClick={() => setMotionEnabled((enabled) => !enabled)}
@@ -224,7 +226,7 @@ export default function HomePage() {
             {motionEnabled ? <Pause className="h-3.5 w-3.5" aria-hidden="true" /> : <Play className="h-3.5 w-3.5" aria-hidden="true" />}
             <span className="hidden sm:inline">{motionEnabled ? 'Pause motion' : 'Play motion'}</span>
           </button>
-          <p className="max-w-[26rem] text-right text-[10px] leading-relaxed text-muted sm:text-xs">
+          <p className="max-w-[30rem] rounded-xl border border-white/10 bg-canvas/80 p-3 text-left text-[11px] leading-relaxed text-muted shadow-lg backdrop-blur-md sm:text-right sm:text-xs">
             NASA Goddard · <a href="https://svs.gsfc.nasa.gov/11474" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-white">Earth Illuminated ISS video and image</a> (NASA/JSC/Image Science and Analysis Laboratory). Not project radar data; this project is not endorsed by NASA or ISRO.
           </p>
         </div>
@@ -300,34 +302,40 @@ export default function HomePage() {
             </AppLink>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/[.035] p-5">
-              <Moon className="h-5 w-5 text-radar" aria-hidden="true" />
-              <h3 className="mt-4 text-lg text-white">Radar brightness</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">Responds to surface structure, moisture and viewing geometry. A brighter or darker patch is not a diagnosis by itself.</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[.035] p-5">
-              <Flame className="h-5 w-5 text-ember" aria-hidden="true" />
-              <h3 className="mt-4 text-lg text-white">Thermal detections</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">Mark where a satellite sensor registered heat. They are not counts of separate fires, confirmed burn scars, or burned-area measurements.</p>
-            </div>
+            <Reveal>
+              <div className="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <Moon className="h-5 w-5 text-radar" aria-hidden="true" />
+                <h3 className="mt-4 text-lg text-white">Radar brightness</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">Responds to surface structure, moisture and viewing geometry. A brighter or darker patch is not a diagnosis by itself.</p>
+              </div>
+            </Reveal>
+            <Reveal delayMs={90}>
+              <div className="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <Flame className="h-5 w-5 text-ember" aria-hidden="true" />
+                <h3 className="mt-4 text-lg text-white">Thermal detections</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">Mark where a satellite sensor registered heat. They are not counts of separate fires, confirmed burn scars, or burned-area measurements.</p>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-14 sm:px-8 md:py-20" aria-label="Project data context">
-        <div className="glass-panel flex flex-col gap-5 rounded-2xl p-5 sm:flex-row sm:items-center sm:justify-between sm:p-7">
-          <div className="flex items-start gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-radar/20 bg-radar/10 text-radar"><Activity className="h-5 w-5" aria-hidden="true" /></span>
-            <div>
-              <p className="eyebrow text-radar">Project archive</p>
-              <h2 className="mt-2 text-xl text-white">Separate sensors. A shared place to ask questions.</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">The map keeps the radar previews and thermal records distinct. Switch between the saved archive and API-fed live view when you explore.</p>
+        <Reveal>
+          <div className="glass-panel flex flex-col gap-5 rounded-2xl p-5 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+            <div className="flex items-start gap-4">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-radar/20 bg-radar/10 text-radar"><Activity className="h-5 w-5" aria-hidden="true" /></span>
+              <div>
+                <p className="eyebrow text-radar">Project archive</p>
+                <h2 className="mt-2 text-xl text-white">Separate sensors. A shared place to ask questions.</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">The map keeps the radar previews and thermal records distinct. Switch between the saved archive and API-fed live view when you explore.</p>
+              </div>
             </div>
+            <AppLink to="/forest-fire-change" className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[.07] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-radar/50 hover:bg-white/[.12]">
+              Open archive and live data <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </AppLink>
           </div>
-          <AppLink to="/forest-fire-change" className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[.07] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-radar/50 hover:bg-white/[.12]">
-            Open archive and live data <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </AppLink>
-        </div>
+        </Reveal>
       </section>
     </>
   );

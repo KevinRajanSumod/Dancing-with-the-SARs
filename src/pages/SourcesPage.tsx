@@ -2,6 +2,7 @@ import { BookOpenCheck, ExternalLink, GraduationCap, Layers3, Satellite, Waypoin
 import AppLink from '@/components/AppLink';
 import MarkdownBlocks from '@/components/MarkdownBlocks';
 import PageIntro from '@/components/PageIntro';
+import Reveal from '@/components/Reveal';
 import sourcesText from '@/data/sources.md?raw';
 import { parseMarkdown, toPlainText, type Block } from '@/lib/markdown';
 
@@ -203,26 +204,28 @@ export default function SourcesPage() {
 
         <div className="mt-8 grid gap-5 lg:grid-cols-2">
           {resourceGroups.map((group, index) => (
-            <article key={group.title} className="surface-card p-5 sm:p-6">
-              <div className="flex items-start gap-3">
-                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 ${resourceIconTones[index]}`}><group.icon className="h-5 w-5" aria-hidden="true" /></span>
-                <div>
-                  <h3>{group.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted">{group.intro}</p>
+            <Reveal key={group.title} delayMs={index * 70} className="h-full">
+              <article className="surface-card h-full p-5 sm:p-6">
+                <div className="flex items-start gap-3">
+                  <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 ${resourceIconTones[index]}`}><group.icon className="h-5 w-5" aria-hidden="true" /></span>
+                  <div>
+                    <h3>{group.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted">{group.intro}</p>
+                  </div>
                 </div>
-              </div>
-              <ul className="mt-5 divide-y divide-navy/10">
-                {group.resources.map((resource) => (
-                  <li key={resource.title} className="py-4 first:pt-0 last:pb-0">
-                    <a href={resource.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-radar underline decoration-teal/30 underline-offset-4 hover:text-radar">
-                      {resource.title}<ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
-                    </a>
-                    <p className="mt-1.5 text-sm leading-relaxed text-muted">{resource.text}</p>
-                    <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-subtle">{resource.status}</p>
-                  </li>
-                ))}
-              </ul>
-            </article>
+                <ul className="mt-5 divide-y divide-navy/10">
+                  {group.resources.map((resource) => (
+                    <li key={resource.title} className="py-4 first:pt-0 last:pb-0">
+                      <a href={resource.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-radar underline decoration-teal/30 underline-offset-4 hover:text-radar">
+                        {resource.title}<ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                      <p className="mt-1.5 text-sm leading-relaxed text-muted">{resource.text}</p>
+                      <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-subtle">{resource.status}</p>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -239,23 +242,25 @@ export default function SourcesPage() {
         <ol className="mt-6 grid gap-4 lg:grid-cols-3">
           {evidenceWorkflow.map((step) => (
             <li key={step.step} className="list-none">
-              <article className="surface-card h-full p-5 sm:p-6">
-                <div className="flex items-center justify-between gap-3">
-                  <span className={`grid h-11 w-11 place-items-center rounded-xl border border-white/10 ${step.tone}`}>
-                    <step.icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-subtle">{step.step}</span>
-                </div>
-                <h3 className="mt-5">{step.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{step.text}</p>
-                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4">
-                  {step.links.map((link) => (
-                    <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline decoration-radar/30 underline-offset-4 hover:text-white">
-                      {link.label}<ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
-                    </a>
-                  ))}
-                </div>
-              </article>
+              <Reveal className="h-full">
+                <article className="surface-card h-full p-5 sm:p-6">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className={`grid h-11 w-11 place-items-center rounded-xl border border-white/10 ${step.tone}`}>
+                      <step.icon className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-subtle">{step.step}</span>
+                  </div>
+                  <h3 className="mt-5">{step.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">{step.text}</p>
+                  <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4">
+                    {step.links.map((link) => (
+                      <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline decoration-radar/30 underline-offset-4 hover:text-white">
+                        {link.label}<ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    ))}
+                  </div>
+                </article>
+              </Reveal>
             </li>
           ))}
         </ol>
