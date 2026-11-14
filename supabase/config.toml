@@ -3,3 +3,6 @@ verify_jwt = true
 
 [functions.evidence-assistant]
 verify_jwt = true
+
+[functions.independent-evidence]
+verify_jwt = true

@@ -1,6 +1,8 @@
 import { Activity, ArrowRight, CloudRain, Droplets, ExternalLink, Flame, Layers3, Leaf, Mountain, Satellite, ScanLine, Tractor, Trees, Waves } from 'lucide-react';
 import AppLink from '@/components/AppLink';
 import Card from '@/components/Card';
+import NasaPowerContext from '@/components/NasaPowerContext';
+import IndependentEvidence from '@/components/IndependentEvidence';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
 
@@ -56,6 +58,7 @@ const datasets = [
     tone: 'bg-radar/10 text-radar',
     meta: 'L-band backscatter · GCOV',
     title: 'NISAR GCOV',
+    integration: 'ASF catalog + browse previews',
     description: 'Geocoded, radiometrically terrain-corrected backscatter measurements for the available polarization channels. Use the product data and metadata for analysis; browse PNGs are quicklooks.',
     href: 'https://nisar-docs.asf.alaska.edu/gcov/',
     linkLabel: 'Product guide and access',
@@ -65,6 +68,7 @@ const datasets = [
     tone: 'bg-ember/10 text-ember',
     meta: 'VIIRS / MODIS · near real time',
     title: 'NASA FIRMS active-fire detections',
+    integration: 'Archive snapshot + live feed',
     description: 'VIIRS and MODIS thermal-anomaly detections for time-and-location context. A detection is not a fire perimeter or burned-area measurement; NASA advises using standard science-quality data for scientific analysis.',
     href: 'https://firms.modaps.eosdis.nasa.gov/active_fire/',
     linkLabel: 'Dataset details and downloads',
@@ -74,6 +78,7 @@ const datasets = [
     tone: 'bg-date/10 text-date',
     meta: '500 m · monthly burn date',
     title: 'MODIS MCD64A1 burned area',
+    integration: 'Separate monthly map in Fire Story',
     description: 'A monthly global burned-area product with burn-date and quality layers at 500 m. Its spatial scale and quality flags should be considered when checking a smaller study footprint.',
     href: 'https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/MCD64A1/',
     linkLabel: 'NASA product page',
@@ -82,6 +87,7 @@ const datasets = [
     icon: Layers3,
     tone: 'bg-analysis/10 text-analysis',
     title: 'OPERA DIST-ALERT-HLS',
+    integration: 'Reference only',
     meta: '30 m · optical disturbance alerts',
     description: 'NASA’s land-surface disturbance alert product uses Harmonized Landsat and Sentinel-2 observations. It can provide independent optical disturbance context, but a disturbance alert alone does not identify fire as the cause.',
     href: 'https://www.earthdata.nasa.gov/data/catalog/lpcloud-opera-l3-dist-alert-hls-v1-1',
@@ -92,6 +98,7 @@ const datasets = [
     tone: 'bg-eco/10 text-eco',
     meta: '1 km grid · observations from 2019–2021',
     title: 'GEDI L4B biomass density',
+    integration: 'Reference only',
     description: 'ISS lidar-based estimates of mean above-ground biomass density with uncertainty layers. This is broad ecosystem context and is too coarse to confirm recent changes in a small forest patch.',
     href: 'https://data.nasa.gov/dataset/gedi-l4b-gridded-aboveground-biomass-density-version-2',
     linkLabel: 'NASA dataset details',
@@ -99,9 +106,10 @@ const datasets = [
   {
     icon: Droplets,
     tone: 'bg-radar/10 text-radar',
-    meta: '9 km · 3-hourly global fields',
+    meta: '~9 km native · daily values via NASA POWER',
     title: 'SMAP L4 soil moisture',
-    description: 'Surface and root-zone soil-moisture fields for regional timing context. Its grid is much larger than individual fields or the project’s radar footprint.',
+    integration: 'Daily context on Drivers',
+    description: 'This app requests daily surface and root-zone moisture through NASA POWER. The underlying SMAP L4 product is native ~9 km; the values provide regional timing context, not field-scale readings.',
     href: 'https://nsidc.org/data/spl4smgp/versions/8',
     linkLabel: 'NASA data product',
   },
@@ -110,6 +118,7 @@ const datasets = [
     tone: 'bg-radar/10 text-radar',
     meta: '30 m · surface-water classes',
     title: 'OPERA DSWx-HLS water extent',
+    integration: 'Reference only',
     description: 'Maps open and partial surface water using Harmonized Landsat and Sentinel-2 optical inputs. It complements radar flood analysis, but it is not a NISAR layer.',
     href: 'https://podaac.jpl.nasa.gov/dataset/OPERA_L3_DSWX-HLS_V1',
     linkLabel: 'NASA PO.DAAC product page',
@@ -119,6 +128,7 @@ const datasets = [
     tone: 'bg-analysis/10 text-analysis',
     meta: '1 arc-second · about 30 m elevation',
     title: 'NASA SRTM elevation',
+    integration: 'Reference only',
     description: 'Global elevation data can provide terrain context and support slope calculations. Slope is a derived layer that this project has not computed.',
     href: 'https://search.earthdata.nasa.gov/search?q=SRTMGL1',
     linkLabel: 'Find SRTM in Earthdata Search',
@@ -162,6 +172,10 @@ export default function FutureApplicationsPage() {
         </div>
       </section>
 
+      <NasaPowerContext compact />
+
+      <IndependentEvidence />
+
       <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 md:pb-20" aria-labelledby="examples-heading">
         <div className="surface-card flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-7">
           <div className="max-w-3xl">
@@ -181,14 +195,14 @@ export default function FutureApplicationsPage() {
           <p className="eyebrow">NASA data products / Ecosystems, water and hazards</p>
           <h2 id="data-heading" className="mt-3 max-w-3xl">Bring the right evidence to each application.</h2>
           <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
-            Browse the actual NASA products that could support follow-up work. Their scales and input sensors differ; this project has not downloaded or analyzed them, so the metadata below are product facts rather than findings for the study footprint.
+            These NASA products now have clearly labeled roles in the app: ASF/NISAR browse metadata, FIRMS detections, SMAP moisture context, and a separate MCD64A1 monthly map. The remaining products are research references only. Product context is not a measured NISAR change result.
           </p>
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {datasets.map((dataset) => (
               <Card key={dataset.title} className="h-full !p-5">
                 <div className="flex items-center justify-between gap-3">
                   <span className={`grid h-10 w-10 place-items-center rounded-xl border border-white/10 ${dataset.tone}`}><dataset.icon className="h-5 w-5" aria-hidden="true" /></span>
-                  <span className="eyebrow !text-[10px] !text-subtle">NASA DATA</span>
+                  <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[.08em] ${dataset.integration === 'Reference only' ? 'border-white/10 bg-white/[.03] text-subtle' : 'border-radar/20 bg-radar/10 text-radar'}`}>{dataset.integration}</span>
                 </div>
                 <p className="mt-4 text-[11px] font-semibold uppercase tracking-[.12em] text-ember">{dataset.meta}</p>
                 <h3 className="mt-2">{dataset.title}</h3>

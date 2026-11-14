@@ -1,5 +1,7 @@
 import { Activity, BookOpen, Droplets, ExternalLink, Flame, ScanLine, Trees } from 'lucide-react';
 import Card from '@/components/Card';
+import NasaPowerContext from '@/components/NasaPowerContext';
+import NasaSmapContext from '@/components/NasaSmapContext';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
 
@@ -25,8 +27,8 @@ const drivers = [
       'Soil moisture, water on leaves, and standing water beneath vegetation can alter backscatter. Rainfall, irrigation, seasonal flooding, and plant water content can therefore create contrast without a lasting land-cover change.',
     evidence:
       'Check rainfall, soil-moisture or water-level records and acquisition timing. A repeated time series helps distinguish short-lived wetness from persistent structural change.',
-    dataset: 'SMAP L4 · 9 km / 3-hourly',
-    datasetNote: 'Surface and root-zone soil moisture for regional context, not a field-scale measurement.',
+    dataset: 'SMAP L4 · ~9 km native / daily in POWER',
+    datasetNote: 'Live daily surface and root-zone values appear below. They give regional context, not a field-scale measurement.',
     datasetHref: 'https://nsidc.org/data/spl4smgp/versions/8',
     datasetTone: 'text-radar',
     source: 'NASA SAR Handbook · Environmental effects',
@@ -40,7 +42,7 @@ const drivers = [
     evidence:
       'Use a consistent radar time series with an independently mapped burned-area or disturbance product. Check acquisition dates and validate the interpretation with optical imagery or field evidence.',
     dataset: 'MODIS MCD64A1 · 500 m monthly',
-    datasetNote: 'Burn-date and quality layers can screen for broader burn evidence; they do not identify cause or confirm individual FIRMS detections.',
+    datasetNote: 'The Fire Story now offers a separate monthly NASA layer. It does not identify cause or confirm individual FIRMS detections.',
     datasetHref: 'https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/MCD64A1/',
     datasetTone: 'text-ember',
     source: 'NASA NISAR ecosystem science',
@@ -84,7 +86,7 @@ export default function PhysicalDriversPage() {
                   <p className="mt-2 text-sm leading-relaxed text-muted">{driver.evidence}</p>
                 </div>
                 <div className="mt-4 rounded-xl border border-white/10 bg-white/[.025] p-3">
-                  <p className={`text-[10px] font-bold uppercase tracking-[.15em] ${driver.datasetTone}`}>NASA data to explore</p>
+                  <p className={`text-[10px] font-bold uppercase tracking-[.15em] ${driver.datasetTone}`}>{index === 1 ? 'Live NASA context below' : index === 2 ? 'Separate layer in Fire Story' : 'NASA reference product'}</p>
                   <a href={driver.datasetHref} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-ink underline decoration-white/20 underline-offset-4 hover:text-radar">
                     {driver.dataset}<ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
                   </a>
@@ -98,6 +100,9 @@ export default function PhysicalDriversPage() {
           ))}
         </div>
       </section>
+
+      <NasaPowerContext />
+      <NasaSmapContext />
 
       <section className="bg-raised py-16 md:py-20" aria-labelledby="polarization-heading">
         <div className="mx-auto grid max-w-7xl gap-9 px-5 sm:px-8 md:grid-cols-[0.8fr_1.2fr]">

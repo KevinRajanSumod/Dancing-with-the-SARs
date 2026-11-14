@@ -35,7 +35,7 @@ Get `YOUR_PROJECT_REF` from the project URL: it is the subdomain before `.supaba
 
 ## 4. Add the NASA FIRMS key to Supabase
 
-Request a free [NASA FIRMS MAP_KEY](https://firms.modaps.eosdis.nasa.gov/api/map_key/). In Supabase, open **Project Settings → Edge Functions → Secrets** (or **Edge Functions → Secrets**, depending on the dashboard layout), add:
+Request a free [NASA FIRMS MAP_KEY](https://firms.modaps.eosdis.nasa.gov/api/map_key/). The server-side live detections and the MODIS burned-area WMS use this same key. In Supabase, open **Project Settings → Edge Functions → Secrets** (or **Edge Functions → Secrets**, depending on the dashboard layout), add:
 
 - Name: `FIRMS_MAP_KEY`
 - Value: your NASA-issued MAP_KEY
@@ -69,7 +69,10 @@ Until the secret is set and the function is deployed, the page displays a setup 
 
 - The latest five days of NOAA-21 VIIRS FIRMS detections, filtered to the project footprint.
 - ASF NISAR GCOV metadata and browse quicklooks when available.
+- An on-demand monthly MODIS MCD64A1 burned-area WMS image for the project footprint. It is returned as a separate image and requires the same private `FIRMS_MAP_KEY`.
+- The Drivers page also requests NASA POWER daily SMAP L4 surface (`SFMC`) and root-zone (`RZMC`) moisture directly from the public POWER API. No key or Supabase function is involved for this request.
 - Quicklooks are previews, not calibrated map layers or measurements. The function does not download full GCOV science products, and FIRMS detections do not measure burned area or establish that fire caused a radar contrast.
+- The MODIS burned-area image is independent monthly context. The site does not calculate overlap with NISAR browse pixels or use the layer to infer fire cause.
 - Live requests are cached for ten minutes. Archive mode continues to use the supplied, fixed project snapshot.
 
 ## Common errors

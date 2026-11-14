@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "name": "Dancing with the SARs project footprint",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "source": "Converted from data/raw/kml/before_footprint.kml",
+        "note": "Existing NISAR browse footprint; this boundary is for spatial data selection, not a measured change area."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [76.58633064906468, 21.290446503925544],
+          [79.8633274914315, 21.22767185713987],
+          [79.97111494969664, 24.234507714377845],
+          [76.62164546849948, 24.307224375480946],
+          [76.58633064906468, 21.290446503925544]
+        ]]
+      }
+    }
+  ]
+}

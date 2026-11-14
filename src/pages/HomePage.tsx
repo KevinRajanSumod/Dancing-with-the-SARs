@@ -2,6 +2,7 @@ import { Activity, ArrowDownRight, ArrowRight, Cloud, ExternalLink, Flame, Moon,
 import { useEffect, useState } from 'react';
 import AppLink, { buttonClass } from '@/components/AppLink';
 import Card from '@/components/Card';
+import NasaPowerContext from '@/components/NasaPowerContext';
 import Reveal from '@/components/Reveal';
 import { detections } from '@/data/detections';
 
@@ -246,6 +247,8 @@ export default function HomePage() {
       <SignalRail />
 
       <NisarMissionFacts />
+
+      <NasaPowerContext compact />
 
       <section className="border-b border-line bg-canvas pt-20" aria-labelledby="journey-heading">
         <div className="mx-auto max-w-7xl px-5 pb-12 sm:px-8 md:pb-16">

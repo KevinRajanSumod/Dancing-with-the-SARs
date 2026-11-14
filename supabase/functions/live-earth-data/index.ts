@@ -5,6 +5,7 @@ const corsHeaders = {
 };
 
 const FIRMS_SOURCE_URL = 'https://firms.modaps.eosdis.nasa.gov/api/area';
+const FIRMS_WMS_URL = 'https://firms.modaps.eosdis.nasa.gov/mapserver/wms/burned_area';
 const ASF_SEARCH_URL = 'https://api.daac.asf.alaska.edu/services/search/param';
 const ASF_SOURCE_URL = 'https://search.asf.alaska.edu/';
 
@@ -49,6 +50,54 @@ function jsonResponse(body: unknown, status = 200, cacheSeconds = 600): Response
       'Cache-Control': `public, max-age=${cacheSeconds}`,
     },
   });
+}
+
+async function getModisBurnedArea(month: string): Promise<Response> {
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+    return jsonResponse({ error: 'Choose a month in YYYY-MM format.' }, 400, 0);
+  }
+
+  const mapKey = Deno.env.get('FIRMS_MAP_KEY');
+  if (!mapKey) {
+    return jsonResponse({
+      error: 'The NASA burned-area image is not configured. Add the FIRMS map key as a Supabase Edge Function secret.',
+    }, 503, 0);
+  }
+
+  const params = new URLSearchParams({
+    SERVICE: 'WMS',
+    VERSION: '1.1.1',
+    REQUEST: 'GetMap',
+    SRS: 'EPSG:4326',
+    BBOX: '76.586,21.228,79.971,24.307',
+    WIDTH: '880',
+    HEIGHT: '800',
+    FORMAT: 'image/png',
+    TRANSPARENT: 'true',
+  });
+  const url = `${FIRMS_WMS_URL}/${encodeURIComponent(mapKey)}/modis_burned_area/${month}/128+0+0,128+0+0/?${params.toString()}`;
+
+  try {
+    const upstream = await fetch(url, { signal: AbortSignal.timeout(20000) });
+    const contentType = upstream.headers.get('content-type') ?? '';
+    if (!upstream.ok || !contentType.toLowerCase().includes('image/')) {
+      return jsonResponse({
+        error: `NASA FIRMS could not provide a burned-area image for ${month}. The month may not be published yet, or the WMS key may need checking.`,
+      }, 502, 0);
+    }
+
+    return new Response(upstream.body, {
+      status: 200,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': contentType,
+        'Cache-Control': 'public, max-age=21600',
+        'X-Content-Type-Options': 'nosniff',
+      },
+    });
+  } catch {
+    return jsonResponse({ error: 'NASA FIRMS could not be reached. Try again later.' }, 502, 0);
+  }
 }
 
 function pointInPolygon(lon: number, lat: number): boolean {
@@ -292,6 +341,11 @@ async function getLiveNisar() {
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   if (request.method !== 'GET') return jsonResponse({ error: 'Method not allowed.' }, 405, 0);
+
+  const requestUrl = new URL(request.url);
+  if (requestUrl.searchParams.get('resource') === 'modis-burned-area') {
+    return getModisBurnedArea(requestUrl.searchParams.get('month') ?? '');
+  }
 
   const [firms, nisar] = await Promise.all([getLiveFirms(), getLiveNisar()]);
   return jsonResponse({ fetchedAt: new Date().toISOString(), firms, nisar });

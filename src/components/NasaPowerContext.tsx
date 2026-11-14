@@ -169,7 +169,7 @@ export default function NasaPowerContext({ compact = false }: { compact?: boolea
               <h2 id={compact ? 'power-compact-heading' : 'power-heading'} className="mt-2 text-xl text-white sm:text-2xl">
                 {compact ? 'A NASA weather signal for the same study window.' : 'Daily rainfall around the radar comparison.'}
               </h2>
-              <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">Corrected daily precipitation and mean air temperature near the project area, 30 Sep–5 Nov 2026.</p>
+              <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">Corrected daily precipitation and mean air temperature near the project area, 30 Sep–5 Nov 2026. POWER’s meteorological fields use NASA GMAO MERRA-2 data.</p>
             </div>
           </div>
           {!compact && (
@@ -222,7 +222,8 @@ export default function NasaPowerContext({ compact = false }: { compact?: boolea
                   );
                 })}
               </div>
-              <div className="mt-2 flex justify-between text-[10px] text-subtle"><span>{chartRecords[0] ? displayDate(chartRecords[0].date) : '—'}</span><span>{chartRecords.at(-1) ? displayDate(chartRecords[chartRecords.length - 1].date) : '—'}</span></div>
+              <div className="mt-2 flex justify-between text-[10px] text-subtle"><span>{chartRecords[0] ? displayDate(chartRecords[0].date) : '—'}</span><span>{chartRecords.length ? displayDate(chartRecords[chartRecords.length - 1].date) : '—'}</span></div>
+              {compact && <p className="mt-2 text-[10px] text-subtle">Chart shows the latest 12 days; summary values cover the full study window.</p>}
               {selectedRecord && (
                 <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border border-white/10 bg-white/[.03] px-3 py-2 text-xs text-muted" aria-live="polite">
                   <span className="font-semibold text-ink">{displayDate(selectedRecord.date)}</span>

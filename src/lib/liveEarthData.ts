@@ -68,3 +68,32 @@ export async function fetchLiveEarthData(): Promise<LiveEarthData> {
     pendingRequest = null;
   }
 }
+
+export async function fetchModisBurnedAreaImage(month: string): Promise<Blob> {
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) throw new Error('Choose a valid month.');
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const publicKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !publicKey) {
+    throw new Error('The NASA burned-area service is unavailable in this deployment.');
+  }
+
+  const endpoint = new URL('/functions/v1/live-earth-data', url);
+  endpoint.searchParams.set('resource', 'modis-burned-area');
+  endpoint.searchParams.set('month', month);
+  const response = await fetch(endpoint, {
+    headers: { apikey: publicKey },
+    signal: AbortSignal.timeout(25000),
+  });
+  const contentType = response.headers.get('content-type') ?? '';
+  if (!response.ok || !contentType.toLowerCase().includes('image/')) {
+    let message = 'NASA could not return the burned-area map for this month. It may not be available yet; try an earlier month or open the NASA product page.';
+    try {
+      const payload = await response.json() as { error?: string };
+      if (payload.error === 'Choose a month in YYYY-MM format.') message = payload.error;
+    } catch {
+      // Keep the HTTP message when an upstream proxy returns non-JSON content.
+    }
+    throw new Error(message);
+  }
+  return response.blob();
+}

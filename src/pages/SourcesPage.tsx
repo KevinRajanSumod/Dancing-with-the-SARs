@@ -1,4 +1,4 @@
-import { BookOpenCheck, ExternalLink, GraduationCap, Layers3, Satellite, Waypoints } from 'lucide-react';
+import { BookOpenCheck, CloudRain, Droplets, ExternalLink, Flame, GraduationCap, Layers3, Satellite, Waypoints } from 'lucide-react';
 import AppLink from '@/components/AppLink';
 import MarkdownBlocks from '@/components/MarkdownBlocks';
 import PageIntro from '@/components/PageIntro';
@@ -28,7 +28,7 @@ const resourceGroups = [
         title: 'ASF Vertex',
         href: 'https://search.asf.alaska.edu/',
         text: 'Search NISAR scenes by track and frame, then filter for GCOV and compare acquisition, orbit, polarization, and processing information. Download the science product for analysis; a browse image is only a quicklook.',
-        status: 'Web catalog · ASF search API is already in project code',
+        status: 'Used in Fire Story live mode · scene metadata and quicklooks only',
       },
       {
         title: 'NISAR Data User Guide',
@@ -154,9 +154,9 @@ const evidenceWorkflow = [
   {
     icon: BookOpenCheck,
     step: '03 / Follow-up',
-    title: 'Independent evidence to add',
+    title: 'Separate context and follow-up evidence',
     tone: 'bg-analysis/10 text-analysis',
-    text: 'A defensible change assessment needs compatible calibrated radar products plus independent burned-area or disturbance data and field evidence. This project has not processed those validation products.',
+    text: 'The Fire Story now offers a separate monthly NASA MODIS MCD64A1 burned-area layer. It is not overlaid on the NISAR browse previews or FIRMS points, and this project does not calculate pixel overlap, quantify radar change, or infer fire cause. Compatible calibrated radar products and independent local evidence are still needed for a change assessment.',
     links: [
       { label: 'MODIS burned area', href: 'https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/MCD64A1/' },
       { label: 'OPERA disturbance alerts', href: 'https://www.earthdata.nasa.gov/data/catalog/lpcloud-opera-l3-dist-alert-hls-v1-1' },
@@ -181,24 +181,32 @@ export default function SourcesPage() {
       <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 md:pb-20" aria-labelledby="resource-library-heading">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="eyebrow">NASA Space Apps resource guide</p>
-            <h2 id="resource-library-heading" className="mt-2">How to use these resources in this project</h2>
+            <p className="eyebrow">Reference library / further learning</p>
+            <h2 id="resource-library-heading" className="mt-2">Catalogs, guides, and examples</h2>
           </div>
-          <p className="max-w-xl text-sm leading-relaxed text-muted">Most links are catalogs, documentation, tutorials, or examples. They do not need to be connected to the website as APIs.</p>
+          <p className="max-w-xl text-sm leading-relaxed text-muted">The links below help you find data or understand methods. They are references for people to use; they are not all connected to this site as data feeds.</p>
         </div>
 
-        <div className="mt-6 rounded-2xl border border-ember/20 bg-ember/5 p-5 sm:p-6">
-          <p className="text-sm font-semibold text-ink">API setup in this project</p>
-          <p className="mt-2 max-w-4xl text-sm leading-relaxed text-muted">
-            The code calls ASF Search and NASA FIRMS through a Supabase Edge Function. Configure this app with your
-            Supabase project URL and publishable key, deploy the <code>live-earth-data</code> function, and add the
-            private <code> FIRMS_MAP_KEY</code> in Supabase Edge Function Secrets. Never put that FIRMS key in browser
-            code. ASF quicklook search does not need it. This project currently uses Supabase for the function and
-            secret runtime; it does not need database tables. Earthdata Search, the NISAR guide, trainings, StoryMaps,
-            white papers, and postcards are links for people to use; they do not require API keys.
-          </p>
-          <AppLink to="/forest-fire-change" className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-radar underline underline-offset-4 hover:text-radar">
-            Open Fire story to check live-feed status <ExternalLink className="h-4 w-4" aria-hidden="true" />
+        <div className="mt-6 rounded-2xl border border-radar/20 bg-raised/80 p-5 sm:p-6">
+          <p className="eyebrow">Implemented data connections</p>
+          <h3 className="mt-2 text-xl">What this website actually fetches and displays</h3>
+          <p className="mt-2 max-w-4xl text-sm leading-relaxed text-muted">These are implemented data connections. Live services can occasionally be unavailable; archive images and records remain clearly identified as supplied snapshots.</p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {[
+              { icon: Satellite, title: 'ASF Search · NISAR', text: 'Fire Story live mode requests NISAR GCOV catalog metadata and displays ASF quicklooks when the catalog provides them. It does not download or analyze full science rasters.' },
+              { icon: Flame, title: 'NASA FIRMS · active-fire detections', text: 'Fire Story live mode requests the latest five-day NOAA-21 VIIRS records. The archive view uses its supplied historical snapshot; thermal detections are not burned area.' },
+              { icon: CloudRain, title: 'NASA POWER · weather context', text: 'Daily precipitation and air-temperature context is fetched for Home, Drivers, and Applications for the study window.' },
+              { icon: Droplets, title: 'NASA POWER · SMAP L4 moisture', text: 'Drivers fetches daily SMAP L4 surface and root-zone moisture through POWER’s Hydrology endpoint for a nearby regional grid point.' },
+              { icon: Layers3, title: 'NASA MODIS MCD64A1 · burned area', text: 'Fire Story can request a monthly 500 m burned-area map through a protected server connection. It appears as a separate image, never painted over NISAR or FIRMS.' },
+              { icon: BookOpenCheck, title: 'Supplied archive materials', text: 'The two NISAR browse previews and the 30 Sep–5 Nov FIRMS record are supplied project materials. Their visual contrast has not been quantified as a change result.' },
+            ].map((item) => (
+              <article key={item.title} className="rounded-xl border border-line bg-canvas/65 p-4">
+                <div className="flex items-start gap-3"><span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-radar/20 bg-radar/10 text-radar"><item.icon className="h-4 w-4" aria-hidden="true" /></span><div><h4 className="text-sm font-semibold text-ink">{item.title}</h4><p className="mt-1 text-xs leading-relaxed text-muted">{item.text}</p></div></div>
+              </article>
+            ))}
+          </div>
+          <AppLink to="/forest-fire-change" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-radar underline underline-offset-4 hover:text-radar">
+            Open Fire Story <ExternalLink className="h-4 w-4" aria-hidden="true" />
           </AppLink>
         </div>
 

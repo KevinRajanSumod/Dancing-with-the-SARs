@@ -9,6 +9,7 @@ import BeforeAfterSlider from '@/components/map/BeforeAfterSlider';
 import DensityHeatLayer from '@/components/map/DensityHeatLayer';
 import DetectionMarkers from '@/components/map/DetectionMarkers';
 import MapLegend from '@/components/map/MapLegend';
+import ModisBurnedAreaPanel from '@/components/ModisBurnedAreaPanel';
 import { confidenceCounts, detections, detectionsByDate, isNominal, NOMINAL_DETECTION_DATE } from '@/data/detections';
 import LiveEarthDataStory from '@/pages/LiveEarthDataStory';
 
@@ -40,6 +41,7 @@ export default function ForestFireChangePage() {
   const [mode, setMode] = useState<'archive' | 'live'>('archive');
   const [showDensity, setShowDensity] = useState(false);
   const [showDayDetections, setShowDayDetections] = useState(true);
+  const [showModisBurnDate, setShowModisBurnDate] = useState(false);
   const [selectedDate, setSelectedDate] = useState(NOMINAL_DETECTION_DATE);
   const selectedIndex = Math.max(0, timelineDates.indexOf(selectedDate));
   const selectedDetections = detectionsByDate.get(selectedDate) ?? [];
@@ -101,6 +103,9 @@ export default function ForestFireChangePage() {
               </ToggleSwitch>
               <ToggleSwitch checked={showDensity} onChange={setShowDensity}>
                 Show density for all {detections.length.toLocaleString('en-US')} detections, 30 Sep–5 Nov
+              </ToggleSwitch>
+              <ToggleSwitch checked={showModisBurnDate} onChange={setShowModisBurnDate}>
+                Show MODIS MCD64A1 burn-date pixels · Sep 2026 (500 m)
               </ToggleSwitch>
             </div>
           </div>
@@ -190,6 +195,7 @@ export default function ForestFireChangePage() {
           >
             {showDensity && <DensityHeatLayer detections={detections} />}
             {showDayDetections && <DetectionMarkers detections={selectedDetections} />}
+            {showModisBurnDate && <img src="/data/modis/mcd64a1-2026-09-overlay.png" alt="MODIS MCD64A1 September 2026 burned pixels, derived from the supplied NASA burn-date raster" className="pointer-events-none absolute inset-0 z-[5] h-full w-full object-fill" />}
           </BeforeAfterSlider>
           {showDayDetections && selectedDetections.length === 0 && (
             <p role="status" className="mt-3 rounded-lg bg-canvas px-3 py-2 text-xs leading-relaxed text-muted">
@@ -197,6 +203,7 @@ export default function ForestFireChangePage() {
             </p>
           )}
           <div className="mt-3"><MapLegend /></div>
+          <p className="mt-3 rounded-lg border border-ember/20 bg-ember/5 px-3 py-2 text-xs leading-relaxed text-muted">MODIS MCD64A1 recorded 32 burn-date pixels in this footprint for September 2026; all 32 pass the product QA land and valid-data bits. Burn dates fall on 21–30 September. This 500 m monthly product is separate evidence and does not establish that fire caused the NISAR preview contrast.</p>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-line px-1 pt-4 text-xs text-subtle sm:px-2">
             <SnapshotBadge />
             <span>Images: NASA-ISRO NISAR GCOV browse previews via ASF Vertex · FIRMS: NOAA-21 VIIRS</span>
@@ -204,6 +211,8 @@ export default function ForestFireChangePage() {
         </div>
         </Reveal>
       </section>
+
+      <ModisBurnedAreaPanel />
 
       <section className="mx-auto max-w-7xl px-5 pb-8 sm:px-8 md:pb-12" aria-labelledby="story-heading">
         <div className="max-w-2xl">
@@ -238,7 +247,7 @@ export default function ForestFireChangePage() {
           <div>
             <h2 className="text-xl">Read the comparison with care</h2>
             <p className="mt-3 max-w-4xl text-sm leading-relaxed text-muted md:text-base">
-              These are browse previews, not calibrated measurements or a change-detection product. The two supplied NISAR scenes also differ in their product polarization setup and processing version. The visual differences have not been quantified, and this project has not checked a burned-area product or field evidence. FIRMS points show satellite heat detections; they do not prove a fire occurred at every point, measure burned area, or establish that fire caused a radar change.
+              These are browse previews, not calibrated measurements or a change-detection product. The two supplied NISAR scenes also differ in their product polarization setup and processing version. The visual differences have not been quantified. The independent MCD64A1 panel above provides monthly burned-area context, but it is not matched to the browse previews. FIRMS points show satellite heat detections; they do not prove a fire occurred at every point, measure burned area, or establish that fire caused a radar change.
             </p>
             <a href="https://nisar-docs.asf.alaska.edu/" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-radar hover:text-radar">
               Read the NISAR Data User Guide <ArrowRight className="h-4 w-4" aria-hidden="true" />
