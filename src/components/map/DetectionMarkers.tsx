@@ -68,7 +68,7 @@ export default function DetectionMarkers({ detections }: DetectionMarkersProps) 
               type="button"
               aria-label="Close detection details"
               onClick={() => setSelectedIndex(null)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-ink hover:bg-navy-100"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-ink hover:bg-radar/10"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>

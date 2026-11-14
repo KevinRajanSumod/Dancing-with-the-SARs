@@ -126,7 +126,7 @@ const resourceGroups = [
   },
 ];
 
-const resourceIconTones = ['bg-radar/10 text-radar', 'bg-analysis/10 text-analysis', 'bg-eco/10 text-eco'];
+const resourceIconTones = ['bg-radar/10 text-radar', 'bg-analysis/10 text-analysis', 'bg-eco/10 text-eco', 'bg-date/10 text-date'];
 
 export default function SourcesPage() {
   return (

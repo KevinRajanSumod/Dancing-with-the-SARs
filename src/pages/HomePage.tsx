@@ -122,7 +122,7 @@ function ProjectBrief() {
       </div>
 
       <p className="mt-3 text-[11px] leading-relaxed text-subtle">Project radar data shown here. Contrast is qualitative; the FIRMS records are separate observations.</p>
-      <AppLink to="/forest-fire-change" className="mt-4 flex min-h-11 items-center justify-between rounded-xl bg-radar px-4 text-sm font-semibold text-ink transition-colors hover:bg-cyan-200">
+      <AppLink to="/forest-fire-change" className="mt-4 flex min-h-11 items-center justify-between rounded-xl bg-radar px-4 text-sm font-semibold text-navy transition-colors hover:bg-radar-200">
         Open the data story <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </AppLink>
     </aside>

@@ -36,6 +36,7 @@ type RadarScene = {
   browseUrl: string;
   sourceUrl: string;
   collection: string;
+  processingVersion: string;
   comparisonKey: string;
 };
 
@@ -196,6 +197,7 @@ function parseRadarScene(value: unknown): RadarScene | null {
   const browseUrl = readBrowse(properties.browse ?? properties.browseURL ?? properties.browseUrl ?? item.browse);
   const sourceUrl = firstText(properties.url, properties.productUrl, item.url) || ASF_SOURCE_URL;
   const collection = firstText(properties.collectionName, properties.shortName, properties.collection, item.collection);
+  const processingVersion = parts[13] ?? 'Not encoded';
   const comparisonKey = [track, direction, frame, polarization, frequency, collection].join(':');
   return {
     sceneName,
@@ -208,6 +210,7 @@ function parseRadarScene(value: unknown): RadarScene | null {
     browseUrl: /^https:\/\//i.test(browseUrl) ? browseUrl : '',
     sourceUrl,
     collection,
+    processingVersion,
     comparisonKey,
   };
 }

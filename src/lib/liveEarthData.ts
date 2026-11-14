@@ -12,6 +12,7 @@ export interface LiveRadarScene {
   browseUrl: string;
   sourceUrl: string;
   collection: string;
+  processingVersion: string;
   comparisonKey: string;
 }
 
