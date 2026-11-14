@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background: #f6f5f1;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      font-size: 18px;
+    }
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-semibold tracking-tight text-navy;
+    line-height: 1.2;
+  }
+
+  h1 {
+    @apply text-4xl md:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  :focus-visible {
+    outline: 3px solid #16899b;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lift {
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(7, 24, 40, 0.12);
+  }
+
+  .surface-card {
+    @apply rounded-2xl border border-navy/10 bg-paper shadow-card;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.2em] text-teal;
+  }
+
+  .radar-grain {
+    background-image: radial-gradient(rgba(103, 216, 232, 0.18) 0.8px, transparent 0.8px);
+    background-size: 13px 13px;
+  }
+}
+
+@keyframes radar-flow {
+  to { stroke-dashoffset: -60; }
+}
+
+@keyframes radar-ripple {
+  0% { transform: scale(.8); opacity: .75; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+.radar-beam {
+  animation: radar-flow 2.3s linear infinite;
+}
+
+.radar-echo {
+  animation: radar-flow 2.3s linear infinite reverse;
+}
+
+.radar-ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: radar-ripple 2.3s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lift:hover {
+    transform: none;
+  }
+
+  .radar-beam,
+  .radar-echo,
+  .radar-ripple {
+    animation: none !important;
+  }
+}
