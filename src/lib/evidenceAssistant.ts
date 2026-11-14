@@ -59,6 +59,6 @@ export async function askProjectEvidence(topic: EvidenceTopic, question: string)
     citations: Array.isArray(data.citations)
       ? data.citations.filter((citation) => citation && typeof citation.title === 'string' && typeof citation.url === 'string' && citation.url.startsWith('https://'))
       : [],
-    model: typeof data.model === 'string' ? data.model : 'Gemini',
+    model: typeof data.model === 'string' ? data.model : 'EchoGuide',
   };
 }

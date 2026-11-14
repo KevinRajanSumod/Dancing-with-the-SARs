@@ -46,15 +46,17 @@ Save it. Do not put this value in `.env.local`, `VITE_` variables, frontend code
 
 Start or reload the frontend, open **Fire story → Live · latest feeds**, then select **Refresh feeds**. ASF catalog search and browse previews are public and do not need a key. FIRMS needs `FIRMS_MAP_KEY`. In the Supabase Dashboard, inspect **Edge Functions → live-earth-data → Logs** if the request fails.
 
-## 6. Enable the Gemini research assistant
+## 6. Enable EchoGuide (Gemini research assistant)
 
-The **Drivers** and **Applications** pages include an opt-in Gemini assistant. It uses Google Search grounding to answer a submitted question and return source links. It sends the question and fixed project notes to Gemini; it does not upload or analyze the NISAR browse images. The assistant supports research and interpretation, not change detection.
+The **Drivers** and **Applications** pages include **EchoGuide**, an opt-in research assistant powered by Gemini and Google Search grounding. It answers a submitted question and returns source links. It sends the question and fixed project notes to Gemini; it does not upload or analyze the NISAR browse images. The assistant supports research and interpretation, not change detection.
 
 1. Create a Gemini API key in [Google AI Studio](https://aistudio.google.com/app/apikey). Review the current Gemini API pricing and set any available usage limits for your project.
 2. In the Supabase Dashboard, open **Project Settings → Edge Functions → Secrets** (or **Edge Functions → Secrets**) and add `GEMINI_API_KEY` with the key value. Keep it out of `.env.local`, every `VITE_` variable, frontend code, and Git.
-3. Deploy the function from this project folder:
+3. Sign in to Supabase CLI if needed, link this folder to the project, then deploy from this project folder:
 
    ```powershell
+   npx supabase login
+   npx supabase link --project-ref YOUR_PROJECT_REF
    supabase functions deploy evidence-assistant
    ```
 

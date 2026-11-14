@@ -2,7 +2,6 @@ import { Activity, ArrowRight, CloudRain, Droplets, ExternalLink, Flame, Layers3
 import AppLink from '@/components/AppLink';
 import Card from '@/components/Card';
 import PageIntro from '@/components/PageIntro';
-import ProjectEvidenceAssistant from '@/components/ProjectEvidenceAssistant';
 import Reveal from '@/components/Reveal';
 
 const applications = [
@@ -162,8 +161,6 @@ export default function FutureApplicationsPage() {
           ))}
         </div>
       </section>
-
-      <ProjectEvidenceAssistant topic="applications" />
 
       <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 md:pb-20" aria-labelledby="examples-heading">
         <div className="surface-card flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-7">

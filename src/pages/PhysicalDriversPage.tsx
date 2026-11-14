@@ -1,7 +1,6 @@
 import { Activity, BookOpen, Droplets, ExternalLink, Flame, ScanLine, Trees } from 'lucide-react';
 import Card from '@/components/Card';
 import PageIntro from '@/components/PageIntro';
-import ProjectEvidenceAssistant from '@/components/ProjectEvidenceAssistant';
 import Reveal from '@/components/Reveal';
 
 const drivers = [
@@ -99,8 +98,6 @@ export default function PhysicalDriversPage() {
           ))}
         </div>
       </section>
-
-      <ProjectEvidenceAssistant topic="drivers" />
 
       <section className="bg-raised py-16 md:py-20" aria-labelledby="polarization-heading">
         <div className="mx-auto grid max-w-7xl gap-9 px-5 sm:px-8 md:grid-cols-[0.8fr_1.2fr]">

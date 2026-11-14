@@ -85,12 +85,21 @@ Deno.serve(async (request: Request) => {
 
     if (!response.ok) {
       if (response.status === 429) {
-        return jsonResponse({ error: 'The Gemini request limit was reached. Wait a moment and try again.' }, 429);
+        return jsonResponse({ error: 'EchoGuide reached the Gemini request limit. Wait a moment and try again.' }, 429);
       }
       if (response.status === 401 || response.status === 403) {
-        return jsonResponse({ error: 'Gemini rejected the server key. Check GEMINI_API_KEY in Supabase Secrets.' }, 502);
+        return jsonResponse({ error: 'Google rejected the EchoGuide server key. Check GEMINI_API_KEY in Supabase Edge Function Secrets.' }, 502);
       }
-      return jsonResponse({ error: `Gemini could not complete this request (HTTP ${response.status}).` }, 502);
+      const upstreamError = await response.text();
+      let detail = '';
+      try {
+        const parsed = asRecord(JSON.parse(upstreamError));
+        const error = asRecord(parsed.error);
+        if (typeof error.message === 'string') detail = error.message.slice(0, 400);
+      } catch {
+        detail = upstreamError.slice(0, 400);
+      }
+      return jsonResponse({ error: `EchoGuide request failed (Google HTTP ${response.status})${detail ? `: ${detail}` : '.'}` }, 502);
     }
 
     const interaction = asRecord(await response.json());
@@ -126,9 +135,9 @@ Deno.serve(async (request: Request) => {
     }
 
     const answer = textBlocks.join('\n\n');
-    if (!answer) return jsonResponse({ error: 'Gemini returned no answer. Try rephrasing the question.' }, 502);
-    return jsonResponse({ answer, citations, model: MODEL });
+    if (!answer) return jsonResponse({ error: 'EchoGuide received no answer. Try rephrasing the question.' }, 502);
+    return jsonResponse({ answer, citations, model: 'EchoGuide' });
   } catch {
-    return jsonResponse({ error: 'The evidence assistant could not reach Gemini. Try again shortly.' }, 502);
+    return jsonResponse({ error: 'EchoGuide could not reach its research service. Try again shortly.' }, 502);
   }
 });

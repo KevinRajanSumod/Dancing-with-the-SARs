@@ -43,16 +43,16 @@ export default function ProjectEvidenceAssistant({ topic }: ProjectEvidenceAssis
   }
 
   return (
-    <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 md:py-16" aria-labelledby={titleId}>
+    <section className="px-4 py-4" aria-labelledby={titleId}>
       <div className="overflow-hidden rounded-2xl border border-analysis/40 bg-paper shadow-card">
         <div className="border-b border-line bg-raised/75 px-5 py-5 sm:px-7 sm:py-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="eyebrow flex items-center gap-2"><Sparkles className="h-4 w-4 text-analysis" aria-hidden="true" /> Gemini research assistant</p>
+            <p className="eyebrow flex items-center gap-2"><Sparkles className="h-4 w-4 text-analysis" aria-hidden="true" /> EchoGuide · SAR research assistant</p>
             <span className="inline-flex items-center gap-2 rounded-full border border-line bg-canvas/70 px-3 py-1.5 text-xs font-medium text-muted">
               <Search className="h-3.5 w-3.5 text-radar" aria-hidden="true" /> Google Search citations
             </span>
           </div>
-          <h2 id={titleId} className="mt-3 text-2xl sm:text-3xl">Ask a follow-up question.</h2>
+          <h2 id={titleId} className="mt-3 text-2xl">Ask a follow-up question.</h2>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
             Get a source-linked explanation of SAR methods and published applications. Answers use project notes as context; they do not analyze the browse images or create new measurements.
           </p>
@@ -91,11 +91,11 @@ export default function ProjectEvidenceAssistant({ topic }: ProjectEvidenceAssis
                 className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-radar px-5 py-3 text-sm font-bold text-canvas transition hover:bg-radar-200 disabled:cursor-not-allowed disabled:opacity-50 sm:min-w-36"
               >
                 {loading ? <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Send className="h-4 w-4" aria-hidden="true" />}
-                {loading ? 'Searching…' : 'Ask Gemini'}
+                {loading ? 'Searching…' : 'Ask EchoGuide'}
               </button>
             </div>
             <div className="flex flex-col justify-between gap-1 text-xs leading-relaxed text-subtle sm:flex-row">
-              <p id={`${inputId}-note`}>Your question is sent to Gemini when you submit. Search-grounded requests may use API quota or incur charges.</p>
+              <p id={`${inputId}-note`}>EchoGuide uses Gemini and Google Search when you submit. Search-grounded requests may use API quota or incur charges.</p>
               <p id={`${inputId}-count`} className="shrink-0">{question.length}/1,000</p>
             </div>
           </form>
@@ -112,7 +112,7 @@ export default function ProjectEvidenceAssistant({ topic }: ProjectEvidenceAssis
           {result && (
             <div className="mt-6 rounded-xl border border-line bg-canvas/65 p-4 sm:p-5" aria-live="polite">
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-analysis">
-                <Sparkles className="h-4 w-4" aria-hidden="true" /> Answer · {result.model}
+                <Sparkles className="h-4 w-4" aria-hidden="true" /> EchoGuide answer
               </div>
               <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-ink">{result.answer}</p>
               {result.citations.length > 0 && (
