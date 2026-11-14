@@ -40,7 +40,7 @@ function latestCompatiblePair(scenes: LiveRadarScene[]): [LiveRadarScene, LiveRa
 function ScenePreview({ scene }: { scene: LiveRadarScene }) {
   const [failed, setFailed] = useState(false);
   return failed ? (
-    <div role="status" className="grid aspect-[1.7] place-items-center rounded-xl bg-navy px-6 text-center text-sm text-white/70">
+    <div role="status" className="grid aspect-[1.7] place-items-center rounded-xl bg-navy px-6 text-center text-sm text-muted">
       The ASF browse preview could not be loaded. Open the scene catalog to inspect the product metadata.
     </div>
   ) : (
@@ -104,7 +104,7 @@ export default function LiveEarthDataStory() {
           <div>
             <p className="eyebrow text-radar">Live feeds · fetched on request</p>
             <h2 id="live-data-heading" className="mt-2 text-2xl text-white sm:text-3xl">The latest view of this NISAR frame</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-white/70">ASF catalog quicklooks and NASA FIRMS detections are fetched independently. Live heat detections are shown in a dated list, not painted over the radar preview.</p>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">ASF catalog quicklooks and NASA FIRMS detections are fetched independently. Live heat detections are shown in a dated list, not painted over the radar preview.</p>
           </div>
         </div>
         <button
@@ -119,14 +119,14 @@ export default function LiveEarthDataStory() {
       </div>
 
       {error && (
-        <p role="alert" className="mt-4 rounded-xl border border-ember/25 bg-ember/5 p-4 text-sm leading-relaxed text-ink/80">
+        <p role="alert" className="mt-4 rounded-xl border border-ember/25 bg-ember/5 p-4 text-sm leading-relaxed text-muted">
           {error}
         </p>
       )}
 
       {!data && loading && (
-        <div role="status" className="mt-6 surface-card flex items-center gap-3 p-6 text-sm text-ink/70">
-          <Loader2 className="h-5 w-5 animate-spin text-teal" aria-hidden="true" /> Connecting to the Bolt data function…
+        <div role="status" className="mt-6 surface-card flex items-center gap-3 p-6 text-sm text-muted">
+          <Loader2 className="h-5 w-5 animate-spin text-radar" aria-hidden="true" /> Connecting to the Bolt data function…
         </div>
       )}
 
@@ -135,26 +135,26 @@ export default function LiveEarthDataStory() {
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             <Card>
               <div className="flex items-start gap-3">
-                <Satellite className="mt-1 h-5 w-5 shrink-0 text-teal" aria-hidden="true" />
+                <Satellite className="mt-1 h-5 w-5 shrink-0 text-radar" aria-hidden="true" />
                 <div>
                   <p className="eyebrow">NISAR · GCOV</p>
-                  <p className="mt-2 text-3xl font-semibold tabular-nums text-navy">{data.nisar.scenes.length}</p>
-                  <p className="mt-1 text-sm text-ink/70">catalog scenes intersect this project footprint</p>
+                  <p className="mt-2 text-3xl font-semibold tabular-nums text-ink">{data.nisar.scenes.length}</p>
+                  <p className="mt-1 text-sm text-muted">catalog scenes intersect this project footprint</p>
                 </div>
               </div>
-              {data.nisar.message && <p role="status" className="mt-4 text-xs leading-relaxed text-ink/60">{data.nisar.message}</p>}
+              {data.nisar.message && <p role="status" className="mt-4 text-xs leading-relaxed text-subtle">{data.nisar.message}</p>}
             </Card>
             <Card>
               <div className="flex items-start gap-3">
                 <Flame className="mt-1 h-5 w-5 shrink-0 text-ember" aria-hidden="true" />
                 <div>
                   <p className="eyebrow">NASA FIRMS · VIIRS NOAA-21</p>
-                  <p className="mt-2 text-3xl font-semibold tabular-nums text-navy">{data.firms.records.length.toLocaleString('en-US')}</p>
-                  <p className="mt-1 text-sm text-ink/70">heat-detection records returned for the latest five-day query</p>
+                  <p className="mt-2 text-3xl font-semibold tabular-nums text-ink">{data.firms.records.length.toLocaleString('en-US')}</p>
+                  <p className="mt-1 text-sm text-muted">heat-detection records returned for the latest five-day query</p>
                 </div>
               </div>
               {data.firms.message && (
-                <p role="status" className={`mt-4 text-xs leading-relaxed ${data.firms.status === 'configuration-required' ? 'text-ember' : 'text-ink/60'}`}>
+                <p role="status" className={`mt-4 text-xs leading-relaxed ${data.firms.status === 'configuration-required' ? 'text-ember' : 'text-subtle'}`}>
                   {data.firms.message}
                 </p>
               )}
@@ -168,14 +168,14 @@ export default function LiveEarthDataStory() {
                   <p className="eyebrow">ASF Search API · remote browse preview</p>
                   <h3 id="live-radar-heading" className="mt-2">Latest compatible scenes</h3>
                 </div>
-                <a href={data.nisar.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-teal hover:bg-teal-50">
+                <a href={data.nisar.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-radar hover:bg-radar/10">
                   Open ASF Search <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               </div>
 
               {pair ? (
                 <>
-                  <p className="mt-3 text-sm text-ink/65">Matched on track, frame, orbit direction, polarization, frequency and collection where ASF provides it; the newest two acquisitions are shown.</p>
+                  <p className="mt-3 text-sm text-muted">Matched on track, frame, orbit direction, polarization, frequency and collection where ASF provides it; the newest two acquisitions are shown.</p>
                   <div className="mt-4">
                     <BeforeAfterSlider
                       beforeSrc={pair[0].browseUrl}
@@ -187,24 +187,24 @@ export default function LiveEarthDataStory() {
                       imageFit="contain"
                     />
                   </div>
-                  <p className="mt-3 break-words text-xs leading-relaxed text-ink/55">{pair[0].sceneName}<br />{pair[1].sceneName}</p>
+                  <p className="mt-3 break-words text-xs leading-relaxed text-subtle">{pair[0].sceneName}<br />{pair[1].sceneName}</p>
                 </>
               ) : latestProjectScene ? (
                 <div className="mt-4">
-                <p className="mb-3 text-sm leading-relaxed text-ink/70">A current descending-orbit browse preview is available, but ASF has not returned two acquisitions with matching configuration for this frame yet. The historical Sep–Nov comparison remains available in Archive mode.</p>
+                <p className="mb-3 text-sm leading-relaxed text-muted">A current descending-orbit browse preview is available, but ASF has not returned two acquisitions with matching configuration for this frame yet. The historical Sep–Nov comparison remains available in Archive mode.</p>
                   <ScenePreview scene={latestProjectScene} />
-                  <p className="mt-3 text-xs leading-relaxed text-ink/55">{longDate(latestProjectScene.acquiredAt)} · Descending · Track {latestProjectScene.track} · Frame {latestProjectScene.frame} · {latestProjectScene.polarization} · Frequency {latestProjectScene.frequency}</p>
+                  <p className="mt-3 text-xs leading-relaxed text-subtle">{longDate(latestProjectScene.acquiredAt)} · Descending · Track {latestProjectScene.track} · Frame {latestProjectScene.frame} · {latestProjectScene.polarization} · Frequency {latestProjectScene.frequency}</p>
                 </div>
               ) : (
-                <div role="status" className="mt-5 rounded-xl bg-canvas p-5 text-sm leading-relaxed text-ink/70">
+                <div role="status" className="mt-5 rounded-xl bg-canvas p-5 text-sm leading-relaxed text-muted">
                   {data.nisar.status === 'unavailable'
                     ? data.nisar.message || 'The ASF catalog is unavailable right now.'
                     : 'No public browse preview for Track 5 · Frame 77 was returned for this footprint. Try refreshing or inspect the ASF catalog.'}
                 </div>
               )}
-              <div className="mt-5 flex gap-3 rounded-xl border border-radar/20 bg-radar/5 p-4 text-xs leading-relaxed text-ink/70">
-                <Info className="mt-0.5 h-4 w-4 shrink-0 text-teal" aria-hidden="true" />
-                <p>NASA-ISRO NISAR browse imagery is illustrative quicklook content. Its display projection and pixel brightness are not a georeferenced, calibrated change product, so live FIRMS points are kept in a separate panel. The NISAR guide also documents calibration artifacts in some pre-calibration BETA products; check each scene’s collection metadata before interpreting it. <a href="https://nisar-docs.asf.alaska.edu/product-known-issues/" target="_blank" rel="noopener noreferrer" className="font-semibold text-teal underline underline-offset-2 hover:text-navy">Read the product notes<span className="sr-only"> (opens in a new tab)</span></a>. This project is independent and is not endorsed by NASA or ISRO.</p>
+              <div className="mt-5 flex gap-3 rounded-xl border border-radar/20 bg-radar/5 p-4 text-xs leading-relaxed text-muted">
+                <Info className="mt-0.5 h-4 w-4 shrink-0 text-radar" aria-hidden="true" />
+                <p>NASA-ISRO NISAR browse imagery is illustrative quicklook content. Its display projection and pixel brightness are not a georeferenced, calibrated change product, so live FIRMS points are kept in a separate panel. The NISAR guide also documents calibration artifacts in some pre-calibration BETA products; check each scene’s collection metadata before interpreting it. <a href="https://nisar-docs.asf.alaska.edu/product-known-issues/" target="_blank" rel="noopener noreferrer" className="font-semibold text-radar underline underline-offset-2 hover:text-radar">Read the product notes<span className="sr-only"> (opens in a new tab)</span></a>. This project is independent and is not endorsed by NASA or ISRO.</p>
               </div>
             </section>
 
@@ -214,28 +214,28 @@ export default function LiveEarthDataStory() {
                   <p className="eyebrow">NASA FIRMS · near-real-time</p>
                   <h3 id="live-firms-heading" className="mt-2">Heat detections by day</h3>
                 </div>
-                <a href={data.firms.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-teal hover:bg-teal-50">
+                <a href={data.firms.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-radar hover:bg-radar/10">
                   FIRMS source <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               </div>
               {data.firms.records.length > 0 ? (
                 <>
-                  <label htmlFor="live-firms-date" className="mt-5 block text-sm font-medium text-ink/75">Choose a date with records</label>
+                  <label htmlFor="live-firms-date" className="mt-5 block text-sm font-medium text-muted">Choose a date with records</label>
                   <select
                     id="live-firms-date"
                     value={activeDate}
                     onChange={(event) => setSelectedDate(event.currentTarget.value)}
-                    className="mt-2 min-h-11 w-full rounded-lg border border-navy/15 bg-white px-3 text-sm font-medium text-navy focus:border-teal"
+                    className="mt-2 min-h-11 w-full rounded-lg border border-line bg-raised px-3 text-sm font-medium text-ink focus:border-radar"
                   >
                     {dates.map((date) => (
                       <option key={date} value={date}>{longDate(date)} · {data.firms.records.filter((record) => record.date === date).length} records</option>
                     ))}
                   </select>
-                  <p className="mt-4 text-sm font-semibold text-navy">{selectedRecords.length} detection records on {activeDate ? longDate(activeDate) : 'this date'}</p>
-                  <div className="mt-3 max-h-[28rem] overflow-auto rounded-xl border border-navy/10">
+                  <p className="mt-4 text-sm font-semibold text-ink">{selectedRecords.length} detection records on {activeDate ? longDate(activeDate) : 'this date'}</p>
+                  <div className="mt-3 max-h-[28rem] overflow-auto rounded-xl border border-line">
                     <table className="w-full min-w-[34rem] border-collapse text-left text-xs">
                       <caption className="sr-only">NASA FIRMS thermal detection records for {activeDate ? longDate(activeDate) : 'the selected date'}</caption>
-                      <thead className="sticky top-0 bg-canvas text-ink/65">
+                      <thead className="sticky top-0 bg-canvas text-muted">
                         <tr>
                           <th scope="col" className="px-3 py-2.5 font-semibold">Time</th>
                           <th scope="col" className="px-3 py-2.5 font-semibold">Confidence</th>
@@ -245,7 +245,7 @@ export default function LiveEarthDataStory() {
                       </thead>
                       <tbody>
                         {selectedRecords.map((record, index) => (
-                          <tr key={`${record.date}-${record.time}-${record.lat}-${record.lon}-${index}`} className="border-t border-navy/5 odd:bg-white even:bg-canvas/60">
+                          <tr key={`${record.date}-${record.time}-${record.lat}-${record.lon}-${index}`} className="border-t border-line odd:bg-raised even:bg-canvas/60">
                             <td className="whitespace-nowrap px-3 py-2.5 tabular-nums">{timeLabel(record.time)}</td>
                             <td className="px-3 py-2.5">{record.conf || 'Not reported'}</td>
                             <td className="whitespace-nowrap px-3 py-2.5 tabular-nums">{record.frp === null ? '—' : `${record.frp} MW`}</td>
@@ -257,17 +257,17 @@ export default function LiveEarthDataStory() {
                   </div>
                 </>
               ) : (
-                <div role="status" className="mt-5 rounded-xl bg-canvas p-5 text-sm leading-relaxed text-ink/70">
+                <div role="status" className="mt-5 rounded-xl bg-canvas p-5 text-sm leading-relaxed text-muted">
                   {data.firms.status === 'configuration-required'
                     ? 'Add a free NASA FIRMS MAP_KEY to Bolt Cloud Secrets. The request will then run through the server function without exposing the key in the website.'
                     : data.firms.message || 'No live FIRMS records were returned for the most recent five-day query. This is not evidence that no fire occurred.'}
                 </div>
               )}
-              <p className="mt-4 border-t border-navy/10 pt-4 text-xs leading-relaxed text-ink/60">A thermal detection is a satellite heat signal, not a confirmed fire or unique fire. It does not measure burned area. The five-day feed may be revised during standard processing.</p>
+              <p className="mt-4 border-t border-line pt-4 text-xs leading-relaxed text-subtle">A thermal detection is a satellite heat signal, not a confirmed fire or unique fire. It does not measure burned area. The five-day feed may be revised during standard processing.</p>
             </section>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-navy/10 pt-4 text-xs text-ink/55">
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 text-xs text-subtle">
             <span>Feeds checked: {new Date(data.fetchedAt).toLocaleString('en-GB')}</span>
             {loading && <span className="inline-flex items-center gap-2" role="status"><Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />Refreshing</span>}
           </div>
@@ -277,7 +277,7 @@ export default function LiveEarthDataStory() {
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-ember" aria-hidden="true" />
               <div>
                 <h3>What this live comparison can and cannot show</h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink/75">The radar browse image and FIRMS points come from separate sensors and are not spatially registered together here. A same-configuration NISAR pair improves the scene-to-scene comparison, but processing versions may still differ and quicklooks alone do not quantify surface change or show that fire caused it. That needs calibrated geocoded measurements, a verified burned-area product, and ideally field evidence.</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted">The radar browse image and FIRMS points come from separate sensors and are not spatially registered together here. A same-configuration NISAR pair improves the scene-to-scene comparison, but processing versions may still differ and quicklooks alone do not quantify surface change or show that fire caused it. That needs calibrated geocoded measurements, a verified burned-area product, and ideally field evidence.</p>
               </div>
             </div>
           </div>

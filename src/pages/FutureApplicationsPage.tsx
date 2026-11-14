@@ -43,6 +43,13 @@ const applications = [
   },
 ];
 
+const applicationIconTones = [
+  'bg-eco/10 text-eco',
+  'bg-date/10 text-date',
+  'bg-radar/10 text-radar',
+  'bg-analysis/10 text-analysis',
+];
+
 const datasets = [
   {
     title: 'NISAR GCOV',
@@ -70,7 +77,7 @@ const datasets = [
   },
 ];
 
-const sourceLinkClass = 'mt-5 inline-flex items-center gap-2 text-xs font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:text-navy';
+const sourceLinkClass = 'mt-5 inline-flex items-center gap-2 text-xs font-semibold text-radar underline decoration-teal/30 underline-offset-4 hover:text-radar';
 
 export default function FutureApplicationsPage() {
   return (
@@ -91,12 +98,12 @@ export default function FutureApplicationsPage() {
           {applications.map((application, index) => (
             <Reveal key={application.title} delayMs={index * 70} className="h-full">
               <Card className="flex h-full flex-col" interactive>
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-teal-50 text-teal"><application.icon className="h-5 w-5" aria-hidden="true" /></span>
+                <span className={`grid h-11 w-11 place-items-center rounded-xl border border-white/10 ${applicationIconTones[index]}`}><application.icon className="h-5 w-5" aria-hidden="true" /></span>
                 <h2 className="mt-6 text-2xl">{application.title}</h2>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/70">{application.text}</p>
-                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-navy/10 pt-4">
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{application.text}</p>
+                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4">
                   {application.sources.map((source) => (
-                    <a key={source.label} href={source.href} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:text-navy">
+                    <a key={source.label} href={source.href} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-radar underline decoration-teal/30 underline-offset-4 hover:text-radar">
                       {source.label}<span className="sr-only"> (opens in a new tab)</span>
                     </a>
                   ))}
@@ -112,20 +119,20 @@ export default function FutureApplicationsPage() {
           <div className="max-w-3xl">
             <p className="eyebrow">NASA application references</p>
             <h2 id="examples-heading" className="mt-2 text-2xl">See the mission use cases behind these ideas.</h2>
-            <p className="mt-3 text-sm leading-relaxed text-ink/70">StoryMaps show examples such as wildfires, floods, and subsidence. The application white papers explain the science and societal questions. Use them to scope a follow-up question; they do not report a result from this project’s footprint.</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">StoryMaps show examples such as wildfires, floods, and subsidence. The application white papers explain the science and societal questions. Use them to scope a follow-up question; they do not report a result from this project’s footprint.</p>
           </div>
           <div className="flex shrink-0 flex-col items-start gap-3">
-            <a href="https://nisar.jpl.nasa.gov/applications/arcgis-storymaps/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:text-navy">NISAR StoryMaps <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
-            <a href="https://nisar.jpl.nasa.gov/applications/societal-benefit/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:text-navy">Applications white papers <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
+            <a href="https://nisar.jpl.nasa.gov/applications/arcgis-storymaps/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-radar underline decoration-teal/30 underline-offset-4 hover:text-radar">NISAR StoryMaps <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
+            <a href="https://nisar.jpl.nasa.gov/applications/societal-benefit/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-radar underline decoration-teal/30 underline-offset-4 hover:text-radar">Applications white papers <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
           </div>
         </div>
       </section>
 
-      <section className="bg-white py-16 md:py-20" aria-labelledby="data-heading">
+      <section className="bg-raised py-16 md:py-20" aria-labelledby="data-heading">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <p className="eyebrow">Public products for a fire or disturbance follow-up</p>
           <h2 id="data-heading" className="mt-3 max-w-3xl">Use complementary data for different questions.</h2>
-          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-ink/70">
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
             These are existing NASA products and documentation for a future analysis. This project has not processed
             the burned-area or disturbance products below, and no new measurements are presented here.
           </p>
@@ -133,7 +140,7 @@ export default function FutureApplicationsPage() {
             {datasets.map((dataset) => (
               <Card key={dataset.title} className="h-full">
                 <h3>{dataset.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink/70">{dataset.description}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted">{dataset.description}</p>
                 <a href={dataset.href} target="_blank" rel="noopener noreferrer" className={sourceLinkClass}>
                   {dataset.linkLabel}<ArrowRight className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
                 </a>
@@ -148,7 +155,7 @@ export default function FutureApplicationsPage() {
           <div className="max-w-3xl">
             <p className="eyebrow text-radar">Evidence before attribution</p>
             <h2 className="mt-3 text-white">Radar tells one part of the story.</h2>
-            <p className="mt-4 text-base leading-relaxed text-white/70">
+            <p className="mt-4 text-base leading-relaxed text-muted">
               A defensible fire-impact assessment would combine compatible calibrated radar observations with an
               independently mapped burned-area or disturbance product, optical imagery where usable, and local or field
               evidence. Active-fire detections add timing context; they do not measure burned area or prove what caused

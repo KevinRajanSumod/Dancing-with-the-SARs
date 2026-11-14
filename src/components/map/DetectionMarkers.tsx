@@ -55,7 +55,7 @@ export default function DetectionMarkers({ detections }: DetectionMarkersProps) 
         <div
           role="dialog"
           aria-label="Detection details"
-          className="pointer-events-auto absolute z-10 w-64 rounded-2xl border border-navy/10 bg-paper p-4 text-sm text-ink shadow-lift"
+          className="pointer-events-auto absolute z-10 w-64 rounded-2xl border border-line bg-paper p-4 text-sm text-ink shadow-lift"
           style={{
             left: `${selectedPosition.x}%`,
             top: `${selectedPosition.y}%`,
@@ -68,24 +68,24 @@ export default function DetectionMarkers({ detections }: DetectionMarkersProps) 
               type="button"
               aria-label="Close detection details"
               onClick={() => setSelectedIndex(null)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-navy hover:bg-navy-100"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-ink hover:bg-navy-100"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
           <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-xs">
-            <dt className="font-semibold text-navy">Date</dt>
+            <dt className="font-semibold text-ink">Date</dt>
             <dd>{selected.date || 'Not given'}</dd>
-            <dt className="font-semibold text-navy">Time</dt>
+            <dt className="font-semibold text-ink">Time</dt>
             <dd>{selected.time ? `${selected.time} UTC` : 'Not given'}</dd>
-            <dt className="font-semibold text-navy">Confidence</dt>
+            <dt className="font-semibold text-ink">Confidence</dt>
             <dd>{selected.conf ? (isNominal(selected.conf) ? 'Nominal' : selected.conf) : 'Not given'}</dd>
-            <dt className="font-semibold text-navy">FRP</dt>
+            <dt className="font-semibold text-ink">FRP</dt>
             <dd>{selected.frp !== null ? `${selected.frp} MW` : 'Not given'}</dd>
-            <dt className="font-semibold text-navy">Location</dt>
+            <dt className="font-semibold text-ink">Location</dt>
             <dd>{`${selected.lat.toFixed(4)}° N, ${selected.lon.toFixed(4)}° E`}</dd>
           </dl>
-          <p className="mt-3 border-t border-navy/10 pt-3 text-xs leading-relaxed text-ink/65">A detection is a satellite heat signal, not a confirmed fire.</p>
+          <p className="mt-3 border-t border-line pt-3 text-xs leading-relaxed text-muted">A detection is a satellite heat signal, not a confirmed fire.</p>
         </div>
       )}
     </div>

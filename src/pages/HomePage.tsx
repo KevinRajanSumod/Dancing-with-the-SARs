@@ -12,7 +12,7 @@ const journey = [
   { number: '01', label: 'Compare', title: 'Two radar passes', note: 'Start with the archived Sep–Nov views.', href: '/forest-fire-change', color: 'text-radar' },
   { number: '02', label: 'Decode', title: 'Follow the echo', note: 'See how a microwave pulse becomes an image.', href: '/how-sar-works', color: 'text-radar' },
   { number: '03', label: 'Test', title: 'Consider the drivers', note: 'Separate observed signal from possible cause.', href: '/physical-drivers', color: 'text-ember' },
-  { number: '04', label: 'Apply', title: 'Look beyond this case', note: 'Explore what repeat radar can support.', href: '/future-applications', color: 'text-radar' },
+  { number: '04', label: 'Apply', title: 'Look beyond this case', note: 'Explore what repeat radar can support.', href: '/future-applications', color: 'text-eco' },
 ];
 
 const storyCards = [
@@ -46,7 +46,7 @@ const signalRail = [
   { icon: Satellite, label: 'Radar archive', value: '2 scenes', note: 'NISAR L-band browse previews', color: 'text-radar' },
   { icon: Radio, label: 'Signal mode', value: 'HV layer', note: 'Same displayed layer, different configurations', color: 'text-radar' },
   { icon: Flame, label: 'Heat context', value: `${detections.length.toLocaleString('en-US')} records`, note: 'NASA FIRMS / VIIRS NOAA-21', color: 'text-ember' },
-  { icon: ScanLine, label: 'Reading status', value: 'Qualitative', note: 'Browse contrast is not a change result', color: 'text-radar' },
+  { icon: ScanLine, label: 'Reading status', value: 'Qualitative', note: 'Browse contrast is not a change result', color: 'text-analysis' },
 ];
 
 function SignalRail() {
@@ -59,11 +59,11 @@ function SignalRail() {
               <div className="telemetry-line absolute left-0 top-0 h-px w-full opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true" />
               <div className="flex items-start justify-between gap-3">
                 <span className={`grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/[0.06] ${signal.color}`}><signal.icon className="h-4 w-4" aria-hidden="true" /></span>
-                <span className="font-mono text-[10px] tracking-[.15em] text-white/35">0{index + 1}</span>
+                <span className="font-mono text-[10px] tracking-[.15em] text-subtle">0{index + 1}</span>
               </div>
-              <p className="mt-4 text-[11px] font-semibold uppercase tracking-[.16em] text-white/45">{signal.label}</p>
+              <p className="mt-4 text-[11px] font-semibold uppercase tracking-[.16em] text-subtle">{signal.label}</p>
               <p className="mt-1 text-base font-semibold text-white">{signal.value}</p>
-              <p className="mt-1 text-xs leading-relaxed text-white/50">{signal.note}</p>
+              <p className="mt-1 text-xs leading-relaxed text-subtle">{signal.note}</p>
             </div>
           </Reveal>
         ))}
@@ -78,7 +78,7 @@ function ProjectBrief() {
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
         <div>
           <p className="eyebrow text-radar">Project archive / Central India</p>
-          <p className="mt-1 text-sm text-white/65">NISAR browse comparison</p>
+          <p className="mt-1 text-sm text-muted">NISAR browse comparison</p>
         </div>
         <span className="inline-flex items-center gap-2 rounded-full border border-radar/25 bg-radar/10 px-3 py-1.5 text-[11px] font-semibold text-radar">
           <span className="h-1.5 w-1.5 rounded-full bg-radar" aria-hidden="true" /> ARCHIVE
@@ -89,20 +89,20 @@ function ProjectBrief() {
         <figure className="min-w-0 overflow-hidden rounded-xl border border-white/10 bg-black/20">
           <img src="/images/map/before_overlay.png" alt="Project NISAR L-band browse preview from 30 September 2026, shown as supplied in the archive." className="aspect-[1.22] w-full object-cover" loading="eager" />
           <figcaption className="flex items-center justify-between gap-2 px-3 py-2.5 text-xs">
-            <span className="text-white/55">PASS 01</span><span className="font-semibold tabular-nums text-white">30 SEP 2026</span>
+            <span className="text-muted">PASS 01</span><span className="font-semibold tabular-nums text-white">30 SEP 2026</span>
           </figcaption>
         </figure>
         <figure className="min-w-0 overflow-hidden rounded-xl border border-white/10 bg-black/20">
           <img src="/images/map/after_overlay.png" alt="Project NISAR L-band browse preview from 5 November 2026, shown as supplied in the archive." className="aspect-[1.22] w-full object-cover" loading="eager" />
           <figcaption className="flex items-center justify-between gap-2 px-3 py-2.5 text-xs">
-            <span className="text-white/55">PASS 02</span><span className="font-semibold tabular-nums text-white">05 NOV 2026</span>
+            <span className="text-muted">PASS 02</span><span className="font-semibold tabular-nums text-white">05 NOV 2026</span>
           </figcaption>
         </figure>
       </div>
 
       <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.045] p-4">
-        <div className="flex items-center justify-between gap-3 text-xs text-white/55">
-          <span>OBSERVATION WINDOW</span><span className="font-medium tabular-nums text-white/80">36 DAYS</span>
+        <div className="flex items-center justify-between gap-3 text-xs text-muted">
+          <span>OBSERVATION WINDOW</span><span className="font-medium tabular-nums text-muted">36 DAYS</span>
         </div>
         <div className="relative mt-3 h-1 rounded-full bg-white/10" aria-hidden="true">
           <div className="absolute inset-y-0 left-0 w-full rounded-full bg-gradient-to-r from-radar/70 to-ember/75" />
@@ -112,17 +112,17 @@ function ProjectBrief() {
         <div className="mt-4 grid grid-cols-2 gap-4 border-t border-white/10 pt-4">
           <div>
             <p className="text-2xl font-semibold tabular-nums text-white">{detections.length.toLocaleString('en-US')}</p>
-            <p className="mt-1 text-xs leading-relaxed text-white/55">FIRMS detection records in the supplied snapshot</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted">FIRMS detection records in the supplied snapshot</p>
           </div>
           <div className="border-l border-white/10 pl-4">
             <p className="text-2xl font-semibold text-white">L-band</p>
-            <p className="mt-1 text-xs leading-relaxed text-white/55">NISAR radar browse imagery</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted">NISAR radar browse imagery</p>
           </div>
         </div>
       </div>
 
-      <p className="mt-3 text-[11px] leading-relaxed text-white/45">Project radar data shown here. Contrast is qualitative; the FIRMS records are separate observations.</p>
-      <AppLink to="/forest-fire-change" className="mt-4 flex min-h-11 items-center justify-between rounded-xl bg-radar px-4 text-sm font-semibold text-navy transition-colors hover:bg-cyan-200">
+      <p className="mt-3 text-[11px] leading-relaxed text-subtle">Project radar data shown here. Contrast is qualitative; the FIRMS records are separate observations.</p>
+      <AppLink to="/forest-fire-change" className="mt-4 flex min-h-11 items-center justify-between rounded-xl bg-radar px-4 text-sm font-semibold text-ink transition-colors hover:bg-cyan-200">
         Open the data story <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </AppLink>
     </aside>
@@ -186,13 +186,13 @@ export default function HomePage() {
             <p className="inline-flex items-center gap-2 rounded-full border border-radar/25 bg-radar/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.17em] text-radar shadow-[0_0_24px_rgba(103,216,232,.08)]">
               <Sparkles className="h-3 w-3" aria-hidden="true" /> Field signal / Central India
             </p>
-            <p className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/55">
+            <p className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted">
               <span className="h-px w-8 bg-radar" aria-hidden="true" /> NASA–ISRO NISAR · L-band archive
             </p>
             <h1 className="mt-5 max-w-3xl text-white">
               Read the pattern.<br /><span className="text-radar">Respect the uncertainty.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75 md:text-xl">
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted md:text-xl">
               Step inside a live-looking field notebook built from two NISAR radar passes and a separate snapshot of satellite heat detections, 36 days apart.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -203,7 +203,7 @@ export default function HomePage() {
                 How SAR works
               </AppLink>
             </div>
-            <div className="mt-9 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/55">
+            <div className="mt-9 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted">
               <span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-radar" aria-hidden="true" />Two archive scenes</span>
               <span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-ember" aria-hidden="true" />{detections.length.toLocaleString('en-US')} FIRMS records</span>
               <span>30 Sep — 5 Nov 2026</span>
@@ -224,7 +224,7 @@ export default function HomePage() {
             {motionEnabled ? <Pause className="h-3.5 w-3.5" aria-hidden="true" /> : <Play className="h-3.5 w-3.5" aria-hidden="true" />}
             <span className="hidden sm:inline">{motionEnabled ? 'Pause motion' : 'Play motion'}</span>
           </button>
-          <p className="max-w-[26rem] text-right text-[10px] leading-relaxed text-white/75 sm:text-xs">
+          <p className="max-w-[26rem] text-right text-[10px] leading-relaxed text-muted sm:text-xs">
             NASA Goddard · <a href="https://svs.gsfc.nasa.gov/11474" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-white">Earth Illuminated ISS video and image</a> (NASA/JSC/Image Science and Analysis Laboratory). Not project radar data; this project is not endorsed by NASA or ISRO.
           </p>
         </div>
@@ -239,7 +239,7 @@ export default function HomePage() {
               <p className="eyebrow text-radar">The signal path</p>
               <h2 id="journey-heading" className="mt-3 text-2xl text-white md:text-3xl">Follow the evidence, step by step.</h2>
             </div>
-            <p className="max-w-md text-sm leading-relaxed text-white/55">A guided route from observation to interpretation. Each stage answers a different question.</p>
+            <p className="max-w-md text-sm leading-relaxed text-muted">A guided route from observation to interpretation. Each stage answers a different question.</p>
           </div>
           <ol className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {journey.map((step, index) => (
@@ -248,10 +248,10 @@ export default function HomePage() {
                   <AppLink to={step.href} className="group block h-full rounded-2xl border border-white/10 bg-white/[.035] p-5 transition duration-200 hover:-translate-y-1 hover:border-radar/35 hover:bg-white/[.065] hover:shadow-[0_16px_40px_rgba(0,0,0,.22)] focus-visible:outline-offset-2">
                     <div className="flex items-center justify-between gap-3">
                       <span className={`font-mono text-sm font-semibold ${step.color}`}>{step.number} <span aria-hidden="true">/</span> {step.label}</span>
-                      <ArrowDownRight className="h-4 w-4 text-white/30 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:text-radar" aria-hidden="true" />
+                      <ArrowDownRight className="h-4 w-4 text-subtle transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:text-radar" aria-hidden="true" />
                     </div>
                     <h3 className="mt-5 text-lg text-white">{step.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-white/55">{step.note}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted">{step.note}</p>
                   </AppLink>
                 </Reveal>
               </li>
@@ -266,7 +266,7 @@ export default function HomePage() {
             <p className="eyebrow text-radar">A field note in three parts</p>
             <h2 id="story-heading" className="mt-4 text-white">From pulse to possible change.</h2>
           </div>
-          <p className="max-w-md text-base leading-relaxed text-white/65">
+          <p className="max-w-md text-base leading-relaxed text-muted">
             This is a visual comparison paired with thermal-detection records. It does not establish that fire caused the radar patterns.
           </p>
         </div>
@@ -280,7 +280,7 @@ export default function HomePage() {
                   <span className="eyebrow !text-[10px] !text-radar">{item.eyebrow}</span>
                 </div>
                 <h3 className="mt-7 text-white">{item.title}</h3>
-                <p className="mt-3 flex-1 text-base leading-relaxed text-white/65">{item.text}</p>
+                <p className="mt-3 flex-1 text-base leading-relaxed text-muted">{item.text}</p>
                 <AppLink to={item.href} className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-radar hover:text-white">
                   {item.action} <ArrowDownRight className="h-4 w-4" aria-hidden="true" />
                 </AppLink>
@@ -303,12 +303,12 @@ export default function HomePage() {
             <div className="rounded-2xl border border-white/10 bg-white/[.035] p-5">
               <Moon className="h-5 w-5 text-radar" aria-hidden="true" />
               <h3 className="mt-4 text-lg text-white">Radar brightness</h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/65">Responds to surface structure, moisture and viewing geometry. A brighter or darker patch is not a diagnosis by itself.</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted">Responds to surface structure, moisture and viewing geometry. A brighter or darker patch is not a diagnosis by itself.</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/[.035] p-5">
               <Flame className="h-5 w-5 text-ember" aria-hidden="true" />
               <h3 className="mt-4 text-lg text-white">Thermal detections</h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/65">Mark where a satellite sensor registered heat. They are not counts of separate fires, confirmed burn scars, or burned-area measurements.</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted">Mark where a satellite sensor registered heat. They are not counts of separate fires, confirmed burn scars, or burned-area measurements.</p>
             </div>
           </div>
         </div>
@@ -321,7 +321,7 @@ export default function HomePage() {
             <div>
               <p className="eyebrow text-radar">Project archive</p>
               <h2 className="mt-2 text-xl text-white">Separate sensors. A shared place to ask questions.</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/65">The map keeps the radar previews and thermal records distinct. Switch between the saved archive and API-fed live view when you explore.</p>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">The map keeps the radar previews and thermal records distinct. Switch between the saved archive and API-fed live view when you explore.</p>
             </div>
           </div>
           <AppLink to="/forest-fire-change" className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[.07] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-radar/50 hover:bg-white/[.12]">

@@ -67,7 +67,7 @@ function RadarPulseDiagram() {
         <text x="352" y="171" fill="#A9EDF3" fontSize="13" fontWeight="600">outgoing pulse</text>
         <text x="494" y="158" fill="#F6A377" fontSize="13" fontWeight="600">returning echo</text>
       </svg>
-      <p className="mt-3 text-xs leading-relaxed text-white/45">Illustration only. It shows the sensing idea, not the geometry or measurements of a specific NISAR pass.</p>
+      <p className="mt-3 text-xs leading-relaxed text-subtle">Illustration only. It shows the sensing idea, not the geometry or measurements of a specific NISAR pass.</p>
     </div>
   );
 }
@@ -92,7 +92,7 @@ export default function HowSarWorksPage() {
             <p className="eyebrow">The signal path</p>
             <h2 id="pulse-heading" className="mt-2">Four steps, one echo at a time.</h2>
           </div>
-          <span className="rounded-full bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal">Illustrated process</span>
+          <span className="rounded-full bg-radar/10 px-3 py-1.5 text-xs font-semibold text-radar">Illustrated process</span>
         </div>
         <RadarPulseDiagram />
         <ol className="relative mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -101,11 +101,11 @@ export default function HowSarWorksPage() {
               <Reveal delayMs={index * 70} className="h-full">
                 <Card className="h-full">
                   <div className="flex items-center justify-between">
-                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-teal-50 text-teal"><step.icon className="h-5 w-5" aria-hidden="true" /></span>
-                    <span className="text-xs font-semibold tracking-[0.12em] text-ink/45">STEP 0{index + 1}</span>
+                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-radar/10 text-radar"><step.icon className="h-5 w-5" aria-hidden="true" /></span>
+                    <span className="text-xs font-semibold tracking-[0.12em] text-subtle">STEP 0{index + 1}</span>
                   </div>
                   <h3 className="mt-5">{step.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-ink/70">{step.text}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">{step.text}</p>
                 </Card>
               </Reveal>
             </li>
@@ -113,19 +113,19 @@ export default function HowSarWorksPage() {
         </ol>
       </section>
 
-      <section className="bg-white py-16 md:py-24" aria-labelledby="echo-heading">
+      <section className="bg-raised py-16 md:py-24" aria-labelledby="echo-heading">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <div className="max-w-2xl">
             <p className="eyebrow">Interpreting backscatter</p>
             <h2 id="echo-heading" className="mt-2">The echo depends on more than one thing.</h2>
-            <p className="mt-4 text-base leading-relaxed text-ink/70">Radar brightness is a measured response shaped by the material and the way the radar views it. It is useful evidence, but it does not label a land-cover change on its own.</p>
+            <p className="mt-4 text-base leading-relaxed text-muted">Radar brightness is a measured response shaped by the material and the way the radar views it. It is useful evidence, but it does not label a land-cover change on its own.</p>
           </div>
           <div className="mt-9 grid gap-4 md:grid-cols-3">
-            <Reveal className="h-full"><Card className="h-full"><LocateFixed className="h-5 w-5 text-teal" aria-hidden="true" /><h3 className="mt-5">Structure and roughness</h3><p className="mt-3 text-sm leading-relaxed text-ink/70">Leaves, branches, trunks, bare ground and surface texture scatter microwave energy in different ways.</p></Card></Reveal>
-            <Reveal delayMs={80} className="h-full"><Card className="h-full"><Activity className="h-5 w-5 text-teal" aria-hidden="true" /><h3 className="mt-5">Moisture</h3><p className="mt-3 text-sm leading-relaxed text-ink/70">Water in soil and vegetation can change the electrical response of a surface and affect the signal returned.</p></Card></Reveal>
-            <Reveal delayMs={160} className="h-full"><Card className="h-full"><ArrowUp className="h-5 w-5 text-teal" aria-hidden="true" /><h3 className="mt-5">Viewing setup</h3><p className="mt-3 text-sm leading-relaxed text-ink/70">Polarization, orbit geometry, processing and acquisition conditions also matter when two scenes are compared.</p></Card></Reveal>
+            <Reveal className="h-full"><Card className="h-full"><LocateFixed className="h-5 w-5 text-radar" aria-hidden="true" /><h3 className="mt-5">Structure and roughness</h3><p className="mt-3 text-sm leading-relaxed text-muted">Leaves, branches, trunks, bare ground and surface texture scatter microwave energy in different ways.</p></Card></Reveal>
+            <Reveal delayMs={80} className="h-full"><Card className="h-full"><Activity className="h-5 w-5 text-radar" aria-hidden="true" /><h3 className="mt-5">Moisture</h3><p className="mt-3 text-sm leading-relaxed text-muted">Water in soil and vegetation can change the electrical response of a surface and affect the signal returned.</p></Card></Reveal>
+            <Reveal delayMs={160} className="h-full"><Card className="h-full"><ArrowUp className="h-5 w-5 text-radar" aria-hidden="true" /><h3 className="mt-5">Viewing setup</h3><p className="mt-3 text-sm leading-relaxed text-muted">Polarization, orbit geometry, processing and acquisition conditions also matter when two scenes are compared.</p></Card></Reveal>
           </div>
-          <div className="mt-7 flex items-start gap-3 rounded-xl border border-navy/10 bg-canvas p-4 text-sm leading-relaxed text-ink/70">
+          <div className="mt-7 flex items-start gap-3 rounded-xl border border-line bg-canvas p-4 text-sm leading-relaxed text-muted">
             <ArrowDown className="mt-0.5 h-4 w-4 shrink-0 text-ember" aria-hidden="true" />
             <p>For this project, the browse previews differ in product configuration and processing version. Their visible contrast is a prompt for further analysis, not a measured forest-loss or burn result.</p>
           </div>

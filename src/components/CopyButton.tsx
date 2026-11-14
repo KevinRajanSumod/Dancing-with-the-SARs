@@ -35,7 +35,7 @@ export default function CopyButton({ text, label }: CopyButtonProps) {
       type="button"
       onClick={handleCopy}
       aria-label={`${visibleLabel}: ${label}`}
-      className="inline-flex shrink-0 items-center gap-2 rounded-lg border-2 border-teal px-3 py-1.5 text-sm font-semibold text-teal transition-colors duration-200 hover:bg-teal-50"
+      className="inline-flex shrink-0 items-center gap-2 rounded-lg border-2 border-radar px-3 py-1.5 text-sm font-semibold text-radar transition-colors duration-200 hover:bg-radar/10"
     >
       {state === 'copied' ? (
         <Check className="h-4 w-4" aria-hidden="true" />

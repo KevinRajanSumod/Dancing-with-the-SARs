@@ -36,7 +36,9 @@ const drivers = [
   },
 ];
 
-const sourceLinkClass = 'mt-4 inline-flex items-center text-xs font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:text-navy';
+const driverIconTones = ['bg-eco/10 text-eco', 'bg-radar/10 text-radar', 'bg-ember/10 text-ember'];
+
+const sourceLinkClass = 'mt-4 inline-flex items-center text-xs font-semibold text-radar underline decoration-teal/30 underline-offset-4 hover:text-radar';
 
 export default function PhysicalDriversPage() {
   return (
@@ -54,7 +56,7 @@ export default function PhysicalDriversPage() {
 
       <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 md:pb-24" aria-labelledby="drivers-heading">
         <h2 id="drivers-heading">Known influences on radar backscatter</h2>
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-ink/70">
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
           These are established SAR interpretation factors from NASA’s SAR Handbook. They explain why a visible
           difference needs follow-up; they do not identify what happened at this location.
         </p>
@@ -62,12 +64,12 @@ export default function PhysicalDriversPage() {
           {drivers.map((driver, index) => (
             <Reveal key={driver.title} delayMs={index * 80} className="h-full">
               <Card className="h-full" interactive>
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-teal-50 text-teal"><driver.icon className="h-5 w-5" aria-hidden="true" /></span>
+                <span className={`grid h-11 w-11 place-items-center rounded-xl border border-white/10 ${driverIconTones[index]}`}><driver.icon className="h-5 w-5" aria-hidden="true" /></span>
                 <h3 className="mt-5">{driver.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink/70">{driver.readout}</p>
-                <div className="mt-5 border-t border-navy/10 pt-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-teal">Evidence to check</p>
-                  <p className="mt-2 text-sm leading-relaxed text-ink/70">{driver.evidence}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted">{driver.readout}</p>
+                <div className="mt-5 border-t border-line pt-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-radar">Evidence to check</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{driver.evidence}</p>
                 </div>
                 <a href={driver.href} target="_blank" rel="noopener noreferrer" className={sourceLinkClass}>
                   {driver.source}<span className="sr-only"> (opens in a new tab)</span>
@@ -78,13 +80,13 @@ export default function PhysicalDriversPage() {
         </div>
       </section>
 
-      <section className="bg-white py-16 md:py-20" aria-labelledby="polarization-heading">
+      <section className="bg-raised py-16 md:py-20" aria-labelledby="polarization-heading">
         <div className="mx-auto grid max-w-7xl gap-9 px-5 sm:px-8 md:grid-cols-[0.8fr_1.2fr]">
           <div>
             <p className="eyebrow">Read the supplied products carefully</p>
             <h2 id="polarization-heading" className="mt-3">The scene configurations differ.</h2>
           </div>
-          <div className="max-w-3xl text-base leading-relaxed text-ink/75">
+          <div className="max-w-3xl text-base leading-relaxed text-muted">
             <p>
               The supplied scene names encode different polarization configurations: <strong>QPDH</strong> for the
               30 September scene and <strong>DHDH</strong> for the 5 November scene. Their workflow identifiers also
@@ -99,7 +101,7 @@ export default function PhysicalDriversPage() {
             <a href="https://nisar-docs.asf.alaska.edu/gcov/" target="_blank" rel="noopener noreferrer" className={sourceLinkClass}>
               NISAR Data User Guide · GCOV product naming and layers<span className="sr-only"> (opens in a new tab)</span>
             </a>
-            <div className="mt-6 flex items-start gap-3 rounded-xl border border-ember/20 bg-ember/5 p-4 text-sm leading-relaxed text-ink/70">
+            <div className="mt-6 flex items-start gap-3 rounded-xl border border-ember/20 bg-ember/5 p-4 text-sm leading-relaxed text-muted">
               <ScanLine className="mt-0.5 h-4 w-4 shrink-0 text-ember" aria-hidden="true" />
               <p>The contrast has not been quantified. No forest-loss, burn-area, or cause estimate is made on this page.</p>
             </div>
@@ -109,15 +111,15 @@ export default function PhysicalDriversPage() {
 
       <section className="mx-auto max-w-7xl px-5 py-14 sm:px-8 md:py-16" aria-labelledby="learning-heading">
         <div className="flex items-start gap-4">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-teal-50 text-teal"><BookOpen className="h-5 w-5" aria-hidden="true" /></span>
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-radar/10 text-radar"><BookOpen className="h-5 w-5" aria-hidden="true" /></span>
           <div>
             <p className="eyebrow">NASA learning resources</p>
             <h2 id="learning-heading" className="mt-2">Learn how to test these explanations.</h2>
-            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-ink/70">Use the SAR overview to understand the signal and the ARSET training to learn practical analysis workflows. They explain methods; they do not supply measurements for this footprint.</p>
+            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">Use the SAR overview to understand the signal and the ARSET training to learn practical analysis workflows. They explain methods; they do not supply measurements for this footprint.</p>
             <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3">
-              <a href="https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/sar" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:text-navy">NASA Intro to SAR <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
-              <a href="https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/remote-sensing" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:text-navy">NASA Intro to Remote Sensing <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
-              <a href="https://appliedsciences.nasa.gov/get-involved/training" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:text-navy">NASA ARSET trainings <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
+              <a href="https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/sar" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-radar underline decoration-teal/30 underline-offset-4 hover:text-radar">NASA Intro to SAR <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
+              <a href="https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/remote-sensing" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-radar underline decoration-teal/30 underline-offset-4 hover:text-radar">NASA Intro to Remote Sensing <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
+              <a href="https://appliedsciences.nasa.gov/get-involved/training" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-radar underline decoration-teal/30 underline-offset-4 hover:text-radar">NASA ARSET trainings <ExternalLink className="h-4 w-4" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
             </div>
           </div>
         </div>
@@ -128,7 +130,7 @@ export default function PhysicalDriversPage() {
           <div className="max-w-2xl">
             <p className="eyebrow">Independent evidence</p>
             <h2 className="mt-2 text-2xl">A heat detection is not an attribution.</h2>
-            <p className="mt-3 text-sm leading-relaxed text-ink/70">NASA FIRMS reports satellite active-fire and thermal-anomaly detections. Those detections do not confirm a fire at every point, map its perimeter, measure burned area, or establish that fire caused a radar change.</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">NASA FIRMS reports satellite active-fire and thermal-anomaly detections. Those detections do not confirm a fire at every point, map its perimeter, measure burned area, or establish that fire caused a radar change.</p>
             <a href="https://firms.modaps.eosdis.nasa.gov/active_fire/" target="_blank" rel="noopener noreferrer" className={sourceLinkClass}>
               NASA FIRMS · Active fire data<span className="sr-only"> (opens in a new tab)</span>
             </a>

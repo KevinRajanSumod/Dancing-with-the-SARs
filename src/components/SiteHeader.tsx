@@ -11,7 +11,7 @@ function linkClass(isActive: boolean): string {
   const base = 'rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 focus-visible:outline-white';
   return isActive
     ? `${base} border border-radar/20 bg-radar/10 text-radar shadow-[0_0_22px_rgba(103,216,232,.09)]`
-    : `${base} text-white/60 hover:bg-white/[0.07] hover:text-white`;
+    : `${base} text-muted hover:bg-white/[0.07] hover:text-white`;
 }
 
 export default function SiteHeader({ pathname }: SiteHeaderProps) {

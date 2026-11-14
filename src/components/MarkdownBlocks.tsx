@@ -12,7 +12,7 @@ function renderInline(parts: InlinePart[]) {
   return parts.map((part, index) => {
     switch (part.type) {
       case 'bold':
-        return <strong key={index} className="font-semibold text-navy">{part.text}</strong>;
+        return <strong key={index} className="font-semibold text-ink">{part.text}</strong>;
       case 'link':
         return (
           <a
@@ -20,7 +20,7 @@ function renderInline(parts: InlinePart[]) {
             href={part.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-teal underline underline-offset-2 hover:text-teal-700"
+            className="font-medium text-radar underline underline-offset-2 hover:text-radar"
           >
             {part.text}
             <span className="sr-only"> (opens in a new tab)</span>
@@ -64,7 +64,7 @@ export default function MarkdownBlocks({ blocks }: MarkdownBlocksProps) {
                 {block.items.map((item, itemIndex) => (
                   <li
                     key={itemIndex}
-                    className="flex flex-col gap-3 rounded-2xl border border-navy/10 bg-paper p-5 shadow-card sm:flex-row sm:items-start sm:justify-between sm:gap-6"
+                    className="flex flex-col gap-3 rounded-2xl border border-line bg-paper p-5 shadow-card sm:flex-row sm:items-start sm:justify-between sm:gap-6"
                   >
                     <span className="min-w-0 flex-1 [overflow-wrap:anywhere]">{renderInline(parseInline(item))}</span>
                     <CopyButton text={toCopyText(item)} label={toPlainText(item)} />
