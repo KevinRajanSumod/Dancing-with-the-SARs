@@ -24,6 +24,8 @@ const nextSteps = [
   },
 ];
 
+const roadmapIconTones = ['bg-radar/10 text-radar', 'bg-ember/10 text-ember', 'bg-analysis/10 text-analysis'];
+
 export default function UpcomingPage() {
   return (
     <>
@@ -44,7 +46,7 @@ export default function UpcomingPage() {
               <Reveal delayMs={index * 80} className="h-full">
                 <Card className="flex h-full flex-col">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="grid h-11 w-11 place-items-center rounded-xl bg-radar/10 text-radar"><step.icon className="h-5 w-5" aria-hidden="true" /></span>
+                    <span className={`grid h-11 w-11 place-items-center rounded-xl border border-white/10 ${roadmapIconTones[index]}`}><step.icon className="h-5 w-5" aria-hidden="true" /></span>
                     <span className="rounded-full bg-canvas px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.13em] text-subtle">{step.tag}</span>
                   </div>
                   <p className="mt-6 text-xs font-semibold tracking-[0.15em] text-radar">NEXT QUESTION 0{index + 1}</p>

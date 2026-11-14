@@ -126,6 +126,8 @@ const resourceGroups = [
   },
 ];
 
+const resourceIconTones = ['bg-radar/10 text-radar', 'bg-analysis/10 text-analysis', 'bg-eco/10 text-eco'];
+
 export default function SourcesPage() {
   return (
     <>
@@ -168,7 +170,7 @@ export default function SourcesPage() {
           {resourceGroups.map((group) => (
             <article key={group.title} className="surface-card p-5 sm:p-6">
               <div className="flex items-start gap-3">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-radar/10 text-radar"><group.icon className="h-5 w-5" aria-hidden="true" /></span>
+                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 ${resourceIconTones[index]}`}><group.icon className="h-5 w-5" aria-hidden="true" /></span>
                 <div>
                   <h3>{group.title}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-muted">{group.intro}</p>

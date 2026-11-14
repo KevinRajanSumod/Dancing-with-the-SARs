@@ -17,7 +17,7 @@ export default function ToggleSwitch({ checked, onChange, children }: ToggleSwit
     >
       <span
         className={`relative mt-0.5 inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors duration-200 ${
-          checked ? 'bg-radar' : 'bg-navy/25'
+          checked ? 'bg-radar' : 'bg-line-strong'
         }`}
         aria-hidden="true"
       >

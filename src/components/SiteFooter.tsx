@@ -23,7 +23,7 @@ export default function SiteFooter() {
       </div>
       <div className="relative mx-auto flex max-w-7xl flex-col gap-2 border-t border-white/10 px-5 py-5 text-[11px] leading-relaxed text-subtle sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <span>NASA and ISRO do not endorse this independent project.</span>
-        <a href="https://images.nasa.gov/details/art002e000192" target="_blank" rel="noopener noreferrer" className="transition hover:text-radar">Hero image: NASA Image and Video Library ↗</a>
+        <a href="https://svs.gsfc.nasa.gov/11474" target="_blank" rel="noopener noreferrer" className="transition hover:text-radar">Hero image and video: NASA Goddard SVS ↗</a>
       </div>
     </footer>
   );

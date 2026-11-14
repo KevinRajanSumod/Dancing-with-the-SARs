@@ -232,7 +232,7 @@ export default function HomePage() {
 
       <SignalRail />
 
-      <section className="border-b border-white/10 bg-[#06111e] pt-20" aria-labelledby="journey-heading">
+      <section className="border-b border-line bg-canvas pt-20" aria-labelledby="journey-heading">
         <div className="mx-auto max-w-7xl px-5 pb-12 sm:px-8 md:pb-16">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
@@ -290,7 +290,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-y border-white/10 bg-[#081725] py-16 md:py-20">
+      <section className="border-y border-line bg-paper py-16 md:py-20">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 md:grid-cols-[0.85fr_1.15fr] md:items-center">
           <div>
             <p className="eyebrow text-radar">A careful reading</p>
