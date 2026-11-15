@@ -9,6 +9,7 @@ export default {
         teal: { DEFAULT: '#67D9EC', 700: '#C4F5FA', 50: '#102C35', 100: '#153943' },
         ember: { DEFAULT: '#F07859', 100: '#3B2027', 300: '#FFD3AC' },
         amber: { DEFAULT: '#FFB84D', 100: '#3D2B1B', 300: '#FFE29C' },
+        signal: { DEFAULT: '#FFD166', 100: '#3D321C' },
         crimson: { DEFAULT: '#EF6267', 100: '#351D25' },
         success: { DEFAULT: '#91D5A1', 50: '#142D26' },
         eco: { DEFAULT: '#91D5A1', 100: '#142D26' },

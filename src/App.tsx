@@ -3,6 +3,7 @@ import { MessageCircle, X } from 'lucide-react';
 import AppLink, { buttonClass } from '@/components/AppLink';
 import SiteFooter from '@/components/SiteFooter';
 import SiteHeader from '@/components/SiteHeader';
+import PageEffects from '@/components/PageEffects';
 import { usePathname } from '@/hooks/usePathname';
 import { routes } from '@/lib/routes';
 const HowSarWorksPage = lazy(() => import('@/pages/HowSarWorksPage'));
@@ -64,7 +65,7 @@ export default function App() {
       </a>
       <SiteHeader pathname={pathname} />
       <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
-        <Suspense fallback={<div className="mx-auto max-w-7xl px-5 py-20 text-sm text-muted" role="status">Opening this study section…</div>}><Page /></Suspense>
+        <PageEffects key={pathname}><Suspense fallback={<div className="mx-auto max-w-7xl px-5 py-20 text-sm text-muted" role="status">Opening this study section…</div>}><Page /></Suspense></PageEffects>
       </main>
       <SiteFooter />
       {assistantOpen && (

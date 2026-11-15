@@ -2,6 +2,7 @@ import { Activity, ArrowRight, CloudRain, Droplets, ExternalLink, Flame, Layers3
 import AppLink from '@/components/AppLink';
 import Card from '@/components/Card';
 import IndependentEvidence from '@/components/IndependentEvidence';
+import NasaEcosystemGallery from '@/components/NasaEcosystemGallery';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
 
@@ -170,6 +171,8 @@ export default function FutureApplicationsPage() {
           ))}
         </div>
       </section>
+
+      <NasaEcosystemGallery />
 
       <IndependentEvidence />
 
