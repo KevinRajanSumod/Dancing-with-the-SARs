@@ -49,6 +49,26 @@
 }
 
 @layer components {
+  .home-hero {
+    border: 1px solid rgba(178, 208, 218, .12);
+    background: radial-gradient(ellipse at 50% 12%, rgba(35, 107, 118, .22), transparent 48%), linear-gradient(180deg, #09151e, #0a1c28 75%);
+    box-shadow: 0 30px 100px rgba(0, 0, 0, .28);
+  }
+
+  .hero-headline {
+    font-size: clamp(2.9rem, 6.5vw, 5.8rem);
+    line-height: 1.04;
+    letter-spacing: -.045em;
+  }
+
+  .hero-headline span {
+    color: #a7dce0;
+  }
+
+  .hero-primary {
+    box-shadow: 0 8px 30px rgba(103, 217, 236, .2);
+  }
+
   .reveal {
     opacity: 0;
     transform: translateY(18px);

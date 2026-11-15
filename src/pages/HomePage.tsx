@@ -164,24 +164,23 @@ export default function HomePage() {
   return (
     <>
       <section className="relative mx-auto w-full max-w-7xl px-5 pb-20 pt-8 sm:px-8 md:pb-28 md:pt-14" aria-labelledby="hero-title">
-        <section className="relative isolate overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-[#142c3a] via-[#0d202c] to-[#091a28] px-5 py-7 shadow-[0_30px_100px_rgba(0,0,0,.32)] sm:px-9 sm:py-10 lg:px-12 lg:py-14" aria-labelledby="hero-title">
+        <section className="home-hero relative isolate overflow-hidden rounded-[2rem] px-5 pb-8 pt-14 sm:px-9 sm:pb-10 sm:pt-20 lg:px-12 lg:pt-24" aria-labelledby="hero-title">
           <div className="pointer-events-none absolute -right-48 -top-56 h-[34rem] w-[34rem] rounded-full border border-radar/10 bg-radar/[.035]" aria-hidden="true" />
           <div className="pointer-events-none absolute -bottom-48 -left-28 h-[27rem] w-[27rem] rounded-full border border-ember/10" aria-hidden="true" />
-          <div className="relative grid items-center gap-9 lg:grid-cols-[.92fr_1.08fr] lg:gap-12">
-            <div className="max-w-2xl">
-              <span className="inline-flex items-center gap-2 rounded-full border border-radar/20 bg-radar/[.08] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.15em] text-radar sm:text-xs"><CircleDot className="h-3.5 w-3.5" aria-hidden="true" />NASA Space Apps · NISAR + FIRMS</span>
-              <p className="eyebrow mt-6">TerraScope · Earth observation research</p>
-              <h1 id="hero-title" className="mt-3 text-balance text-white">Read the land through radar, heat, and time.</h1>
-              <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">A research dashboard for exploring how satellites observe our planet. The current study focuses on fire detections in Madhya Pradesh, with radar and other satellite context explained in one place.</p>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <AppLink to="/study-map" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-radar px-5 py-3 text-sm font-bold text-canvas transition hover:-translate-y-0.5 hover:bg-radar-200">Explore Map · dates and layers <ArrowRight className="h-4 w-4" aria-hidden="true" /></AppLink>
-                <AppLink to="/case-study" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-white/15 bg-white/[.04] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-radar/40 hover:bg-white/[.08]">Browse live satellite data <ArrowUpRight className="h-4 w-4 text-radar" aria-hidden="true" /></AppLink>
+          <div className="relative">
+            <div className="mx-auto max-w-4xl text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-radar/20 bg-radar/[.08] px-4 py-2 text-[10px] font-bold uppercase tracking-[.18em] text-radar sm:text-xs"><CircleDot className="h-3.5 w-3.5" aria-hidden="true" />NASA Space Apps · NISAR + FIRMS</span>
+              <h1 id="hero-title" className="hero-headline mt-7 text-balance text-white">A new perspective<br /><span>on a changing Earth.</span></h1>
+              <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">Explore radar imagery, thermal observations, and the stories they can help us understand across Madhya Pradesh.</p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <AppLink to="/study-map" className="hero-primary inline-flex min-h-12 items-center gap-2 rounded-full bg-radar px-6 py-3 text-sm font-bold text-canvas transition hover:-translate-y-0.5 hover:bg-radar-200">Explore the map <ArrowRight className="h-4 w-4" aria-hidden="true" /></AppLink>
+                <AppLink to="/case-study" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-white/15 bg-white/[.04] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-radar/40 hover:bg-white/[.08]">Explore live data <ArrowUpRight className="h-4 w-4 text-radar" aria-hidden="true" /></AppLink>
               </div>
-              <a href="#project-tour" className="mt-8 inline-flex items-center gap-2 text-xs font-semibold text-subtle transition hover:text-radar">Explore what is inside <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" /></a>
+              <a href="#project-tour" className="mt-8 inline-flex items-center gap-2 text-xs font-semibold text-subtle transition hover:text-radar">Discover the project <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" /></a>
             </div>
-            <div className="relative lg:pl-2">
+            <div className="relative mx-auto mt-14 max-w-4xl sm:mt-16">
               <div className="absolute -inset-5 rounded-[2rem] bg-gradient-to-br from-radar/10 via-transparent to-ember/10 blur-2xl" aria-hidden="true" />
-              <div className="relative rotate-0 transition-transform duration-500 lg:rotate-[.5deg]">
+              <div className="relative">
                 <StudyAreaPreview />
               </div>
             </div>
