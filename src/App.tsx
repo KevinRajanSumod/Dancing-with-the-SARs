@@ -48,7 +48,7 @@ export default function App() {
   const topic = pathname === '/how-sar-works' ? 'drivers' : 'applications';
 
   useEffect(() => {
-    document.title = title ? `${title} | Dancing with the SARs` : 'Dancing with the SARs';
+    document.title = title ? `${title} | TerraScope` : 'TerraScope';
   }, [title]);
 
   return (

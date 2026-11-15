@@ -39,8 +39,9 @@ export default function StudyDashboardPage() {
   const [data, setData] = useState<DataState | null>(null);
   const [error, setError] = useState('');
   const [selectedDate, setSelectedDate] = useState('2026-11-05' <= MAX_DAY ? '2026-11-05' : MAX_DAY);
-  const [imageryLayer, setImageryLayer] = useState<'nisar-daily' | 'nisar-12day' | 'sentinel1' | 'modis'>('nisar-12day');
+  const [imageryLayer, setImageryLayer] = useState<'nisar-daily' | 'nisar-12day' | 'sentinel1'>('nisar-12day');
   const [showDetections, setShowDetections] = useState(true);
+  const [showOpticalContext, setShowOpticalContext] = useState(true);
   const [showFootprint, setShowFootprint] = useState(false);
   const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [selectedDetection, setSelectedDetection] = useState<MapDetection | null>(null);
@@ -72,7 +73,7 @@ export default function StudyDashboardPage() {
   const showNisarDaily = imageryLayer === 'nisar-daily';
   const showNisar12Day = imageryLayer === 'nisar-12day';
   const showSentinel1 = imageryLayer === 'sentinel1';
-  const showOptical = imageryLayer === 'modis';
+  const showOptical = false;
   const dayDetections = useMemo(() => showDetections && firmsCovered ? (data?.detections ?? []).filter((item) => item.properties.date === selectedDate) : [], [data, firmsCovered, selectedDate, showDetections]);
   const countsByDistrict = useMemo(() => {
     const counts = new Map<string, number>();
@@ -117,18 +118,18 @@ export default function StudyDashboardPage() {
           <section className="surface-card p-5" aria-labelledby="layers-heading">
             <div className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-lg bg-radar/10 text-radar"><Layers3 className="h-4 w-4" /></span><div><p className="eyebrow">Map layers</p><h2 id="layers-heading" className="mt-1 text-lg">Compare observations</h2></div></div>
             <div className="mt-4 grid gap-2" role="radiogroup" aria-label="Choose the satellite image layer">
-              {([
+          {([
                 ['nisar-daily', 'NISAR daily browse · L-band'],
                 ['nisar-12day', 'NISAR 12-day mosaic · L-band'],
                 ['sentinel1', 'Sentinel-1 RTC radar · OPERA'],
-                ['modis', 'MODIS Terra true color · optical'],
               ] as const).map(([value, label]) => <label key={value} className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold ${imageryLayer === value ? 'border-radar/30 bg-radar/10 text-radar' : 'border-line bg-canvas/70 text-ink'}`}><input type="radio" name="imagery-layer" value={value} checked={imageryLayer === value} onChange={() => setImageryLayer(value)} className="accent-radar" />{label}</label>)}
+              {toggle(showOpticalContext, setShowOpticalContext, 'MODIS true-color statewide background')}
               {toggle(showDetections, setShowDetections, 'VIIRS thermal detections')}
               {toggle(showFootprint, setShowFootprint, 'Original NISAR study footprint')}
             </div>
-            <p className="mt-3 text-[11px] leading-relaxed text-muted">NISAR, OPERA Sentinel-1 RTC, and MODIS imagery come from NASA GIBS. VIIRS dots are FIRMS detection records for 30 Sep–5 Nov 2026 only. Layer dates, radar bands, processing, and coverage differ.</p>
+            <p className="mt-3 text-[11px] leading-relaxed text-muted">MODIS provides the full-state visual background. NISAR and Sentinel-1 radar are drawn over areas they actually observed; those swaths can cover only part of the state on a given date. VIIRS marks are FIRMS detection records for 30 Sep–5 Nov 2026 only.</p>
             <label className="mt-4 grid gap-1.5 text-xs font-semibold text-muted"><span>District highlight · selected day</span><select value={selectedDistrict} onChange={(event) => { setSelectedDistrict(event.currentTarget.value); setSelectedDetection(null); setSelectedCluster(null); }} className="min-h-10 rounded-lg border border-line-strong bg-raised px-3 text-sm text-ink"><option value="all">All districts</option>{districtNames.map((name) => <option key={name}>{name}</option>)}</select></label>
-            <div className="mt-4 grid grid-cols-2 gap-2"><div className="rounded-lg border border-line bg-canvas/60 p-3"><p className="text-[10px] uppercase tracking-wider text-subtle">VIIRS records</p><strong className="mt-1 block text-xl text-ember">{firmsCovered ? visibleDetections.length.toLocaleString() : '—'}</strong><p className="text-[10px] text-muted">{firmsCovered ? 'for selected day' : 'outside snapshot dates'}</p></div><div className="rounded-lg border border-line bg-canvas/60 p-3"><p className="text-[10px] uppercase tracking-wider text-subtle">Image layer</p><strong className="mt-1 block text-sm text-radar">{imageryLayer === 'nisar-daily' ? 'NISAR daily' : imageryLayer === 'nisar-12day' ? 'NISAR 12-day' : imageryLayer === 'sentinel1' ? 'Sentinel-1 RTC' : 'MODIS true color'}</strong><p className="text-[10px] text-muted">selected visualization</p></div></div>
+            <div className="mt-4 grid grid-cols-2 gap-2"><div className="rounded-lg border border-line bg-canvas/60 p-3"><p className="text-[10px] uppercase tracking-wider text-subtle">VIIRS records</p><strong className="mt-1 block text-xl text-ember">{firmsCovered ? visibleDetections.length.toLocaleString() : '—'}</strong><p className="text-[10px] text-muted">{firmsCovered ? 'for selected day' : 'outside snapshot dates'}</p></div><div className="rounded-lg border border-line bg-canvas/60 p-3"><p className="text-[10px] uppercase tracking-wider text-subtle">Radar overlay</p><strong className="mt-1 block text-sm text-radar">{imageryLayer === 'nisar-daily' ? 'NISAR daily' : imageryLayer === 'nisar-12day' ? 'NISAR 12-day' : 'Sentinel-1 RTC'}</strong><p className="text-[10px] text-muted">where observations exist</p></div></div>
           </section>
           <section className="surface-card p-5" aria-live="polite"><div className="flex items-center gap-2"><Info className="h-4 w-4 text-radar"/><h2 className="text-base">Read the map</h2></div>
             {selectedDetection ? <p className="mt-3 text-sm leading-relaxed text-muted">VIIRS record: {selectedDetection.properties.date} · {selectedDetection.properties.time} UTC · {selectedDetection.properties.confidence || 'confidence not reported'} confidence · FRP {selectedDetection.properties.frp ?? 'not reported'} MW · {selectedDetection.properties.district || 'district unavailable'}.</p> : selectedCluster ? <p className="mt-3 text-sm leading-relaxed text-muted">{selectedCluster.count} VIIRS records grouped at this location, from {selectedCluster.firstDate} to {selectedCluster.lastDate}. Group size is not a count of separate events.</p> : <p className="mt-3 text-sm leading-relaxed text-muted">Select a thermal-detection mark or district to inspect it. A thermal detection is a sensor record, not proof of a unique fire, burned area, or a cause of radar change.</p>}
@@ -140,12 +141,12 @@ export default function StudyDashboardPage() {
           <div className="relative aspect-[1.12] min-h-[27rem] overflow-hidden rounded-xl border border-white/10 bg-[#07131d] sm:aspect-[1.38] xl:aspect-[1.2]">
             {error && <div role="alert" className="absolute inset-0 z-20 grid place-items-center bg-canvas/90 p-6 text-center text-sm text-ember">{error}</div>}
             {!data && !error && <div role="status" className="absolute inset-0 z-20 grid place-items-center bg-canvas/75 text-sm text-muted">Loading Madhya Pradesh map…</div>}
-            {data && <MadhyaPradeshMapCanvas state={data.state} districts={data.districts} detections={visibleDetections} footprint={data.footprint} districtCounts={countsByDistrict} selectedDistrict={selectedDistrict} selectedDetectionId={selectedDetection?.id ?? null} selectedClusterKey={selectedCluster?.key ?? null} viewMode="grouped" showFootprint={showFootprint} selectedDate={selectedDate} showNisarDaily={showNisarDaily} showNisar12Day={showNisar12Day} showSentinel1={showSentinel1} showOptical={showOptical} zoom={zoom} resetViewKey={resetViewKey} onSelectDistrict={(name) => setSelectedDistrict((current) => current === name ? 'all' : name)} onSelectDetection={(detection) => { setSelectedDetection(detection); setSelectedCluster(null); }} onSelectCluster={(cluster) => { setSelectedCluster(cluster); setSelectedDetection(null); }} />}
+            {data && <MadhyaPradeshMapCanvas state={data.state} districts={data.districts} detections={visibleDetections} footprint={data.footprint} districtCounts={countsByDistrict} selectedDistrict={selectedDistrict} selectedDetectionId={selectedDetection?.id ?? null} selectedClusterKey={selectedCluster?.key ?? null} viewMode="grouped" showFootprint={showFootprint} selectedDate={selectedDate} showNisarDaily={showNisarDaily} showNisar12Day={showNisar12Day} showSentinel1={showSentinel1} showOptical={showOptical} showOpticalContext={showOpticalContext} zoom={zoom} resetViewKey={resetViewKey} onSelectDistrict={(name) => setSelectedDistrict((current) => current === name ? 'all' : name)} onSelectDetection={(detection) => { setSelectedDetection(detection); setSelectedCluster(null); }} onSelectCluster={(cluster) => { setSelectedCluster(cluster); setSelectedDetection(null); }} />}
             <div className="absolute bottom-3 left-3 flex flex-wrap gap-2 text-[10px] font-semibold"><span className="rounded-full border border-white/15 bg-canvas/85 px-2.5 py-1.5 text-ink">NASA GIBS imagery · {selectedDate}</span>{showDetections && firmsCovered && <span className="rounded-full border border-white/15 bg-canvas/85 px-2.5 py-1.5 text-ink">{visibleDetections.length} VIIRS records</span>}</div>
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line px-1 pt-3 text-xs text-muted" aria-label="Map legend">
             <span className="font-semibold text-ink">Map key</span>
-            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-full border border-white bg-[#f5a04a]"/>VIIRS thermal-detection record; clustered circles summarize nearby records</span>
+            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-full border border-white bg-[#f5a04a]"/>VIIRS thermal-detection records; circle size/color indicate grouped record counts, not severity</span>
             <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm border border-white/50 bg-[#263b46]"/>Madhya Pradesh districts</span>
             <span className="inline-flex items-center gap-2"><span className="h-0 w-5 border-t border-dashed border-radar"/>Optional study-footprint outline</span>
           </div>

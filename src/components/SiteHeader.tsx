@@ -36,7 +36,7 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-radar/30 bg-radar/10 text-radar shadow-[0_0_24px_rgba(103,217,236,.12)] transition-colors group-hover:bg-radar/20">
             <Radar className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
           </span>
-          <span className="truncate text-sm font-semibold tracking-wide sm:text-base">Dancing with the SARs</span>
+          <span className="truncate text-sm font-semibold tracking-wide sm:text-base">TerraScope</span>
         </AppLink>
 
         <nav aria-label="Main" className="hidden xl:block">

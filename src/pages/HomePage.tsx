@@ -13,8 +13,8 @@ export default function HomePage() {
       <section className="relative overflow-hidden rounded-[2rem] border border-radar/15 bg-gradient-to-br from-[#112b3a] via-[#0a1c29] to-[#101a29] px-6 py-10 text-white shadow-card sm:px-10 sm:py-14 lg:px-14 lg:py-20">
         <div className="pointer-events-none absolute -right-20 -top-24 h-96 w-96 rounded-full border border-radar/10"/><div className="pointer-events-none absolute -right-8 -top-12 h-72 w-72 rounded-full border border-radar/10"/><div className="pointer-events-none absolute right-10 top-10 h-48 w-48 rounded-full border border-radar/10"/>
         <div className="relative max-w-3xl">
-          <p className="eyebrow text-radar">A guided study of synthetic aperture radar</p>
-          <h1 className="mt-5 max-w-3xl text-balance text-white">Read the changing Earth through radar.</h1>
+          <p className="eyebrow text-radar">TerraScope · a guided Earth observation study</p>
+          <h1 className="mt-5 max-w-3xl text-balance text-white">See our planet differently.<br/>Act more wisely.</h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">Explore how NASA–ISRO’s NISAR mission observes the land, compare its view with other satellite evidence, and learn how to interpret radar patterns with care. Start in Madhya Pradesh; the study is designed to grow from there.</p>
           <div className="mt-8 flex flex-wrap gap-3"><AppLink to="/study-map" className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-radar px-5 py-3 text-sm font-bold text-canvas transition hover:bg-radar-200">View the project map <ArrowRight className="h-4 w-4"/></AppLink><AppLink to="/how-sar-works" className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-white/15 bg-white/[.04] px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10">How SAR works <ArrowDownRight className="h-4 w-4 text-radar"/></AppLink></div>
         </div>

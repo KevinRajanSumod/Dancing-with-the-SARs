@@ -8,7 +8,8 @@ export default function SiteFooter() {
       <div className="relative mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 md:grid-cols-[1.2fr_.8fr] md:py-16">
         <div className="max-w-xl">
           <span className="grid h-10 w-10 place-items-center rounded-xl border border-radar/25 bg-radar/10 text-radar"><Radar className="h-5 w-5" aria-hidden="true" /></span>
-          <p className="mt-5 text-2xl font-semibold tracking-tight text-white">Dancing with the SARs</p>
+          <p className="mt-5 text-2xl font-semibold tracking-tight text-white">TerraScope</p>
+          <p className="mt-1 text-sm font-medium italic text-radar">See our planet differently. Act more wisely.</p>
           <p className="mt-3 text-sm leading-relaxed text-muted">
             An independent NASA Space Apps Challenge project about reading radar carefully. NISAR and FIRMS data are credited to their source agencies.
           </p>
