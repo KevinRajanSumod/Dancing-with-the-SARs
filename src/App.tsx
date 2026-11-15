@@ -1,21 +1,30 @@
-import { useEffect, useState, type ComponentType } from 'react';
+import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import AppLink, { buttonClass } from '@/components/AppLink';
 import SiteFooter from '@/components/SiteFooter';
 import SiteHeader from '@/components/SiteHeader';
 import { usePathname } from '@/hooks/usePathname';
 import { routes } from '@/lib/routes';
-import HowSarWorksPage from '@/pages/HowSarWorksPage';
-import SourcesPage from '@/pages/SourcesPage';
-import StudyDashboardPage from '@/pages/StudyDashboardPage';
+const HowSarWorksPage = lazy(() => import('@/pages/HowSarWorksPage'));
+const HomePage = lazy(() => import('@/pages/HomePage'));
+const ForestFireChangePage = lazy(() => import('@/pages/ForestFireChangePage'));
+const PhysicalDriversPage = lazy(() => import('@/pages/PhysicalDriversPage'));
+const FutureApplicationsPage = lazy(() => import('@/pages/FutureApplicationsPage'));
+const UpcomingPage = lazy(() => import('@/pages/UpcomingPage'));
+const SourcesPage = lazy(() => import('@/pages/SourcesPage'));
+const StudyDashboardPage = lazy(() => import('@/pages/StudyDashboardPage'));
 import ProjectEvidenceAssistant from '@/components/ProjectEvidenceAssistant';
 
 const pages: Record<string, ComponentType> = {
-  '/': StudyDashboardPage,
+  '/': HomePage,
   '/madhya-pradesh-map': StudyDashboardPage,
-  '/forest-fire-change': StudyDashboardPage,
+  '/study-map': StudyDashboardPage,
+  '/forest-fire-change': ForestFireChangePage,
   '/how-sar-works': HowSarWorksPage,
+  '/physical-drivers': PhysicalDriversPage,
+  '/future-applications': FutureApplicationsPage,
   '/sources': SourcesPage,
+  '/upcoming': UpcomingPage,
 };
 
 function NotFoundPage() {
@@ -34,7 +43,7 @@ export default function App() {
   const pathname = usePathname();
   const Page = pages[pathname] ?? NotFoundPage;
   const routeTitle = routes.find((route) => route.path === pathname)?.label;
-  const title = pathname === '/' ? 'NISAR study map' : routeTitle;
+  const title = pathname === '/' ? 'Introduction' : routeTitle;
   const [assistantOpen, setAssistantOpen] = useState(false);
   const topic = pathname === '/how-sar-works' ? 'drivers' : 'applications';
 
@@ -52,7 +61,7 @@ export default function App() {
       </a>
       <SiteHeader pathname={pathname} />
       <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
-        <Page />
+        <Suspense fallback={<div className="mx-auto max-w-7xl px-5 py-20 text-sm text-muted" role="status">Opening this study section…</div>}><Page /></Suspense>
       </main>
       <SiteFooter />
       {assistantOpen && (
