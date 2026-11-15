@@ -168,7 +168,7 @@ export default function HomePage() {
           <div className="pointer-events-none absolute -right-48 -top-56 h-[34rem] w-[34rem] rounded-full border border-radar/10 bg-radar/[.035]" aria-hidden="true" />
           <div className="pointer-events-none absolute -bottom-48 -left-28 h-[27rem] w-[27rem] rounded-full border border-ember/10" aria-hidden="true" />
           <div className="relative">
-            <div className="mx-auto max-w-4xl text-center">
+            <div className="hero-intro mx-auto max-w-4xl text-center">
               <span className="inline-flex items-center gap-2 rounded-full border border-radar/20 bg-radar/[.08] px-4 py-2 text-[10px] font-bold uppercase tracking-[.18em] text-radar sm:text-xs"><CircleDot className="h-3.5 w-3.5" aria-hidden="true" />NASA Space Apps · NISAR + FIRMS</span>
               <h1 id="hero-title" className="hero-headline mt-7 text-balance text-white">A new perspective<br /><span>on a changing Earth.</span></h1>
               <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">Explore radar imagery, thermal observations, and the stories they can help us understand across Madhya Pradesh.</p>
@@ -178,7 +178,7 @@ export default function HomePage() {
               </div>
               <a href="#project-tour" className="mt-8 inline-flex items-center gap-2 text-xs font-semibold text-subtle transition hover:text-radar">Discover the project <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" /></a>
             </div>
-            <div className="relative mx-auto mt-14 max-w-4xl sm:mt-16">
+            <div className="hero-preview relative mx-auto mt-14 max-w-4xl sm:mt-16">
               <div className="absolute -inset-5 rounded-[2rem] bg-gradient-to-br from-radar/10 via-transparent to-ember/10 blur-2xl" aria-hidden="true" />
               <div className="relative">
                 <StudyAreaPreview />
