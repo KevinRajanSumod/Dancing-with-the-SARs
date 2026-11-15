@@ -8,6 +8,9 @@ const FIRMS_SOURCE_URL = 'https://firms.modaps.eosdis.nasa.gov/api/area';
 const FIRMS_WMS_URL = 'https://firms.modaps.eosdis.nasa.gov/mapserver/wms/burned_area';
 const ASF_SEARCH_URL = 'https://api.daac.asf.alaska.edu/services/search/param';
 const ASF_SOURCE_URL = 'https://search.asf.alaska.edu/';
+const VIIRS_STATE_BBOX = '73.9,20.8,83.0,27.1';
+const VIIRS_FIRST_DATE = '2012-01-20';
+const FIRMS_DOWNLOAD_URL = 'https://firms.modaps.eosdis.nasa.gov/download/';
 
 // Project footprint corners from the supplied QGIS/KML source notes (lon, lat).
 const FOOTPRINT: Array<[number, number]> = [
@@ -24,7 +27,13 @@ type Detection = {
   time: string;
   conf: string;
   frp: number | null;
+  satellite?: string;
+  daynight?: string;
 };
+
+type FirmsAvailability = { dataId: string; minDate: string; maxDate: string };
+
+let cachedFirmsAvailability: { fetchedAt: number; rows: FirmsAvailability[] } | null = null;
 
 type RadarScene = {
   sceneName: string;
@@ -112,7 +121,7 @@ function pointInPolygon(lon: number, lat: number): boolean {
   return inside;
 }
 
-function parseCsv(text: string): Detection[] | null {
+function parseCsv(text: string, footprintOnly = true): Detection[] | null {
   const lines = text.trim().split(/\r?\n/);
   const headers = lines[0].split(',').map((header) => header.trim().toLowerCase());
   const col = (name: string) => headers.indexOf(name);
@@ -122,6 +131,8 @@ function parseCsv(text: string): Detection[] | null {
   const timeColumn = col('acq_time');
   const confidenceColumn = col('confidence');
   const frpColumn = col('frp');
+  const satelliteColumn = col('satellite');
+  const daynightColumn = col('daynight');
   if ([latColumn, lonColumn, dateColumn].some((column) => column < 0)) return null;
   if (lines.length < 2) return [];
 
@@ -130,7 +141,7 @@ function parseCsv(text: string): Detection[] | null {
     const cells = line.split(',');
     const lat = Number(cells[latColumn]);
     const lon = Number(cells[lonColumn]);
-    if (!Number.isFinite(lat) || !Number.isFinite(lon) || !pointInPolygon(lon, lat)) continue;
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || (footprintOnly && !pointInPolygon(lon, lat))) continue;
     const rawTime = timeColumn < 0 ? '' : (cells[timeColumn] ?? '').trim();
     const unpaddedTime = rawTime.replace(/\D/g, '');
     const timeDigits = unpaddedTime ? unpaddedTime.padStart(4, '0').slice(-4) : '';
@@ -143,9 +154,115 @@ function parseCsv(text: string): Detection[] | null {
       time: timeDigits,
       conf: confidenceColumn < 0 ? '' : (cells[confidenceColumn] ?? '').trim(),
       frp: Number.isFinite(frp) ? frp : null,
+      satellite: satelliteColumn < 0 ? '' : (cells[satelliteColumn] ?? '').trim(),
+      daynight: daynightColumn < 0 ? '' : (cells[daynightColumn] ?? '').trim(),
     });
   }
   return records;
+}
+
+async function getFirmsAvailability(mapKey: string): Promise<FirmsAvailability[]> {
+  const now = Date.now();
+  if (cachedFirmsAvailability && now - cachedFirmsAvailability.fetchedAt < 30 * 60 * 1000) {
+    return cachedFirmsAvailability.rows;
+  }
+
+  const url = `${FIRMS_SOURCE_URL.replace('/area', '')}/data_availability/csv/${encodeURIComponent(mapKey)}/all`;
+  const response = await fetch(url, { signal: AbortSignal.timeout(12000) });
+  if (!response.ok) throw new Error(`NASA FIRMS availability check returned HTTP ${response.status}.`);
+  const lines = (await response.text()).trim().split(/\r?\n/);
+  const headers = (lines.shift() ?? '').split(',').map((value) => value.trim().toLowerCase());
+  const dataIdIndex = headers.indexOf('data_id');
+  const minDateIndex = headers.indexOf('min_date');
+  const maxDateIndex = headers.indexOf('max_date');
+  if ([dataIdIndex, minDateIndex, maxDateIndex].some((index) => index < 0)) {
+    throw new Error('NASA FIRMS returned an unexpected availability table.');
+  }
+
+  const rows = lines.map((line) => line.split(',').map((value) => value.trim()))
+    .filter((columns) => columns.length > Math.max(dataIdIndex, minDateIndex, maxDateIndex))
+    .map((columns) => ({
+      dataId: columns[dataIdIndex],
+      minDate: columns[minDateIndex],
+      maxDate: columns[maxDateIndex],
+    }));
+  cachedFirmsAvailability = { fetchedAt: now, rows };
+  return rows;
+}
+
+function isCalendarDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const parsed = new Date(`${value}T00:00:00Z`);
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+async function getHistoricalFirms(date: string): Promise<Response> {
+  const today = new Date().toISOString().slice(0, 10);
+  if (!isCalendarDate(date) || date < VIIRS_FIRST_DATE || date > today) {
+    return jsonResponse({ error: `Choose a date from ${VIIRS_FIRST_DATE} through today.` }, 400, 0);
+  }
+
+  const mapKey = Deno.env.get('FIRMS_MAP_KEY');
+  if (!mapKey) {
+    return jsonResponse({
+      status: 'configuration-required',
+      message: 'Historical VIIRS records are not configured. Add FIRMS_MAP_KEY to Supabase Edge Function Secrets.',
+      records: [],
+      sources: [],
+      sourceUrl: FIRMS_DOWNLOAD_URL,
+    }, 503, 0);
+  }
+
+  let available: FirmsAvailability[];
+  try {
+    available = await getFirmsAvailability(mapKey);
+  } catch (error) {
+    return jsonResponse({
+      status: 'unavailable',
+      message: error instanceof Error ? error.message : 'NASA FIRMS availability could not be checked.',
+      records: [],
+      sources: [],
+      sourceUrl: FIRMS_DOWNLOAD_URL,
+    }, 502, 0);
+  }
+
+  const platforms = ['VIIRS_SNPP', 'VIIRS_NOAA20', 'VIIRS_NOAA21'];
+  const selectedSources = platforms.map((platform) => {
+    const choices = available.filter((row) => row.dataId.startsWith(`${platform}_`)
+      && row.minDate <= date && row.maxDate >= date);
+    return choices.find((row) => row.dataId.endsWith('_SP'))
+      ?? choices.find((row) => row.dataId.endsWith('_NRT'));
+  }).filter((row): row is FirmsAvailability => Boolean(row));
+
+  const results = await Promise.allSettled(selectedSources.map(async ({ dataId }) => {
+    const url = `${FIRMS_SOURCE_URL}/csv/${encodeURIComponent(mapKey)}/${encodeURIComponent(dataId)}/${VIIRS_STATE_BBOX}/1/${date}`;
+    const response = await fetch(url, { signal: AbortSignal.timeout(18000) });
+    if (!response.ok) throw new Error(`${dataId} returned HTTP ${response.status}.`);
+    const records = parseCsv(await response.text(), false);
+    if (records === null) throw new Error(`${dataId} returned an unexpected table.`);
+    return { dataId, records };
+  }));
+
+  const successful = results.flatMap((result) => result.status === 'fulfilled' ? [result.value] : []);
+  const errors = results.flatMap((result) => result.status === 'rejected'
+    ? [result.reason instanceof Error ? result.reason.message : 'One VIIRS source could not be loaded.']
+    : []);
+  const records = successful.flatMap((result) => result.records.map((record) => ({ ...record, source: result.dataId })));
+  const status = successful.length === 0 && selectedSources.length > 0
+    ? 'unavailable'
+    : errors.length > 0 ? 'partial' : 'available';
+  const message = selectedSources.length === 0
+    ? 'No VIIRS product is listed as available for this date.'
+    : errors.length > 0 ? `Some VIIRS platforms could not be loaded: ${errors.join(' ')}`
+      : 'Standard Processing is used when available; the newest dates may use near-real-time records that can be revised.';
+
+  return jsonResponse({
+    status,
+    message,
+    records,
+    sources: successful.map((result) => result.dataId),
+    sourceUrl: FIRMS_DOWNLOAD_URL,
+  }, status === 'unavailable' ? 502 : 200, 3600);
 }
 
 async function getLiveFirms() {
@@ -345,6 +462,9 @@ Deno.serve(async (request) => {
   const requestUrl = new URL(request.url);
   if (requestUrl.searchParams.get('resource') === 'modis-burned-area') {
     return getModisBurnedArea(requestUrl.searchParams.get('month') ?? '');
+  }
+  if (requestUrl.searchParams.get('resource') === 'viirs-history') {
+    return getHistoricalFirms(requestUrl.searchParams.get('date') ?? '');
   }
 
   const [firms, nisar] = await Promise.all([getLiveFirms(), getLiveNisar()]);

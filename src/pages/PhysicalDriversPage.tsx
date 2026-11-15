@@ -107,23 +107,23 @@ export default function PhysicalDriversPage() {
       <section className="bg-raised py-16 md:py-20" aria-labelledby="polarization-heading">
         <div className="mx-auto grid max-w-7xl gap-9 px-5 sm:px-8 md:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <p className="eyebrow">Read the supplied products carefully</p>
-            <h2 id="polarization-heading" className="mt-3">The scene configurations differ.</h2>
+            <p className="eyebrow">What the scene metadata shows</p>
+            <h2 id="polarization-heading" className="mt-3">These scenes are not a like-for-like pair.</h2>
           </div>
           <div className="max-w-3xl text-base leading-relaxed text-muted">
             <p>
-              The supplied scene names encode different polarization configurations: <strong>QPDH</strong> for the
-              30 September scene and <strong>DHDH</strong> for the 5 November scene. Their workflow identifiers also
-              differ: <strong>P05023</strong> and <strong>P05036</strong>. The NISAR Data User Guide explains these
-              fields in the GCOV naming convention. Although both previews show an HV layer, that does not make the
-              two browse images a calibrated change measurement.
+              The scene IDs identify different polarization configurations: <strong>QPDH</strong> on 30 September and
+              <strong> DHDH</strong> on 5 November. Their processing releases also differ: <strong>P05023</strong> and
+              <strong> P05036</strong>. Both previews show an HV layer, but that alone does not make them a calibrated
+              change pair.
             </p>
             <p className="mt-4">
-              Treat the visible contrast as a prompt to obtain compatible geocoded measurements, match the polarization
-              and viewing geometry, account for processing versions, and validate any proposed land change independently.
+              This project includes browse PNGs and georeferenced display overlays, not the source GCOV measurement
+              rasters. This page reports the metadata mismatch and shows the previews, but it cannot calculate calibrated
+              pixel-level change from these images.
             </p>
             <a href="https://nisar-docs.asf.alaska.edu/gcov/" target="_blank" rel="noopener noreferrer" className={sourceLinkClass}>
-              NISAR Data User Guide · GCOV product naming and layers<span className="sr-only"> (opens in a new tab)</span>
+              Optional reference: NISAR GCOV product details<span className="sr-only"> (opens in a new tab)</span>
             </a>
             <div className="mt-6 flex items-start gap-3 rounded-xl border border-ember/20 bg-ember/5 p-4 text-sm leading-relaxed text-muted">
               <ScanLine className="mt-0.5 h-4 w-4 shrink-0 text-ember" aria-hidden="true" />

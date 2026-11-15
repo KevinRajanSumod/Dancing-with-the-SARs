@@ -103,7 +103,6 @@ function NisarMissionMedia() {
                 </video>
               </div>
               <figcaption className="p-5 sm:p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-radar">55-second mission animation</p>
                 <h3 className="mt-2 text-xl">NISAR launch and deployment</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">NASA/JPL-Caltech · animation of the spacecraft launch and reflector deployment.</p>
                 <a href="https://science.nasa.gov/video-detail/amf-ffc8740c-2d65-4712-a4dd-78152649ab49/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline underline-offset-4 hover:text-navy">

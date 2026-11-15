@@ -1,28 +1,49 @@
 import AppLink from '@/components/AppLink';
 import { ArrowUpRight, Radar } from 'lucide-react';
+import { routes } from '@/lib/routes';
+
+const projectPaths = ['/', '/study-map', '/case-study', '/upcoming'];
+const learningPaths = ['/how-sar-works', '/physical-drivers', '/future-applications', '/sources'];
+
+function FooterLink({ to }: { to: string }) {
+  const route = routes.find((item) => item.path === to);
+  if (!route) return null;
+  return <AppLink to={route.path} className="text-sm text-white/70 transition hover:text-radar">{route.label}</AppLink>;
+}
 
 export default function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden border-t border-line bg-navy text-white">
-      <div className="pointer-events-none absolute -right-32 top-0 h-80 w-80 rounded-full bg-radar/10 blur-3xl" aria-hidden="true" />
-      <div className="relative mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 md:grid-cols-[1.2fr_.8fr] md:py-16">
-        <div className="max-w-xl">
-          <span className="grid h-10 w-10 place-items-center rounded-xl border border-radar-200/25 bg-radar-200/10 text-radar-200"><Radar className="h-5 w-5" aria-hidden="true" /></span>
-          <p className="mt-5 text-2xl font-semibold tracking-tight text-white">TerraScope</p>
-          <p className="mt-1 text-sm font-medium italic text-radar-200">See our planet differently. Act more wisely.</p>
-          <p className="mt-3 text-sm leading-relaxed text-white/80">An independent Earth-observation research dashboard. The current investigation examines fire-related satellite evidence in Madhya Pradesh; future studies will expand to other land and water questions.</p>
-          <p className="mt-3 text-xs leading-relaxed text-white/65">FIRMS records cover 30 Sep–5 Nov 2026. Radar browse imagery is visual context, not a calibrated change measurement.</p>
+    <footer className="relative mt-auto overflow-hidden border-t border-white/10 bg-[#061522] text-white">
+      <div className="pointer-events-none absolute -right-32 -top-40 h-[28rem] w-[28rem] rounded-full bg-radar/[.08] blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute -bottom-40 left-1/4 h-80 w-80 rounded-full bg-ember/[.07] blur-3xl" aria-hidden="true" />
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 md:grid-cols-[1.35fr_.8fr_.8fr] md:py-16">
+        <div className="max-w-md">
+          <AppLink to="/" className="inline-flex items-center gap-3 text-white" aria-label="TerraScope home">
+            <span className="grid h-10 w-10 place-items-center rounded-xl border border-radar/20 bg-radar/10 text-radar"><Radar className="h-5 w-5" aria-hidden="true" /></span>
+            <span className="text-lg font-bold tracking-wide">TerraScope</span>
+          </AppLink>
+          <p className="mt-5 text-sm font-medium italic text-radar">See our planet differently. Act more wisely.</p>
+          <p className="mt-3 text-sm leading-relaxed text-white/70">An independent Earth-observation research dashboard. The current study explores fire-related satellite evidence across Madhya Pradesh; broader land and water studies are planned.</p>
+          <p className="mt-4 text-xs leading-relaxed text-white/55">FIRMS archive records load by date; the supplied snapshot covers 30 September–5 November 2026. Detections are not burned area. NISAR browse imagery is not a calibrated change measurement.</p>
         </div>
-        <nav aria-label="Footer" className="grid content-start gap-3 text-sm sm:grid-cols-2">
-          <AppLink to="/study-map" className="group flex items-center justify-between rounded-xl border border-white/15 bg-white/[.06] px-4 py-3 text-white/80 transition hover:border-radar/40 hover:bg-white/[.12] hover:text-white">Open research map <ArrowUpRight className="h-4 w-4 text-radar transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" /></AppLink>
-          <AppLink to="/how-sar-works" className="group flex items-center justify-between rounded-xl border border-white/15 bg-white/[.06] px-4 py-3 text-white/80 transition hover:border-radar/40 hover:bg-white/[.12] hover:text-white">Learn SAR basics <ArrowUpRight className="h-4 w-4 text-radar transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" /></AppLink>
-          <AppLink to="/sources" className="group flex items-center justify-between rounded-xl border border-white/15 bg-white/[.06] px-4 py-3 text-white/80 transition hover:border-radar/40 hover:bg-white/[.12] hover:text-white">Data & method <ArrowUpRight className="h-4 w-4 text-radar transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" /></AppLink>
-          <a href="https://science.nasa.gov/mission/nisar/mission-overview/" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between rounded-xl border border-white/15 bg-white/[.06] px-4 py-3 text-white/80 transition hover:border-radar/40 hover:bg-white/[.12] hover:text-white">NISAR mission <ArrowUpRight className="h-4 w-4 text-radar transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" /></a>
+
+        <nav aria-label="Project pages" className="grid content-start gap-3">
+          <h2 className="text-[10px] font-bold uppercase tracking-[.18em] text-subtle">Explore TerraScope</h2>
+          {projectPaths.map((path) => <FooterLink key={path} to={path} />)}
+        </nav>
+
+        <nav aria-label="Learning and methods" className="grid content-start gap-3">
+          <h2 className="text-[10px] font-bold uppercase tracking-[.18em] text-subtle">Learn and inspect</h2>
+          {learningPaths.map((path) => <FooterLink key={path} to={path} />)}
+          <a href="https://github.com/KevinRajanSumod/Dancing-with-the-SARs" target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 text-sm text-white/70 transition hover:text-radar">Project repository <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
         </nav>
       </div>
-      <div className="relative mx-auto flex max-w-7xl flex-col gap-2 border-t border-white/10 px-5 py-5 text-[11px] leading-relaxed text-subtle sm:flex-row sm:items-center sm:justify-between sm:px-8">
-        <span>NASA and ISRO do not endorse this independent project.</span>
-        <a href="https://svs.gsfc.nasa.gov/11474" target="_blank" rel="noopener noreferrer" className="transition hover:text-radar">Hero photograph: NASA/JSC · Earth Illuminated ↗</a>
+
+      <div className="relative border-t border-white/[.08]">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-[11px] leading-relaxed text-white/55 sm:px-8 md:flex-row md:items-center md:justify-between">
+          <p>Data credits: NASA · ISRO · NISAR · NASA FIRMS · VIIRS · MODIS · OPERA / Sentinel-1.</p>
+          <p>TerraScope is independent. NASA, ISRO, and partner missions do not endorse this project.</p>
+        </div>
       </div>
     </footer>
   );

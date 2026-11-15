@@ -12,6 +12,7 @@ const FutureApplicationsPage = lazy(() => import('@/pages/FutureApplicationsPage
 const UpcomingPage = lazy(() => import('@/pages/UpcomingPage'));
 const SourcesPage = lazy(() => import('@/pages/SourcesPage'));
 const StudyDashboardPage = lazy(() => import('@/pages/StudyDashboardPage'));
+const LiveEarthDataStory = lazy(() => import('@/pages/LiveEarthDataStory'));
 import ProjectEvidenceAssistant from '@/components/ProjectEvidenceAssistant';
 
 const pages: Record<string, ComponentType> = {
@@ -24,6 +25,7 @@ const pages: Record<string, ComponentType> = {
   '/future-applications': FutureApplicationsPage,
   '/sources': SourcesPage,
   '/upcoming': UpcomingPage,
+  '/case-study': LiveEarthDataStory,
 };
 
 function NotFoundPage() {
@@ -42,7 +44,7 @@ export default function App() {
   const pathname = usePathname();
   const Page = pages[pathname] ?? NotFoundPage;
   const routeTitle = routes.find((route) => route.path === pathname)?.label;
-  const title = pathname === '/' ? 'Introduction' : routeTitle;
+  const title = routeTitle;
   const [assistantOpen, setAssistantOpen] = useState(false);
   const topic = pathname === '/how-sar-works' ? 'drivers' : 'applications';
 
@@ -51,7 +53,9 @@ export default function App() {
   }, [title]);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <>
+      <div className="site-atmosphere" aria-hidden="true"><span className="ambient-orb ambient-orb-warm" /><span className="ambient-orb ambient-orb-cool" /></div>
+      <div className="relative z-10 flex min-h-screen flex-col">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-navy focus:shadow-card"
@@ -74,9 +78,10 @@ export default function App() {
           </aside>
         </div>
       )}
-      <button type="button" onClick={() => setAssistantOpen(true)} className="fixed bottom-24 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-radar px-5 py-3 font-bold text-canvas shadow-xl hover:bg-radar-200" aria-label="Open EchoGuide assistant">
-        <MessageCircle className="h-5 w-5" /> Ask EchoGuide
+      <button type="button" onClick={() => setAssistantOpen(true)} className="fixed bottom-4 right-4 z-50 grid h-12 w-12 place-items-center rounded-full bg-radar text-canvas shadow-xl transition hover:bg-radar-200 sm:bottom-5 sm:right-5 sm:flex sm:h-auto sm:w-auto sm:gap-2 sm:px-5 sm:py-3 sm:font-bold" aria-label="Open EchoGuide assistant">
+        <MessageCircle className="h-5 w-5" aria-hidden="true" /><span className="sr-only sm:not-sr-only">Ask EchoGuide</span>
       </button>
-    </div>
+      </div>
+    </>
   );
 }

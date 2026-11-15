@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointer
 export type Position = [number, number];
 
 export interface MapGeometry {
-  type: 'Polygon' | 'MultiPolygon';
+  type: 'Polygon' | 'MultiPolygon' | 'Point';
   coordinates: unknown;
 }
 
@@ -28,6 +28,8 @@ export interface DetectionProperties extends Record<string, unknown> {
   frp: number | null;
   daynight: string;
   district: string;
+  satellite?: string;
+  source?: string;
 }
 
 export interface MapDetection extends MapFeature<DetectionProperties> {

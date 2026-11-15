@@ -4,23 +4,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        navy: { DEFAULT: '#23332D', 800: '#30423A', 700: '#40554B', 100: '#E2E8E2' },
-        radar: { DEFAULT: '#276D63', 200: '#D8ECE7', 100: '#E8F2EF' },
-        teal: { DEFAULT: '#276D63', 700: '#D8ECE7', 50: '#EFF6F3', 100: '#E8F2EF' },
-        ember: { DEFAULT: '#B94E36', 100: '#F8E8E2', 300: '#EBC4B7' },
-        amber: { DEFAULT: '#B57A20', 100: '#F7EFDD', 300: '#EBD6A5' },
-        crimson: { DEFAULT: '#A83F3C', 100: '#F5E6E3' },
-        success: { DEFAULT: '#397458', 50: '#E6F0E9' },
-        eco: { DEFAULT: '#397458', 100: '#E6F0E9' },
-        date: { DEFAULT: '#916318', 100: '#F7EFDD' },
-        analysis: { DEFAULT: '#625B86', 100: '#ECEAF3' },
-        canvas: '#F3F2EC',
-        paper: '#FCFBF7',
-        raised: '#E9E8E0',
-        line: { DEFAULT: '#D3D4C9', strong: '#A9B0A5' },
-        ink: '#202C27',
-        muted: '#4F5D55',
-        subtle: '#68756C',
+        navy: { DEFAULT: '#071828', 800: '#0B2230', 700: '#102B3A', 100: '#D5E2E8' },
+        radar: { DEFAULT: '#67D9EC', 200: '#C4F5FA', 100: '#153943' },
+        teal: { DEFAULT: '#67D9EC', 700: '#C4F5FA', 50: '#102C35', 100: '#153943' },
+        ember: { DEFAULT: '#F07859', 100: '#3B2027', 300: '#FFD3AC' },
+        amber: { DEFAULT: '#FFB84D', 100: '#3D2B1B', 300: '#FFE29C' },
+        crimson: { DEFAULT: '#EF6267', 100: '#351D25' },
+        success: { DEFAULT: '#91D5A1', 50: '#142D26' },
+        eco: { DEFAULT: '#91D5A1', 100: '#142D26' },
+        date: { DEFAULT: '#F6C463', 100: '#392D1F' },
+        analysis: { DEFAULT: '#C2A5F5', 100: '#29233A' },
+        canvas: '#071828',
+        paper: '#0D202C',
+        raised: '#142A37',
+        line: { DEFAULT: '#304653', strong: '#627985' },
+        ink: '#F1F5F7',
+        muted: '#C6D0D7',
+        subtle: '#AFBDC7',
       },
       fontFamily: {
         sans: [
@@ -35,8 +35,8 @@ export default {
         ],
       },
       boxShadow: {
-        card: '0 8px 24px rgba(35, 51, 45, 0.08), inset 0 1px rgba(255, 255, 255, 0.75)',
-        lift: '0 14px 32px rgba(35, 51, 45, 0.13), inset 0 1px rgba(255, 255, 255, 0.8)',
+        card: '0 12px 32px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.035)',
+        lift: '0 18px 42px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255, 255, 255, 0.045)',
       },
       keyframes: {
         sweep: {
