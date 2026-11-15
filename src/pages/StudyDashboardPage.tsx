@@ -22,14 +22,26 @@ async function load<P extends Record<string, unknown>>(url: string): Promise<Col
 function dayAt(index: number) { return new Date(Date.parse(`${NISAR_FIRST_DAY}T00:00:00Z`) + index * DAY_MS).toISOString().slice(0, 10); }
 function dateIndex(date: string) { return Math.max(0, Math.min(dayCount, Math.round((Date.parse(`${date}T00:00:00Z`) - Date.parse(`${NISAR_FIRST_DAY}T00:00:00Z`)) / DAY_MS))); }
 function formatDate(date: string) { return new Date(`${date}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }); }
+function insideRing(lon: number, lat: number, ring: number[][]): boolean {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i]; const [xj, yj] = ring[j];
+    if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+function insideState(lon: number, lat: number, feature: MapFeature): boolean {
+  const polygons = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.coordinates as unknown[];
+  return (polygons as number[][][][]).some((rings) => rings.length > 0 && insideRing(lon, lat, rings[0]) && !rings.slice(1).some((ring) => insideRing(lon, lat, ring)));
+}
 
 export default function StudyDashboardPage() {
   const [data, setData] = useState<DataState | null>(null);
   const [error, setError] = useState('');
   const [selectedDate, setSelectedDate] = useState('2026-11-05' <= MAX_DAY ? '2026-11-05' : MAX_DAY);
-  const [imageryLayer, setImageryLayer] = useState<'nisar-daily' | 'nisar-12day' | 'sentinel1' | 'modis'>('nisar-daily');
+  const [imageryLayer, setImageryLayer] = useState<'nisar-daily' | 'nisar-12day' | 'sentinel1' | 'modis'>('nisar-12day');
   const [showDetections, setShowDetections] = useState(true);
-  const [showFootprint, setShowFootprint] = useState(true);
+  const [showFootprint, setShowFootprint] = useState(false);
   const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [selectedDetection, setSelectedDetection] = useState<MapDetection | null>(null);
   const [selectedCluster, setSelectedCluster] = useState<ClusterSummary | null>(null);
@@ -44,7 +56,14 @@ export default function StudyDashboardPage() {
       load<DetectionProps>('/data/madhya-pradesh-firms-2026.geojson'),
       load('/data/project-footprint.geojson'),
     ]).then(([state, districts, firms, footprint]) => {
-      if (!cancelled) setData({ state: state.features[0], districts: districts.features, detections: firms.features as MapDetection[], footprint: footprint.features[0] ?? null });
+      if (!cancelled) {
+        const boundary = state.features[0];
+        const inState = (firms.features as MapDetection[]).filter((item) => {
+          const [lon, lat] = item.geometry.coordinates as [number, number];
+          return insideState(lon, lat, boundary);
+        });
+        setData({ state: boundary, districts: districts.features, detections: inState, footprint: footprint.features[0] ?? null });
+      }
     }).catch((reason: unknown) => { if (!cancelled) setError(reason instanceof Error ? reason.message : 'Map data could not be loaded.'); });
     return () => { cancelled = true; };
   }, []);
@@ -124,7 +143,13 @@ export default function StudyDashboardPage() {
             {data && <MadhyaPradeshMapCanvas state={data.state} districts={data.districts} detections={visibleDetections} footprint={data.footprint} districtCounts={countsByDistrict} selectedDistrict={selectedDistrict} selectedDetectionId={selectedDetection?.id ?? null} selectedClusterKey={selectedCluster?.key ?? null} viewMode="grouped" showFootprint={showFootprint} selectedDate={selectedDate} showNisarDaily={showNisarDaily} showNisar12Day={showNisar12Day} showSentinel1={showSentinel1} showOptical={showOptical} zoom={zoom} resetViewKey={resetViewKey} onSelectDistrict={(name) => setSelectedDistrict((current) => current === name ? 'all' : name)} onSelectDetection={(detection) => { setSelectedDetection(detection); setSelectedCluster(null); }} onSelectCluster={(cluster) => { setSelectedCluster(cluster); setSelectedDetection(null); }} />}
             <div className="absolute bottom-3 left-3 flex flex-wrap gap-2 text-[10px] font-semibold"><span className="rounded-full border border-white/15 bg-canvas/85 px-2.5 py-1.5 text-ink">NASA GIBS imagery · {selectedDate}</span>{showDetections && firmsCovered && <span className="rounded-full border border-white/15 bg-canvas/85 px-2.5 py-1.5 text-ink">{visibleDetections.length} VIIRS records</span>}</div>
           </div>
-          <p className="mt-3 text-xs leading-relaxed text-muted">{firmsCovered && showDetections ? `${visibleDetections.length.toLocaleString()} FIRMS detection records are shown for this date.` : 'No FIRMS snapshot data is available for this selected date.'} Drag to pan · use controls to zoom. District shading reflects the selected date’s record count only.</p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line px-1 pt-3 text-xs text-muted" aria-label="Map legend">
+            <span className="font-semibold text-ink">Map key</span>
+            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-full border border-white bg-[#f5a04a]"/>VIIRS thermal-detection record; clustered circles summarize nearby records</span>
+            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm border border-white/50 bg-[#263b46]"/>Madhya Pradesh districts</span>
+            <span className="inline-flex items-center gap-2"><span className="h-0 w-5 border-t border-dashed border-radar"/>Optional study-footprint outline</span>
+          </div>
+          <p className="mt-2 text-xs leading-relaxed text-muted">{firmsCovered && showDetections ? `${visibleDetections.length.toLocaleString()} FIRMS detection records are shown for this date.` : 'No FIRMS snapshot data is available for this selected date.'} Drag to pan · use controls to zoom. District shading reflects the selected date’s record count only. Radar imagery covers only places with valid observations; blank areas mean no image for that layer/date.</p>
         </section>
       </div>
 

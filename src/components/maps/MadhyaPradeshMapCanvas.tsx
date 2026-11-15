@@ -387,6 +387,7 @@ export default function MadhyaPradeshMapCanvas({
       </g>
 
       <g>
+        <path d={statePath} fill="#263b46" fillRule="evenodd" fillOpacity="0.9" stroke="none" pointerEvents="none" />
         {districtPaths.map(({ feature, path }) => {
           const name = feature.properties.name;
           const count = districtCounts.get(name) ?? 0;
@@ -430,7 +431,7 @@ export default function MadhyaPradeshMapCanvas({
       </g>
 
       {showFootprint && footprintPath && (
-        <path d={footprintPath} fill="#67d9ec" fillOpacity="0.07" stroke="#67d9ec" strokeWidth={radius * 2.1} strokeDasharray={`${radius * 4} ${radius * 2.4}`} vectorEffect="non-scaling-stroke" pointerEvents="none">
+        <path d={footprintPath} fill="none" stroke="#67d9ec" strokeWidth={radius * 1.2} strokeDasharray={`${radius * 4} ${radius * 2.4}`} vectorEffect="non-scaling-stroke" pointerEvents="none">
           <title>Original NISAR project footprint, shown for geographic context</title>
         </path>
       )}
