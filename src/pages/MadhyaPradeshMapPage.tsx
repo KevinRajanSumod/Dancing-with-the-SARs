@@ -76,7 +76,6 @@ export default function MadhyaPradeshMapPage() {
   const [confidence, setConfidence] = useState<Set<Confidence>>(() => new Set(CONFIDENCE_VALUES));
   const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [viewMode, setViewMode] = useState<'grouped' | 'density' | 'individual'>('grouped');
-  const [showFootprint, setShowFootprint] = useState(true);
   const [zoom, setZoom] = useState(1);
   const [viewResetKey, setViewResetKey] = useState(0);
   const [selectedDetection, setSelectedDetection] = useState<MapDetection | null>(null);
@@ -316,7 +315,6 @@ export default function MadhyaPradeshMapPage() {
                     <button type="button" aria-pressed={viewMode === 'density'} onClick={() => { setViewMode('density'); clearSelection(); }} className={`min-h-9 rounded-md px-3 text-xs font-semibold ${viewMode === 'density' ? 'bg-radar/15 text-radar' : 'text-muted hover:text-white'}`}>Density</button>
                     <button type="button" aria-pressed={viewMode === 'individual'} onClick={() => { setViewMode('individual'); clearSelection(); }} className={`min-h-9 rounded-md px-3 text-xs font-semibold ${viewMode === 'individual' ? 'bg-radar/15 text-radar' : 'text-muted hover:text-white'}`}>Individual</button>
                   </div>
-                  <button type="button" aria-pressed={showFootprint} onClick={() => setShowFootprint((current) => !current)} className={`min-h-9 rounded-lg border px-3 text-xs font-semibold transition-colors ${showFootprint ? 'border-radar/25 bg-radar/10 text-radar' : 'border-line bg-canvas text-muted'}`}>NISAR footprint</button>
                 </div>
               </div>
 
@@ -334,7 +332,6 @@ export default function MadhyaPradeshMapPage() {
                     selectedDetectionId={selectedDetection?.id ?? null}
                     selectedClusterKey={selectedCluster?.key ?? null}
                     viewMode={viewMode}
-                    showFootprint={showFootprint}
                     zoom={zoom}
                     resetViewKey={viewResetKey}
                     onSelectDistrict={(name) => chooseDistrict(name)}
@@ -349,7 +346,6 @@ export default function MadhyaPradeshMapPage() {
                 </div>
                 <div className="absolute bottom-3 left-3 z-10 flex flex-wrap gap-2 text-[10px] font-medium text-ink">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-canvas/85 px-2.5 py-1.5 backdrop-blur"><span className={`h-2.5 w-2.5 ${viewMode === 'density' ? 'rounded-sm' : 'rounded-full'}`} style={viewMode === 'density' ? { background: 'linear-gradient(135deg, #f6b14d, #f04d53)' } : { backgroundColor: '#f6b14d' }} />{viewMode === 'grouped' ? 'Grouped records' : viewMode === 'density' ? 'Records per grid cell' : 'Individual records'}</span>
-                  {showFootprint && <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-canvas/85 px-2.5 py-1.5 backdrop-blur"><span className="w-3 border-t-2 border-dashed border-radar" />NISAR study footprint</span>}
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-canvas/85 px-2.5 py-1.5 backdrop-blur"><span className="h-2.5 w-5 rounded-sm" style={{ background: 'linear-gradient(90deg, #183741, #be5f36)' }} />District record count</span>
                 </div>
               </div>

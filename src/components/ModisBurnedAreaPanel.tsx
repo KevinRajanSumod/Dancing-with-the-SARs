@@ -90,6 +90,12 @@ export default function ModisBurnedAreaPanel() {
           </form>
         </div>
 
+        <LiveDataInsight
+          title="MODIS monthly burned-area layer"
+          question="Explain what the current MODIS month and layer status can tell a visitor, how the product is useful alongside FIRMS and radar, and why a blank map or visible pixels have limits."
+          evidence={`Product: NASA MODIS MCD64A1 monthly burned-area layer, approximately 500 m per pixel. Selected month: ${month}. Loaded month: ${loadedMonth || 'not loaded'}. Layer status: ${loading ? 'loading' : error ? `unavailable (${error})` : hasVisiblePixels === true ? 'some non-transparent map pixels are visible' : hasVisiblePixels === false ? 'no non-transparent map pixels were detected in the returned image' : 'not checked yet'}. Monthly coverage can be delayed. A blank image cannot distinguish no mapped burn from missing usable coverage. This is a separate product from FIRMS heat detections and is not pixel-matched to NISAR previews.`}
+        />
+
         {error && <div role="status" className="mt-5 rounded-xl border border-ember/25 bg-ember/5 p-4 text-sm leading-relaxed text-muted"><p>{error}</p></div>}
 
         {imageUrl ? (
@@ -111,12 +117,6 @@ export default function ModisBurnedAreaPanel() {
         ) : !error ? (
           <div className="mt-5 flex min-h-36 items-center justify-center gap-3 rounded-xl border border-dashed border-line bg-canvas/55 px-4 text-center text-sm text-muted"><ImageOff className="h-5 w-5 text-subtle" aria-hidden="true" /><span>Choose a month and load the NASA layer to view its image.</span></div>
         ) : null}
-
-        <LiveDataInsight
-          title="MODIS monthly burned-area layer"
-          question="Explain what the current MODIS month and layer status can tell a visitor, how the product is useful alongside FIRMS and radar, and why a blank map or visible pixels have limits."
-          evidence={`Product: NASA MODIS MCD64A1 monthly burned-area layer, approximately 500 m per pixel. Selected month: ${month}. Loaded month: ${loadedMonth || 'not loaded'}. Layer status: ${loading ? 'loading' : error ? `unavailable (${error})` : hasVisiblePixels === true ? 'some non-transparent map pixels are visible' : hasVisiblePixels === false ? 'no non-transparent map pixels were detected in the returned image' : 'not checked yet'}. Monthly coverage can be delayed. A blank image cannot distinguish no mapped burn from missing usable coverage. This is a separate product from FIRMS heat detections and is not pixel-matched to NISAR previews.`}
-        />
 
         <div className="mt-4 flex flex-col gap-2 border-t border-line pt-4 text-xs leading-relaxed text-muted sm:flex-row sm:items-start sm:justify-between">
           <p className="max-w-3xl">MCD64A1 is NASA’s open monthly burned-area product (about 500 m per pixel). New months can appear with a delay. It maps burn scars; FIRMS dots are separate satellite heat detections. Neither alone proves the cause of a fire, and this layer is not pixel-matched to the radar previews.</p>

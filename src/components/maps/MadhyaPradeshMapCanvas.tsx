@@ -63,11 +63,12 @@ interface MadhyaPradeshMapCanvasProps {
   selectedDetectionId: string | number | null;
   selectedClusterKey: string | null;
   viewMode: 'grouped' | 'density' | 'individual' | 'district';
-  showFootprint: boolean;
   selectedDate?: string;
   showNisarDaily?: boolean;
   showNisar12Day?: boolean;
   showSentinel1?: boolean;
+  showModisBurnedArea?: boolean;
+  modisBurnedAreaUrl?: string;
   showOptical?: boolean;
   showOpticalContext?: boolean;
   onImageryStatus?: (kind: 'radar' | 'optical', status: 'loaded' | 'unavailable', key: string) => void;
@@ -201,13 +202,14 @@ export default function MadhyaPradeshMapCanvas({
   selectedDetectionId,
   selectedClusterKey,
   viewMode,
-  showFootprint,
   selectedDate = new Date().toISOString().slice(0, 10),
   showNisarDaily = false,
   showNisar12Day = false,
   showSentinel1 = false,
+  showModisBurnedArea = false,
+  modisBurnedAreaUrl = '',
   showOptical = false,
-  showOpticalContext = true,
+  showOpticalContext = false,
   onImageryStatus,
   zoom,
   resetViewKey,
@@ -290,6 +292,13 @@ export default function MadhyaPradeshMapCanvas({
     const bottom = projection.y(imageExtent.minLatitude);
     return { x: left, y: top, width: right - left, height: bottom - top };
   }, [imageExtent, projection]);
+  const modisBounds = useMemo(() => {
+    const left = projection.x(76.586);
+    const right = projection.x(79.971);
+    const top = projection.y(24.307);
+    const bottom = projection.y(21.228);
+    return { x: left, y: top, width: right - left, height: bottom - top };
+  }, [projection]);
   const gibsUrl = (layer: string, date: string, transparent = true) => {
     const params = new URLSearchParams({
       SERVICE: 'WMS', VERSION: '1.1.1', REQUEST: 'GetMap', LAYERS: layer,
@@ -387,6 +396,7 @@ export default function MadhyaPradeshMapCanvas({
         <clipPath id="mp-state-clip">
           <path d={statePath} fillRule="evenodd" />
         </clipPath>
+        {footprintPath && <clipPath id="mp-footprint-clip"><path d={footprintPath} fillRule="evenodd" /></clipPath>}
       </defs>
       <rect x={-projection.width} y={-projection.height} width={projection.width * 3} height={projection.height * 3} fill="url(#mp-map-bg)" />
 
@@ -398,12 +408,13 @@ export default function MadhyaPradeshMapCanvas({
       {/* Keep the land fill behind satellite imagery so it cannot wash the imagery out. */}
       <path d={statePath} fill="#263b46" fillRule="evenodd" fillOpacity="0.9" stroke="none" pointerEvents="none" />
 
-      {showOpticalContext && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="1" pointerEvents="none" onLoad={() => onImageryStatus?.('optical', 'loaded', `natural:${selectedDate}`)} onError={() => onImageryStatus?.('optical', 'unavailable', `natural:${selectedDate}`)} />}
-      {showOptical && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.86" pointerEvents="none" onLoad={() => onImageryStatus?.('optical', 'loaded', `natural:${selectedDate}`)} onError={() => onImageryStatus?.('optical', 'unavailable', `natural:${selectedDate}`)} />}
+      {showOpticalContext && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="1" style={{ mixBlendMode: 'lighten' }} pointerEvents="none" onLoad={() => onImageryStatus?.('optical', 'loaded', `natural:${selectedDate}`)} onError={() => onImageryStatus?.('optical', 'unavailable', `natural:${selectedDate}`)} />}
+      {showOptical && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.86" style={{ mixBlendMode: 'lighten' }} pointerEvents="none" onLoad={() => onImageryStatus?.('optical', 'loaded', `natural:${selectedDate}`)} onError={() => onImageryStatus?.('optical', 'unavailable', `natural:${selectedDate}`)} />}
+      {showModisBurnedArea && modisBurnedAreaUrl && <image href={modisBurnedAreaUrl} {...modisBounds} preserveAspectRatio="none" opacity="1" pointerEvents="none" clipPath={footprintPath ? 'url(#mp-footprint-clip)' : undefined} />}
       <g clipPath="url(#mp-state-clip)" pointerEvents="none">
-        {showSentinel1 && <image href={gibsUrl('OPERA_L2_Radiometric_Terrain_Corrected_SAR_Sentinel-1', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" onLoad={() => onImageryStatus?.('radar', 'loaded', `sentinel1:${selectedDate}`)} onError={() => onImageryStatus?.('radar', 'unavailable', `sentinel1:${selectedDate}`)} />}
-        {showNisar12Day && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance_12Day', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" onLoad={() => onImageryStatus?.('radar', 'loaded', `nisar-12day:${selectedDate}`)} onError={() => onImageryStatus?.('radar', 'unavailable', `nisar-12day:${selectedDate}`)} />}
-        {showNisarDaily && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.95" onLoad={() => onImageryStatus?.('radar', 'loaded', `nisar-daily:${selectedDate}`)} onError={() => onImageryStatus?.('radar', 'unavailable', `nisar-daily:${selectedDate}`)} />}
+        {showSentinel1 && <image href={gibsUrl('OPERA_L2_Radiometric_Terrain_Corrected_SAR_Sentinel-1', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" style={{ mixBlendMode: 'lighten' }} onLoad={() => onImageryStatus?.('radar', 'loaded', `sentinel1:${selectedDate}`)} onError={() => onImageryStatus?.('radar', 'unavailable', `sentinel1:${selectedDate}`)} />}
+        {showNisar12Day && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance_12Day', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" style={{ mixBlendMode: 'lighten' }} onLoad={() => onImageryStatus?.('radar', 'loaded', `nisar-12day:${selectedDate}`)} onError={() => onImageryStatus?.('radar', 'unavailable', `nisar-12day:${selectedDate}`)} />}
+        {showNisarDaily && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.95" style={{ mixBlendMode: 'lighten' }} onLoad={() => onImageryStatus?.('radar', 'loaded', `nisar-daily:${selectedDate}`)} onError={() => onImageryStatus?.('radar', 'unavailable', `nisar-daily:${selectedDate}`)} />}
       </g>
 
       <g>
@@ -448,12 +459,6 @@ export default function MadhyaPradeshMapCanvas({
           <text key={`lat-label-${line.latitude}`} x={projection.minX + radius * 2.5} y={line.y - radius * 1.4}>{line.latitude}°N</text>
         ))}
       </g>
-
-      {showFootprint && footprintPath && (
-        <path d={footprintPath} fill="none" stroke="#67d9ec" strokeWidth={radius * 1.2} strokeDasharray={`${radius * 4} ${radius * 2.4}`} vectorEffect="non-scaling-stroke" pointerEvents="none">
-          <title>Original NISAR project footprint, shown for geographic context</title>
-        </path>
-      )}
 
       {viewMode === 'density' && (
         <g clipPath="url(#mp-state-clip)" aria-label="Relative detection-record density by map cell">

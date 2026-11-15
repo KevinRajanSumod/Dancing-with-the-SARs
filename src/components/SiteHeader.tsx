@@ -5,7 +5,7 @@ import { routes } from '@/lib/routes';
 
 interface SiteHeaderProps {
   pathname: string;
-  assistantTriggerRef: RefObject<HTMLButtonElement | null>;
+  assistantTriggerRef: RefObject<HTMLButtonElement>;
   onOpenAssistant: () => void;
 }
 
@@ -72,8 +72,8 @@ export default function SiteHeader({ pathname, assistantTriggerRef, onOpenAssist
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-2 xl:ml-0">
-          <button ref={assistantTriggerRef} type="button" onClick={onOpenAssistant} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-radar/25 px-3 text-sm font-semibold text-radar transition hover:bg-radar/10 sm:px-4" aria-label="Open EchoGuide assistant" title="Ask the project’s AI assistant">
-            <MessageCircle className="h-4 w-4" aria-hidden="true" /><span className="hidden sm:inline">Ask EchoGuide</span>
+          <button ref={assistantTriggerRef} type="button" onClick={onOpenAssistant} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-analysis/35 bg-analysis/[.08] px-3 text-sm font-semibold text-analysis transition hover:bg-analysis/15 sm:px-4" aria-label="Open EchoGuide AI chat" title="Ask the project’s AI assistant">
+            <MessageCircle className="h-4 w-4" aria-hidden="true" /><span className="sm:hidden">Ask AI</span><span className="hidden sm:inline">Ask EchoGuide</span>
           </button>
           <AppLink to="/study-map" className="hidden min-h-10 items-center gap-2 rounded-full bg-radar px-4 py-2 text-sm font-bold text-canvas transition hover:bg-radar-200 sm:inline-flex">Open the map <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></AppLink>
           <button

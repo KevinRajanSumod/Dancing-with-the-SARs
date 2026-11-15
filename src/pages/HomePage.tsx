@@ -16,6 +16,7 @@ import {
 import AppLink from '@/components/AppLink';
 import Reveal from '@/components/Reveal';
 import StudyAreaPreview from '@/components/StudyAreaPreview';
+import NasaEcosystemGallery from '@/components/NasaEcosystemGallery';
 
 const sources = [
   { name: 'NISAR', note: 'L-band radar browse', tone: 'text-radar' },
@@ -69,17 +70,10 @@ const roadmap = [
 function PreviewGraphic({ kind }: { kind: 'radar' | 'detections' | 'map' | 'guide' }) {
   if (kind === 'radar') {
     return (
-      <div className="relative mt-5 overflow-hidden rounded-xl border border-white/10 bg-[#081b28] p-4" aria-label="Illustrative radar image interface preview">
-        <div className="absolute inset-0 mission-grid opacity-50" aria-hidden="true" />
-        <div className="relative grid h-28 place-items-center overflow-hidden rounded-lg border border-white/10 bg-radar/[.035]">
-          <span className="absolute h-40 w-40 rounded-full border border-radar/15" />
-          <span className="absolute h-28 w-28 rounded-full border border-radar/20" />
-          <span className="absolute h-16 w-16 rounded-full border border-ember/25" />
-          <span className="absolute h-px w-[130%] rotate-[-17deg] bg-gradient-to-r from-transparent via-radar/75 to-transparent" />
-          <span className="relative rounded-full border border-radar/20 bg-canvas/85 px-3 py-1 text-[10px] font-semibold text-radar">L-band radar · visual context</span>
-        </div>
-        <div className="relative mt-3 flex items-center justify-between text-[10px] text-white/65"><span>Selected date</span><span className="h-1.5 w-1.5 rounded-full bg-radar" /><span>Browse layer</span></div>
-      </div>
+      <figure className="relative mt-5 overflow-hidden rounded-xl border border-white/10 bg-[#07131d]">
+        <img src="https://images-assets.nasa.gov/image/PIA26616/PIA26616~large.jpg" alt="NASA NISAR false-color radar image showing forest, water, and built surfaces on Mount Desert Island, Maine." loading="lazy" className="aspect-[1.8] w-full object-contain" />
+        <figcaption className="flex items-center justify-between gap-2 bg-[#081b28] px-3 py-2 text-[10px]"><span className="font-semibold text-radar">Real NISAR image · Maine</span><span className="text-white/60">NASA/JPL-Caltech · example, not study data</span></figcaption>
+      </figure>
     );
   }
 
@@ -203,6 +197,8 @@ export default function HomePage() {
             </div>
           </section>
         </Reveal>
+
+        <NasaEcosystemGallery compact maxVideos={1} title="See what radar images really look like." description="Explore three real NASA radar scenes and a short NISAR mission video. These examples come from other places; the Madhya Pradesh study observations are on the map." />
 
         <section id="project-tour" className="scroll-mt-28 pt-20 md:pt-28" aria-labelledby="features-title">
           <Reveal>

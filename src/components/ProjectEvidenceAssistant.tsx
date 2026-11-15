@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
-import { LoaderCircle, RotateCcw, Send, Sparkles } from 'lucide-react';
+import { ExternalLink, LoaderCircle, RotateCcw, Send, Sparkles } from 'lucide-react';
 import { askProjectEvidence, type EvidenceChatTurn, type EvidenceTopic } from '@/lib/evidenceAssistant';
 
 interface ProjectEvidenceAssistantProps {
@@ -45,7 +45,7 @@ export default function ProjectEvidenceAssistant({ topic }: ProjectEvidenceAssis
     setMessages((current) => [...current, { role: 'user', text: submittedQuestion }]);
     try {
       const answer = await askProjectEvidence(topic, submittedQuestion, history);
-      setMessages((current) => [...current, { role: 'assistant', text: answer.answer }]);
+      setMessages((current) => [...current, { role: 'assistant', text: answer.answer, sources: answer.sources }]);
     } catch (requestError) {
       setQuestion(submittedQuestion);
       setMessages((current) => current.slice(0, -1));
@@ -78,7 +78,7 @@ export default function ProjectEvidenceAssistant({ topic }: ProjectEvidenceAssis
             <p className="eyebrow flex items-center gap-2"><Sparkles className="h-4 w-4 text-analysis" aria-hidden="true" /> EchoGuide · satellite research guide</p>
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center gap-2 rounded-full border border-line bg-canvas/70 px-3 py-1.5 text-xs font-medium text-muted">
-                No web search
+                Web search enabled
               </span>
               {messages.length > 0 && (
                 <button
@@ -95,7 +95,7 @@ export default function ProjectEvidenceAssistant({ topic }: ProjectEvidenceAssis
           </div>
           <h2 id={titleId} className="mt-3 text-2xl">Talk with EchoGuide.</h2>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
-            Ask a question, then keep going with follow-ups. EchoGuide uses project notes and general AI knowledge, not a live web search. It cannot inspect sample images or calculate new measurements.
+            Ask a question, then keep going with follow-ups. EchoGuide can search current web sources when useful and will show links with its answer. It cannot inspect sample images or calculate new measurements.
           </p>
         </div>
 
@@ -129,6 +129,17 @@ export default function ProjectEvidenceAssistant({ topic }: ProjectEvidenceAssis
                         {message.role === 'user' ? 'You' : 'EchoGuide'}
                       </p>
                       <p className="whitespace-pre-wrap">{message.text}</p>
+                      {message.role === 'assistant' && message.sources?.length ? (
+                        <ul className="mt-3 space-y-1.5 border-t border-line/70 pt-2" aria-label="Web sources">
+                          {message.sources.slice(0, 5).map((source) => (
+                            <li key={source.url}>
+                              <a href={source.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-start gap-1.5 text-xs font-semibold text-radar underline underline-offset-2 hover:text-radar-200">
+                                {source.title || 'Open source'} <ExternalLink className="mt-0.5 h-3 w-3 shrink-0" aria-hidden="true" /><span className="sr-only">(opens in a new tab)</span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
                     </div>
                   </div>
                 ))}
@@ -176,7 +187,7 @@ export default function ProjectEvidenceAssistant({ topic }: ProjectEvidenceAssis
               </button>
             </div>
             <div className="flex flex-col justify-between gap-1 text-xs leading-relaxed text-subtle sm:flex-row">
-              <p id={`${inputId}-note`}>No live web search. Press Ctrl+Enter (⌘+Enter on Mac) to send.</p>
+              <p id={`${inputId}-note`}>Web search is used when it can improve the answer. Press Ctrl+Enter (⌘+Enter on Mac) to send.</p>
               <p id={`${inputId}-count`} className="shrink-0">{question.length}/1,000</p>
             </div>
           </form>

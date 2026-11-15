@@ -26,6 +26,7 @@ export interface EvidenceAnswer {
 export interface EvidenceChatTurn {
   role: 'user' | 'assistant';
   text: string;
+  sources?: EvidenceSource[];
 }
 
 let supabase: SupabaseClient | null | undefined;
@@ -56,6 +57,13 @@ async function getFunctionErrorMessage(error: Error): Promise<string> {
   return error.message || 'The evidence assistant could not be reached.';
 }
 
+function getSources(value: unknown): EvidenceSource[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((source): source is EvidenceSource =>
+    typeof source?.title === 'string' && typeof source?.url === 'string' && /^https:\/\//i.test(source.url),
+  ).slice(0, 8);
+}
+
 export async function askProjectEvidence(topic: EvidenceTopic, question: string, history: EvidenceChatTurn[] = []): Promise<EvidenceAnswer> {
   const client = getSupabaseClient();
   if (!client) {
@@ -72,6 +80,7 @@ export async function askProjectEvidence(topic: EvidenceTopic, question: string,
   return {
     answer: data.answer,
     model: typeof data.model === 'string' ? data.model : 'EchoGuide',
+    sources: getSources(data.sources),
   };
 }
 
@@ -91,7 +100,7 @@ export async function askLiveDataInsight(question: string, evidence: string, sec
 
   try {
     const data = await request({ topic: 'live-data', question, evidence: evidence.slice(0, 5000), sectionGuidance, history });
-    return { answer: data.answer, model: typeof data.model === 'string' ? data.model : 'EchoGuide' };
+    return { answer: data.answer, model: typeof data.model === 'string' ? data.model : 'EchoGuide', sources: getSources(data.sources) };
   } catch (reason) {
     const message = reason instanceof Error ? reason.message : '';
     if (!/supported project topic/i.test(message)) throw reason;
@@ -107,7 +116,7 @@ export async function askLiveDataInsight(question: string, evidence: string, sec
       `User asks: ${userQuestion}`,
     ].filter(Boolean).join('\n\n');
     const data = await request({ topic: 'drivers', question: fallbackQuestion });
-    return { answer: data.answer, model: typeof data.model === 'string' ? data.model : 'EchoGuide' };
+    return { answer: data.answer, model: typeof data.model === 'string' ? data.model : 'EchoGuide', sources: getSources(data.sources) };
   }
 }
 
@@ -126,8 +135,6 @@ export async function askDetectionEvidence(detection: DetectionEvidenceInput): P
   return {
     answer: data.answer,
     model: typeof data.model === 'string' ? data.model : 'EchoGuide',
-    sources: Array.isArray(data.sources) ? data.sources.filter((source) =>
-      typeof source?.title === 'string' && typeof source?.url === 'string' && /^https:\/\//i.test(source.url),
-    ) : [],
+    sources: getSources(data.sources),
   };
 }

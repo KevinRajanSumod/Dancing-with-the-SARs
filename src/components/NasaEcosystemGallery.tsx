@@ -40,24 +40,32 @@ const videos = [
   },
 ];
 
-export default function NasaEcosystemGallery() {
+interface NasaEcosystemGalleryProps {
+  compact?: boolean;
+  maxVideos?: number;
+  title?: string;
+  description?: string;
+}
+
+export default function NasaEcosystemGallery({ compact = false, maxVideos, title, description }: NasaEcosystemGalleryProps) {
+  const visibleVideos = typeof maxVideos === 'number' ? videos.slice(0, maxVideos) : videos;
   return (
-    <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 md:pb-24" aria-labelledby="nasa-ecosystem-heading">
-      <div className="mb-7 max-w-3xl">
+    <section className={`mx-auto max-w-7xl px-5 sm:px-8 ${compact ? 'py-14 md:py-16' : 'pb-16 md:pb-24'}`} aria-labelledby="nasa-ecosystem-heading">
+      <div className={`max-w-3xl ${compact ? 'mb-5' : 'mb-7'}`}>
         <p className="eyebrow text-signal">NASA ecosystem media</p>
-        <h2 id="nasa-ecosystem-heading" className="mt-2">See how satellites observe living landscapes.</h2>
-        <p className="mt-3 text-sm leading-relaxed text-muted">These NASA examples come from other regions. They explain the sensors; they are not Madhya Pradesh data or findings from this study.</p>
+        <h2 id="nasa-ecosystem-heading" className="mt-2">{title ?? 'See how satellites observe living landscapes.'}</h2>
+        <p className="mt-3 text-sm leading-relaxed text-muted">{description ?? 'These NASA examples come from other regions. They explain the sensors; they are not Madhya Pradesh data or findings from this study.'}</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className={`grid gap-4 ${compact ? 'md:grid-cols-3' : 'md:grid-cols-2 xl:grid-cols-3'}`}>
         {imageExamples.map((image) => (
           <article key={image.title} className="surface-card lift overflow-hidden">
             <a href={image.href} target="_blank" rel="noopener noreferrer" className="group block" aria-label={`Open NASA source for ${image.title}`}>
-              <div className="relative aspect-[1.55] overflow-hidden bg-[#07131d]">
-                <img src={image.src} alt={image.alt} loading="lazy" className="h-full w-full bg-[#07131d] object-contain" />
+              <div className={`relative overflow-hidden bg-[#07131d] ${compact ? 'aspect-[1.65]' : 'aspect-[1.55]'}`}>
+                <img src={image.src} alt={image.alt} loading="lazy" className="h-full w-full bg-[#07131d] object-contain transition duration-500 group-hover:scale-[1.025]" />
                 <span className="absolute bottom-3 left-3 rounded-full border border-white/20 bg-navy/90 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.12em] text-signal">NASA data example</span>
               </div>
-              <div className="p-5">
+              <div className={compact ? 'p-4' : 'p-5'}>
                 <h3 className="text-lg">{image.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{image.description}</p>
                 <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline underline-offset-4">{image.credit}<ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></span>
@@ -67,8 +75,8 @@ export default function NasaEcosystemGallery() {
         ))}
       </div>
 
-      <div className="mt-10 grid gap-5 lg:grid-cols-2">
-        {videos.map((video) => (
+      {visibleVideos.length > 0 && <div className={`grid gap-5 ${compact ? 'mt-5 md:grid-cols-2' : 'mt-10 lg:grid-cols-2'}`}>
+        {visibleVideos.map((video) => (
           <article key={video.videoId} className="surface-card overflow-hidden p-3 sm:p-4">
             <div className="relative aspect-video overflow-hidden rounded-xl border border-white/10 bg-[#061522]">
               <iframe
@@ -84,7 +92,7 @@ export default function NasaEcosystemGallery() {
             <div className="px-2 pb-2 pt-4"><h3 className="text-lg">{video.title}</h3><p className="mt-1 text-xs leading-relaxed text-muted">{video.note}</p></div>
           </article>
         ))}
-      </div>
+      </div>}
     </section>
   );
 }

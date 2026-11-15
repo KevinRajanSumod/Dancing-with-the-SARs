@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ExternalLink, Flame, Info, Loader2, Map, Radio, RefreshCw, Satellite } from 'lucide-react';
+import { ExternalLink, Flame, Info, Loader2, Map, Radio, RefreshCw, Satellite, Sparkles } from 'lucide-react';
 import AppLink from '@/components/AppLink';
 import Card from '@/components/Card';
 import ModisBurnedAreaPanel from '@/components/ModisBurnedAreaPanel';
 import LiveDataInsight from '@/components/LiveDataInsight';
-import StudyFindingsSummary from '@/components/maps/StudyFindingsSummary';
-import type { MapDetection } from '@/components/maps/MadhyaPradeshMapCanvas';
 import type { LiveEarthData, LiveRadarScene } from '@/lib/liveEarthData';
 import { fetchLiveEarthData } from '@/lib/liveEarthData';
 
@@ -81,7 +79,6 @@ function ScenePreview({ scene }: { scene: LiveRadarScene }) {
 
 export default function LiveEarthDataStory() {
   const [data, setData] = useState<LiveEarthData | null>(null);
-  const [studyDetections, setStudyDetections] = useState<MapDetection[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState('');
@@ -109,18 +106,6 @@ export default function LiveEarthDataStory() {
   useEffect(() => {
     void refresh();
   }, [refresh]);
-
-  useEffect(() => {
-    let cancelled = false;
-    void fetch('/data/madhya-pradesh-firms.geojson')
-      .then((response) => {
-        if (!response.ok) throw new Error('Study summary data is unavailable.');
-        return response.json() as Promise<{ features: MapDetection[] }>;
-      })
-      .then((collection) => { if (!cancelled) setStudyDetections(collection.features); })
-      .catch(() => { if (!cancelled) setStudyDetections([]); });
-    return () => { cancelled = true; };
-  }, []);
 
   const dates = useMemo(
     () => [...new Set(data?.firms.records.map((record) => record.date) ?? [])].sort(),
@@ -151,7 +136,6 @@ export default function LiveEarthDataStory() {
           <Map className="h-4 w-4" aria-hidden="true" /> Open the full map
         </AppLink>
       </div>
-      {studyDetections.length > 0 && <div className="mb-6"><StudyFindingsSummary detections={studyDetections} /></div>}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-radar/25 bg-navy p-5 text-white sm:p-6">
         <div className="flex items-start gap-3">
           <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-radar/15 text-radar"><Radio className="h-5 w-5" aria-hidden="true" /></span>
@@ -224,14 +208,15 @@ export default function LiveEarthDataStory() {
             <div className="mb-4">
               <p className="eyebrow">Evidence, in one place</p>
               <h3 className="mt-1 text-lg">Choose what you want to look at</h3>
-              <p className="mt-1 text-sm text-muted">Each section answers a different question. Open one to see its map or records; use the full-state map to view locations together.</p>
+              <p className="mt-1 text-sm text-muted">Open a section to see its map or records. Each section includes its own AI chat with suggested questions about that data.</p>
             </div>
             <div className="grid gap-3">
             <details className="surface-card p-4 sm:p-5">
               <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-radar">
                 <span><span className="eyebrow">Radar · NISAR</span><span className="mt-1 block font-semibold text-ink">Did the satellite collect radar scenes here? <span className="font-normal text-muted">{data.nisar.scenes.length} scenes found · {scenes.length} previews</span></span></span>
                 <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${scenes.length ? 'border-eco/25 bg-eco/10 text-eco' : 'border-line bg-canvas text-muted'}`}>{scenes.length ? 'Preview data available' : 'No previews returned'}</span>
-                <span className="text-sm font-semibold text-radar">View radar scenes <span aria-hidden="true">⌄</span></span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-analysis/30 bg-analysis/10 px-3 py-1.5 text-xs font-semibold text-analysis"><Sparkles className="h-3.5 w-3.5" aria-hidden="true" />AI chat inside</span>
+                <span className="text-sm font-semibold text-radar">Open scenes + AI chat <span aria-hidden="true">⌄</span></span>
               </summary>
               <div className="mt-5 flex flex-wrap items-start justify-between gap-3">
                 <div>
@@ -242,6 +227,11 @@ export default function LiveEarthDataStory() {
                   Open ASF Search <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               </div>
+              <LiveDataInsight
+                title="NISAR scene previews"
+                question="Explain what these NISAR scene counts, previews, and acquisition metadata tell a visitor, how they can use them, and what they cannot conclude from them."
+                evidence={`Catalog scenes intersecting footprint: ${data.nisar.scenes.length}. Previews displayed: ${scenes.length}. Catalog status: ${data.nisar.status}. Scenes: ${scenes.map((scene) => `${scene.acquiredAt}; track ${scene.track}; frame ${scene.frame}; ${scene.direction === 'D' ? 'descending' : 'ascending'} orbit; ${scene.polarization}; mode ${scene.mode}; frequency ${scene.frequency}; maturity ${scene.maturity}; processing ${scene.processingVersion}`).join(' | ') || 'No browse previews are currently available.'}. Previews are illustrative, not calibrated change measurements.`}
+              />
 
               {scenes.length > 0 ? (
                 <>
@@ -279,18 +269,14 @@ export default function LiveEarthDataStory() {
                 <Info className="mt-0.5 h-4 w-4 shrink-0 text-radar" aria-hidden="true" />
                 <p>NASA-ISRO NISAR browse imagery is illustrative quicklook content. Its display projection and pixel brightness are not a georeferenced, calibrated change product, so live FIRMS points are kept in a separate panel. The NISAR guide also documents calibration artifacts in some pre-calibration BETA products; check each scene’s collection metadata before interpreting it. <a href="https://nisar-docs.asf.alaska.edu/product-known-issues/" target="_blank" rel="noopener noreferrer" className="font-semibold text-radar underline underline-offset-2 hover:text-radar">Read the product notes<span className="sr-only"> (opens in a new tab)</span></a>. This project is independent and is not endorsed by NASA or ISRO.</p>
               </div>
-              <LiveDataInsight
-                title="NISAR scene previews"
-                question="Explain what these NISAR scene counts, previews, and acquisition metadata tell a visitor, how they can use them, and what they cannot conclude from them."
-                evidence={`Catalog scenes intersecting footprint: ${data.nisar.scenes.length}. Previews displayed: ${scenes.length}. Catalog status: ${data.nisar.status}. Scenes: ${scenes.map((scene) => `${scene.acquiredAt}; track ${scene.track}; frame ${scene.frame}; ${scene.direction === 'D' ? 'descending' : 'ascending'} orbit; ${scene.polarization}; mode ${scene.mode}; frequency ${scene.frequency}; maturity ${scene.maturity}; processing ${scene.processingVersion}`).join(' | ') || 'No browse previews are currently available.'}. Previews are illustrative, not calibrated change measurements.`}
-              />
             </details>
 
             <details className="surface-card p-4 sm:p-5">
               <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-radar">
                 <span><span className="eyebrow">Heat signals · NASA FIRMS</span><span className="mt-1 block font-semibold text-ink">Where did satellites detect heat? <span className="font-normal text-muted">{data.firms.records.length.toLocaleString('en-US')} records</span></span></span>
                 <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${data.firms.records.length ? 'border-eco/25 bg-eco/10 text-eco' : 'border-line bg-canvas text-muted'}`}>{data.firms.records.length ? 'Detection data available' : 'No records returned'}</span>
-                <span className="text-sm font-semibold text-radar">View daily records <span aria-hidden="true">⌄</span></span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-analysis/30 bg-analysis/10 px-3 py-1.5 text-xs font-semibold text-analysis"><Sparkles className="h-3.5 w-3.5" aria-hidden="true" />AI chat inside</span>
+                <span className="text-sm font-semibold text-radar">Open records + AI chat <span aria-hidden="true">⌄</span></span>
               </summary>
               <section className="mt-5" aria-labelledby="live-firms-heading">
               <div className="flex flex-wrap items-start justify-between gap-3">
@@ -302,6 +288,11 @@ export default function LiveEarthDataStory() {
                   FIRMS source <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               </div>
+              <LiveDataInsight
+                title="FIRMS heat detections"
+                question="Explain this selected day's FIRMS records in plain language, including the confidence categories and heat-output values, how a visitor can use them, and what they do not prove."
+                evidence={`Selected date: ${activeDate || 'none'}. Records on selected date: ${selectedRecords.length}. Total records in latest feed: ${data.firms.records.length}. Confidence categories: ${JSON.stringify(selectedRecords.reduce<Record<string, number>>((counts, record) => { const label = confidenceLabel(record.conf); counts[label] = (counts[label] ?? 0) + 1; return counts; }, {}))}. Reported FRP values: ${selectedRecords.filter((record) => record.frp !== null).length} of ${selectedRecords.length}. Highest FRP: ${Math.max(0, ...selectedRecords.map((record) => record.frp ?? 0)).toFixed(2)} MW. NASA defines confidence as a category, not a probability; FRP is estimated heat power, not fire size or burned area. Records may be revised.`}
+              />
               {data.firms.records.length > 0 ? (
                 <>
                   <label htmlFor="live-firms-date" className="mt-5 block text-sm font-medium text-muted">Choose a date with records</label>
@@ -352,11 +343,6 @@ export default function LiveEarthDataStory() {
                 </div>
               )}
               <p className="mt-4 border-t border-line pt-4 text-xs leading-relaxed text-subtle">A thermal detection is a satellite heat signal, not a confirmed fire or unique fire. It does not measure burned area. The five-day feed may be revised during standard processing.</p>
-              <LiveDataInsight
-                title="FIRMS heat detections"
-                question="Explain this selected day's FIRMS records in plain language, including the confidence categories and heat-output values, how a visitor can use them, and what they do not prove."
-                evidence={`Selected date: ${activeDate || 'none'}. Records on selected date: ${selectedRecords.length}. Total records in latest feed: ${data.firms.records.length}. Confidence categories: ${JSON.stringify(selectedRecords.reduce<Record<string, number>>((counts, record) => { const label = confidenceLabel(record.conf); counts[label] = (counts[label] ?? 0) + 1; return counts; }, {}))}. Reported FRP values: ${selectedRecords.filter((record) => record.frp !== null).length} of ${selectedRecords.length}. Highest FRP: ${Math.max(0, ...selectedRecords.map((record) => record.frp ?? 0)).toFixed(2)} MW. NASA defines confidence as a category, not a probability; FRP is estimated heat power, not fire size or burned area. Records may be revised.`}
-              />
               </section>
             </details>
             <ModisBurnedAreaPanel />
@@ -366,12 +352,18 @@ export default function LiveEarthDataStory() {
           <details className="mt-5 surface-card p-4 sm:p-5">
             <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-radar">
               <span><span className="eyebrow">Scene matches · technical detail</span><span className="mt-1 block font-semibold text-ink">Are there repeat radar scenes to compare? <span className="font-normal text-muted">{scenePairs.length} metadata-matched pairs</span></span><span className="mt-1 block text-xs text-muted">Possible comparisons only; no pixel-level change has been calculated.</span></span>
-              <span className="text-sm font-semibold text-radar">Show scene matching details <span aria-hidden="true">⌄</span></span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-analysis/30 bg-analysis/10 px-3 py-1.5 text-xs font-semibold text-analysis"><Sparkles className="h-3.5 w-3.5" aria-hidden="true" />AI chat inside</span>
+              <span className="text-sm font-semibold text-radar">Open details + AI chat <span aria-hidden="true">⌄</span></span>
             </summary>
           <section className="mt-5" aria-labelledby="matched-scenes-heading">
             <p className="eyebrow">Repeat observations · same acquisition setup</p>
             <h3 id="matched-scenes-heading" className="mt-2 text-xl">Validated NISAR pairs intersecting the study area</h3>
             <p className="mt-2 max-w-4xl text-sm leading-relaxed text-muted">These pairs match track, orbit direction, frame, acquisition mode, polarization, frequency, validated collection, and processing release. A scene may cover only part of the study area: the shared scene footprint must still be checked. Catalog matching does not align pixels or calculate change.</p>
+            <LiveDataInsight
+              title="Repeat-scene candidates"
+              question="Explain what the number and metadata of these matched NISAR scene pairs mean, when a researcher might use them, and what additional work is needed before claiming land change."
+              evidence={`Metadata-matched pair count: ${scenePairs.length}. Pairs: ${scenePairs.map(({ before, after, days }) => `${before.acquiredAt} to ${after.acquiredAt} (${days} days); track ${before.track}; frame ${before.frame}; ${before.direction === 'D' ? 'descending' : 'ascending'}; mode ${before.mode}; polarization ${before.polarization}; frequency ${before.frequency}; validated; processing ${before.processingVersion}; coverage ${before.frameCoverage === 'F' ? 'full source frame' : 'partial source frame'}`).join(' | ') || 'No validated metadata-matched pairs currently found.'}. Metadata matching does not align pixels or calculate change. The project has no GCOV measurement exports.`}
+            />
             {scenePairs.length > 0 ? (
               <div className="mt-4 grid gap-3 lg:grid-cols-2">
                 {scenePairs.map(({ before, after, days }) => (
@@ -392,11 +384,6 @@ export default function LiveEarthDataStory() {
                 ))}
               </div>
             ) : <p className="mt-4 rounded-lg border border-line bg-canvas/50 p-4 text-sm text-muted">{data.nisar.scenes.some((scene) => scene.maturity === 'UNKNOWN') ? 'The current live-data function does not identify collection maturity, so this page will not guess which records are validated. Refresh this section after deploying the updated live-earth-data function.' : 'No two scenes currently match in the validated collection and processing release within the catalog window. Provisional or browse-only scenes are not treated as quantitative pairs.'}</p>}
-            <LiveDataInsight
-              title="Repeat-scene candidates"
-              question="Explain what the number and metadata of these matched NISAR scene pairs mean, when a researcher might use them, and what additional work is needed before claiming land change."
-              evidence={`Metadata-matched pair count: ${scenePairs.length}. Pairs: ${scenePairs.map(({ before, after, days }) => `${before.acquiredAt} to ${after.acquiredAt} (${days} days); track ${before.track}; frame ${before.frame}; ${before.direction === 'D' ? 'descending' : 'ascending'}; mode ${before.mode}; polarization ${before.polarization}; frequency ${before.frequency}; validated; processing ${before.processingVersion}; coverage ${before.frameCoverage === 'F' ? 'full source frame' : 'partial source frame'}`).join(' | ') || 'No validated metadata-matched pairs currently found.'}. Metadata matching does not align pixels or calculate change. The project has no GCOV measurement exports.`}
-            />
             <p className="mt-4 rounded-lg border border-amber/20 bg-amber/5 p-4 text-xs leading-relaxed text-muted">The scene files require a free NASA Earthdata Login and are multi-gigabyte products. Check the orbit-solution and coverage fields in each record too. The project currently has no GCOV measurement exports, so no calibrated difference has been computed. The offline processor is in <code className="text-ink">data/pipeline/README_nisar_change.md</code>.</p>
           </section>
           </details>
