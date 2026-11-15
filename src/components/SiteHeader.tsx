@@ -34,11 +34,11 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
   useEffect(() => setMenuOpen(false), [pathname]);
 
   return (
-    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-5">
-      <div className="mx-auto flex min-h-[5.5rem] max-w-7xl items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#0b1d2a]/95 px-3 shadow-[0_12px_36px_rgba(0,0,0,.22)] backdrop-blur-xl sm:min-h-[6.5rem] sm:px-5 lg:px-6">
+    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#080d14]/95 shadow-[0_8px_24px_rgba(0,0,0,.2)] backdrop-blur-xl">
+      <div className="mx-auto flex min-h-[4.5rem] max-w-7xl items-center justify-between gap-3 px-4 sm:min-h-[4.75rem] sm:px-6 lg:px-8">
         <AppLink to="/" className="group flex min-w-0 shrink-0 items-center gap-2.5 text-white sm:gap-3" aria-label="TerraScope home">
-          <img src="/images/brand/terrascope-logo.png" alt="" className="h-14 w-14 shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-[4.75rem] sm:w-[4.75rem]" />
-          <span className="font-sans text-lg font-bold tracking-tight text-white sm:text-2xl">TerraScope</span>
+          <img src="/images/brand/terrascope-logo.png" alt="" className="h-11 w-11 shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-12 sm:w-12" />
+          <span className="font-sans text-lg font-bold tracking-tight text-white sm:text-xl">TerraScope</span>
         </AppLink>
 
         <nav aria-label="Main" className="hidden min-w-0 items-center gap-1 xl:flex">
@@ -70,7 +70,7 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-2 xl:ml-0">
-          <AppLink to="/study-map" className="hidden min-h-12 items-center gap-2 rounded-full bg-radar px-5 py-3 text-sm font-bold text-canvas transition hover:bg-radar-200 sm:inline-flex">Open the map <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></AppLink>
+          <AppLink to="/study-map" className="hidden min-h-10 items-center gap-2 rounded-full bg-radar px-4 py-2 text-sm font-bold text-canvas transition hover:bg-radar-200 sm:inline-flex">Open the map <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></AppLink>
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-white transition-colors hover:bg-white/[.08] xl:hidden"
@@ -85,8 +85,8 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
       </div>
 
       {menuOpen && (
-        <nav id={menuId} aria-label="Mobile" className="mx-auto mt-2 max-w-7xl rounded-2xl border border-white/10 bg-[#0b1d2a] px-3 pb-4 pt-3 shadow-2xl xl:hidden">
-          <ul className="grid gap-1 sm:grid-cols-2">
+        <nav id={menuId} aria-label="Mobile" className="absolute left-0 right-0 top-full border-b border-white/10 bg-[#080d14] px-4 pb-4 pt-3 shadow-2xl xl:hidden sm:px-6">
+          <ul className="mx-auto grid max-w-7xl gap-1 sm:grid-cols-2 lg:px-2">
             {routes.map((route) => {
               const isActive = route.path === pathname;
               return <li key={route.path}><AppLink to={route.path} className={`block rounded-xl px-3 py-2.5 text-sm font-semibold ${isActive ? 'bg-radar/10 text-radar' : 'text-muted hover:bg-white/[.06] hover:text-white'}`} aria-current={isActive ? 'page' : undefined}>{route.path === '/physical-drivers' ? 'Learn: Environmental context' : route.path === '/how-sar-works' ? 'Learn: How SAR works' : route.label}</AppLink></li>;
