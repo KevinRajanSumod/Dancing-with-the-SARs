@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, CalendarDays, ExternalLink, Flame, Info, Layers3, Map, MapPin, RefreshCw, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
+import { Activity, CalendarDays, ExternalLink, Flame, Info, Layers3, Map as MapIcon, MapPin, RefreshCw, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import MadhyaPradeshMapCanvas, {
   type ClusterSummary,
   type DistrictProperties,
@@ -187,7 +187,7 @@ export default function MadhyaPradeshMapPage() {
               </p>
             </div>
             <div className="flex flex-wrap gap-2 text-xs font-semibold">
-              <span className="inline-flex items-center gap-2 rounded-full border border-radar/20 bg-radar/10 px-3 py-2 text-radar"><Map className="h-3.5 w-3.5" aria-hidden="true" />Statewide view</span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-radar/20 bg-radar/10 px-3 py-2 text-radar"><MapIcon className="h-3.5 w-3.5" aria-hidden="true" />Statewide view</span>
               <span className="inline-flex items-center gap-2 rounded-full border border-ember/20 bg-ember/10 px-3 py-2 text-ember"><Flame className="h-3.5 w-3.5" aria-hidden="true" />VIIRS · NOAA-21</span>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[.04] px-3 py-2 text-muted"><CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />{prettyDate(SOURCE_START)} – {prettyDate(SOURCE_END)}</span>
             </div>

@@ -31,6 +31,7 @@ This story pairs a project-provided radar browse image set with a local snapshot
 - Snapshot: 38 daily files from 30 Sep through 5 Nov 2026. The project filtered by acquisition date and the radar footprint, without removing any confidence category.
 - Result: 2,050 detection records in the footprint: 435 low, 1,604 nominal and 11 high confidence. On 9 Oct, the project record contains 24 detections, 17 nominal and 7 low.
 - A FIRMS row is one thermal detection record. It does not necessarily represent a unique or confirmed fire, and it does not measure burned area. Near-real-time values may be revised.
+- The Detection evidence panel charts daily counts by reported confidence, marks both NISAR pass dates, counts records strictly between the pass times (using minute-resolution FIRMS times and the NISAR acquisition spans), reports the peak day and confidence share, and summarizes selected-day fire radiative power records with values, median, and maximum.
 
 ## Madhya Pradesh statewide map
 

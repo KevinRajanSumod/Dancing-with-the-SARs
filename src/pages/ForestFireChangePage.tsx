@@ -9,6 +9,7 @@ import BeforeAfterSlider from '@/components/map/BeforeAfterSlider';
 import DensityHeatLayer from '@/components/map/DensityHeatLayer';
 import DetectionMarkers from '@/components/map/DetectionMarkers';
 import MapLegend from '@/components/map/MapLegend';
+import DetectionEvidence from '@/components/map/DetectionEvidence';
 import ModisBurnedAreaPanel from '@/components/ModisBurnedAreaPanel';
 import { confidenceCounts, detections, detectionsByDate, isNominal, NOMINAL_DETECTION_DATE } from '@/data/detections';
 import LiveEarthDataStory from '@/pages/LiveEarthDataStory';
@@ -213,6 +214,8 @@ export default function ForestFireChangePage() {
       </section>
 
       <ModisBurnedAreaPanel />
+
+      <DetectionEvidence selectedDate={selectedDate} onSelectDate={setSelectedDate} />
 
       <section className="mx-auto max-w-7xl px-5 pb-8 sm:px-8 md:pb-12" aria-labelledby="story-heading">
         <div className="max-w-2xl">
