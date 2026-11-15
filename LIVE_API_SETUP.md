@@ -61,7 +61,7 @@ The **Drivers** and **Applications** pages include **EchoGuide**, an opt-in chat
    ```
 
    `supabase/config.toml` keeps JWT verification enabled. The browser sends only the public Supabase key; Gemini credentials stay in the Edge Function secret store.
-4. Open **Drivers** or **Applications**, choose a suggested question or enter your own, and send it. Continue with follow-up messages in the same chat, or choose **New chat** to clear the conversation. EchoGuide can search current sources; citations appear below an answer when Google returns them. Search grounding can consume Gemini API quota and may incur Google Search grounding charges, so review the current pricing before broad use.
+4. Open **Drivers** or **Applications**, choose a suggested question or enter your own, and send it. Continue with follow-up messages in the same chat, or choose **New chat** to clear the conversation. EchoGuide can search current sources; citations appear below an answer when Google returns them. Search grounding can consume Gemini API quota and may incur Google Search grounding charges, so review [Google's current pricing](https://ai.google.dev/gemini-api/docs/pricing) before broad use.
 
 Until the secret is set and the function is deployed, the page displays a setup error. Do not paste API keys into the website's question box or into chat.
 
