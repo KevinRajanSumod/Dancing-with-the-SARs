@@ -159,6 +159,7 @@ export default function ProjectEvidenceAssistant({ topic }: ProjectEvidenceAssis
             <div className="mb-4 rounded-xl border border-ember/40 bg-ember/10 p-4 text-sm leading-relaxed text-ink" role="alert">
               <p className="font-semibold">EchoGuide couldn’t reply.</p>
               <p className="mt-1 text-muted">{error} Your question is back in the box so you can try again.</p>
+            {/rate limit|quota|spending limit/i.test(error) && <a href="https://aistudio.google.com/rate-limit" target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex text-sm font-semibold text-radar underline underline-offset-2">Check Gemini limits in AI Studio<span className="sr-only"> (opens in a new tab)</span></a>}
             </div>
           )}
 

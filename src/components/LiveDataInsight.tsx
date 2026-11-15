@@ -157,7 +157,7 @@ export default function LiveDataInsight({ title, question: sectionGuidance, evid
       </form>
       {listening && <p className="mt-2 text-xs text-ember" role="status">Listening… Speak your question, then press Ask.</p>}
       {voiceError && <p className="mt-2 text-xs text-muted" role="status">{voiceError}</p>}
-      {error && <p className="mt-3 rounded-lg border border-ember/25 bg-ember/5 p-3 text-xs leading-relaxed text-muted" role="alert">{error}</p>}
+      {error && <div className="mt-3 rounded-lg border border-ember/25 bg-ember/5 p-3 text-xs leading-relaxed text-muted" role="alert"><p>{error}</p>{/rate limit|quota|spending limit/i.test(error) && <a href="https://aistudio.google.com/rate-limit" target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex font-semibold text-radar underline underline-offset-2">Check Gemini limits in AI Studio<span className="sr-only"> (opens in a new tab)</span></a>}</div>}
       <p className="mt-2 text-[11px] leading-relaxed text-subtle">Speak uses your browser’s speech recognition, when supported, and may request microphone permission. AI answers use the displayed summary and metadata; they cannot inspect raw radar measurements or prove a fire caused a land change.</p>
     </aside>
   );

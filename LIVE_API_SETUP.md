@@ -83,5 +83,6 @@ Until the secret is set and the function is deployed, the page displays a setup 
 - **“Add FIRMS_MAP_KEY…”**: the function is deployed, but its Supabase Edge Function secret is not set.
 - **“Add GEMINI_API_KEY…”**: add the secret in Supabase, then deploy `evidence-assistant`.
 - **“Function not found” from Drivers or Applications**: deploy `evidence-assistant` to the Supabase project used by the frontend.
+- **“Gemini is rate-limiting EchoGuide” / daily quota message**: open [Gemini API rate limits in AI Studio](https://aistudio.google.com/rate-limit) for the same Google project as `GEMINI_API_KEY`. Check the selected model’s requests-per-minute, tokens-per-minute, daily quota, Google Search grounding limits, and billing/spend caps. A short rate limit may clear after the retry delay; a daily limit needs its reset or a quota/tier change. All visitors share this server-side project quota.
 - **“EchoGuide could not reach its research service” or search timeout**: open **Edge Functions → evidence-assistant → Logs** in Supabase and check that Gemini is reachable and `GEMINI_API_KEY` is valid. Deploy `evidence-assistant` again after code changes so the hosted function includes Google Search grounding.
 - **ASF has no matching pair**: catalog availability can vary; this is not necessarily an API connection failure.

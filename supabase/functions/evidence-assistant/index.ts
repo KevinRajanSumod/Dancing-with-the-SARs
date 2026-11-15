@@ -21,13 +21,14 @@ Use the supplied project context exactly. Never invent project measurements, loc
 
 Answer from general scientific knowledge and the supplied project context. Google Search is available for every question: use it for current or date-sensitive information, explicit requests to look something up or provide sources, local reports, and niche facts where current sources can improve accuracy. Stable conceptual explanations can be answered from general knowledge without a search. Never imply you searched if no search was performed. Prefer authoritative primary sources and distinguish their claims from this project's data. When discussing a selected map detection, clearly distinguish what the sensor measured from what web reports say. Never say a report caused a map detection unless a source directly verifies that link. If searches find no reliable matching report, say that; absence of news is not evidence nothing happened. Cite only sources supplied by Google Search; the app displays those links beneath your answer. Keep answers concise and practical. Do not provide investment, legal, or emergency-response instructions.`;
 
-function jsonResponse(body: unknown, status = 200): Response {
+function jsonResponse(body: unknown, status = 200, extraHeaders: Record<string, string> = {}): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       ...corsHeaders,
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-store',
+      ...extraHeaders,
     },
   });
 }
@@ -41,6 +42,18 @@ function safeLogText(value: string): string {
     .replace(/[\u0000-\u001f\u007f]/g, ' ')
     .replace(/AIza[\w-]{20,}/g, '[redacted]')
     .slice(0, 400);
+}
+
+function retryAfterSeconds(response: Response, errorDetails: Record<string, unknown>[], errorMessage: string): number | null {
+  const headerValue = Number(response.headers.get('Retry-After'));
+  if (Number.isFinite(headerValue) && headerValue > 0) return Math.ceil(headerValue);
+
+  const retryInfo = errorDetails.find((item) => String(item['@type'] ?? '').includes('RetryInfo'));
+  const retryDelay = typeof retryInfo?.retryDelay === 'string' ? retryInfo.retryDelay : '';
+  const delayMatch = retryDelay.match(/^(\d+(?:\.\d+)?)s$/) ?? errorMessage.match(/retry in\s+(\d+(?:\.\d+)?)\s*(?:s|seconds?)/i);
+  if (!delayMatch) return null;
+  const seconds = Number(delayMatch[1]);
+  return Number.isFinite(seconds) && seconds > 0 ? Math.ceil(seconds) : null;
 }
 
 Deno.serve(async (request: Request) => {
@@ -171,11 +184,13 @@ Project context: ${projectContext}`;
       const upstreamError = await response.text();
       let detail = '';
       let upstreamCode = '';
+      let errorDetails: Record<string, unknown>[] = [];
       try {
         const payload = asRecord(JSON.parse(upstreamError));
         const error = asRecord(payload.error ?? payload);
         if (typeof error.message === 'string') detail = safeLogText(error.message);
         if (typeof error.status === 'string') upstreamCode = safeLogText(error.status);
+        if (Array.isArray(error.details)) errorDetails = error.details.map(asRecord);
       } catch {
         detail = safeLogText(upstreamError);
       }
@@ -188,7 +203,21 @@ Project context: ${projectContext}`;
       }));
 
       if (response.status === 429) {
-        return jsonResponse({ error: 'EchoGuide reached the Gemini request limit. Wait a moment and try again.' }, 429);
+        const retry = retryAfterSeconds(response, errorDetails, detail);
+        const quotaIds = errorDetails.flatMap((item) => Array.isArray(item.violations) ? item.violations.map((violation) => {
+          const entry = asRecord(violation);
+          return `${String(entry.quotaId ?? '')} ${String(entry.quotaMetric ?? '')}`;
+        }) : []);
+        const isDailyQuota = quotaIds.some((value) => /per.?day|daily|requestsperday|rpd/i.test(value));
+        const isSpendLimit = /spend.?limit|spending limit|spend.?cap/i.test(detail);
+        const errorMessage = isDailyQuota
+          ? 'EchoGuide has used this Gemini project’s daily quota. Check AI Studio’s rate limits and billing; daily request quotas reset at midnight Pacific time.'
+          : retry
+            ? `Gemini is temporarily rate-limiting EchoGuide. Try again in about ${retry} seconds.`
+            : isSpendLimit
+              ? 'EchoGuide has reached a Gemini project spending limit. Check AI Studio billing and project limits; the app cannot raise this limit.'
+              : 'Gemini is rate-limiting this project. Wait briefly and retry; if it continues, check the project’s model quotas and billing in AI Studio.';
+        return jsonResponse({ code: 'rate-limited', error: errorMessage, retryAfterSeconds: retry }, 429, retry ? { 'Retry-After': String(retry) } : {});
       }
       if (response.status === 401 || response.status === 403) {
         return jsonResponse({ error: 'Google rejected the EchoGuide server key. Check GEMINI_API_KEY in Supabase Edge Function Secrets.' }, 502);
