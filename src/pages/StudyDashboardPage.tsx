@@ -49,6 +49,7 @@ export default function StudyDashboardPage() {
   const [selectedCluster, setSelectedCluster] = useState<ClusterSummary | null>(null);
   const [zoom, setZoom] = useState(1);
   const [resetViewKey, setResetViewKey] = useState(0);
+  const [mapNavigationRequest, setMapNavigationRequest] = useState(0);
   const [imageStatuses, setImageStatuses] = useState<Record<string, 'loaded' | 'unavailable'>>({});
 
   useEffect(() => {
@@ -100,6 +101,14 @@ export default function StudyDashboardPage() {
     if (modisImageUrlRef.current) URL.revokeObjectURL(modisImageUrlRef.current);
   }, []);
 
+  useEffect(() => {
+    if (mapNavigationRequest === 0) return;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById('study-map-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [mapNavigationRequest]);
+
   async function loadModisLayer() {
     setModisLoading(true);
     setModisError('');
@@ -136,6 +145,7 @@ export default function StudyDashboardPage() {
     setSelectedDistrict('all');
     setSelectedDetection(null);
     setSelectedCluster(null);
+    setMapNavigationRequest((current) => current + 1);
   }
 
   const toggle = (active: boolean, setter: (value: boolean) => void, label: string, description: string) => (
@@ -243,7 +253,7 @@ export default function StudyDashboardPage() {
         </aside>
 
         <div className="space-y-5">
-        <section className="surface-card overflow-hidden p-3 sm:p-4" aria-labelledby="map-heading">
+        <section id="study-map-panel" className="surface-card scroll-mt-24 overflow-hidden p-3 sm:p-4" aria-labelledby="map-heading">
             <div className="flex flex-wrap items-center justify-between gap-3 px-1 pb-3 sm:px-2"><div><p className="eyebrow">Madhya Pradesh map</p><h2 id="map-heading" className="mt-1 text-xl">{mapTimeMode === 'period' ? 'Heat reports by district' : showModis ? `${activeRadarLabel} · ${modisMonth} + satellite heat reports · ${selectedDate ? formatDate(selectedDate) : 'choose a date'}` : `${activeRadarLabel} + satellite heat reports · ${selectedDate ? formatDate(selectedDate) : 'choose a date'}`}</h2><p className="mt-1 max-w-2xl text-xs leading-relaxed text-muted">{mapTimeMode === 'period' ? 'District color shows the total number of satellite heat reports in the study data.' : showModis ? 'Burned-area pixels use the selected month; the background photo uses the heat-report date. Colored clusters are separate heat reports.' : 'Radar layers are browse images, not before-and-after comparisons. Colored clusters show separate satellite heat reports.'}</p></div><div className="flex gap-1 overflow-hidden rounded-lg border border-line bg-canvas" aria-label={`Map zoom: ${Math.round(zoom * 100)} percent`}><button type="button" aria-label="Zoom in" title="Zoom in" disabled={zoom >= 3} onClick={() => setZoom((value) => Math.min(3, Number((value + 0.5).toFixed(1))))} className="grid h-11 w-11 place-items-center text-ink hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"><ZoomIn className="h-5 w-5" /></button><button type="button" aria-label="Zoom out" title="Zoom out" disabled={zoom <= 1} onClick={() => setZoom((value) => Math.max(1, Number((value - 0.5).toFixed(1))))} className="grid h-11 w-11 place-items-center text-ink hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"><ZoomOut className="h-5 w-5" /></button><button type="button" aria-label="Reset map" title="Reset map view" onClick={() => { setZoom(1); setResetViewKey((v) => v + 1); setSelectedDistrict('all'); }} className="grid h-11 w-11 place-items-center text-ink hover:bg-white/10"><RotateCcw className="h-5 w-5" /></button></div></div>
           <div className="relative aspect-[1.12] min-h-[27rem] overflow-hidden rounded-xl border border-white/10 bg-[#07131d] sm:aspect-[1.38] xl:aspect-[1.2]">
             {error && <div role="alert" className="absolute inset-0 z-20 grid place-items-center bg-canvas/90 p-6 text-center text-sm text-ember">{error}</div>}
