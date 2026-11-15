@@ -7,7 +7,6 @@ import { usePathname } from '@/hooks/usePathname';
 import { routes } from '@/lib/routes';
 const HowSarWorksPage = lazy(() => import('@/pages/HowSarWorksPage'));
 const HomePage = lazy(() => import('@/pages/HomePage'));
-const ForestFireChangePage = lazy(() => import('@/pages/ForestFireChangePage'));
 const PhysicalDriversPage = lazy(() => import('@/pages/PhysicalDriversPage'));
 const FutureApplicationsPage = lazy(() => import('@/pages/FutureApplicationsPage'));
 const UpcomingPage = lazy(() => import('@/pages/UpcomingPage'));
@@ -19,7 +18,7 @@ const pages: Record<string, ComponentType> = {
   '/': HomePage,
   '/madhya-pradesh-map': StudyDashboardPage,
   '/study-map': StudyDashboardPage,
-  '/forest-fire-change': ForestFireChangePage,
+  '/forest-fire-change': StudyDashboardPage,
   '/how-sar-works': HowSarWorksPage,
   '/physical-drivers': PhysicalDriversPage,
   '/future-applications': FutureApplicationsPage,

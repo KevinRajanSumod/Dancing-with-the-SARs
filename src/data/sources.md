@@ -7,7 +7,7 @@ This dashboard is an educational, Madhya Pradesh-first view of NISAR L-band rada
 - The map requests the daily GIBS visualization `NISAR_L2_Geocoded_Polarimetric_Covariance` and the 12-day `NISAR_L2_Geocoded_Polarimetric_Covariance_12Day` for the selected timeline date.
 - NASA GIBS provides display visualizations of Earth-observation products through public map services. These are false-color browse mosaics, not the underlying calibrated measurements or a derived change layer. The user-selected date is a request date; an observation may not exist for every day.
 - GIBS documentation: [access basics and time behavior](https://nasa-gibs.github.io/gibs-api-docs/access-basics/), [visualization catalog](https://nasa-gibs.github.io/gibs-api-docs/available-visualizations/). NISAR product interpretation: [ASF NISAR Data User Guide](https://nisar-docs.asf.alaska.edu/).
-- The archive’s two supplied browse scenes remain documented as historical project material: 30 Sep 2026 `NISAR_L2_PR_GCOV_032_005_D_077_2005_QPDH_A_20260930T132451_20260930T132525_P05023_N_F_J_001`; 5 Nov 2026 `NISAR_L2_PR_GCOV_035_005_D_077_4005_DHDH_A_20261105T132451_20261105T132526_P05036_N_F_J_001`. They use different configurations and processing releases, so visual differences are not a quantitative change estimate.
+- The two supplied browse scenes from 30 Sep and 5 Nov 2026 are not used as the dashboard’s main comparison because their configurations and processing releases differ. They cannot support a quantitative change estimate.
 
 ## Other map layers
 
