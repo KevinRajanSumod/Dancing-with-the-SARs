@@ -1,7 +1,6 @@
 import { Activity, ArrowRight, CloudRain, Droplets, ExternalLink, Flame, Layers3, Leaf, Mountain, Satellite, ScanLine, Tractor, Trees, Waves } from 'lucide-react';
 import AppLink from '@/components/AppLink';
 import Card from '@/components/Card';
-import NasaPowerContext from '@/components/NasaPowerContext';
 import IndependentEvidence from '@/components/IndependentEvidence';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
@@ -171,8 +170,6 @@ export default function FutureApplicationsPage() {
           ))}
         </div>
       </section>
-
-      <NasaPowerContext compact />
 
       <IndependentEvidence />
 

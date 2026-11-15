@@ -5,25 +5,17 @@ import SiteFooter from '@/components/SiteFooter';
 import SiteHeader from '@/components/SiteHeader';
 import { usePathname } from '@/hooks/usePathname';
 import { routes } from '@/lib/routes';
-import HomePage from '@/pages/HomePage';
 import HowSarWorksPage from '@/pages/HowSarWorksPage';
-import ForestFireChangePage from '@/pages/ForestFireChangePage';
-import PhysicalDriversPage from '@/pages/PhysicalDriversPage';
-import FutureApplicationsPage from '@/pages/FutureApplicationsPage';
 import SourcesPage from '@/pages/SourcesPage';
-import UpcomingPage from '@/pages/UpcomingPage';
-import MadhyaPradeshMapPage from '@/pages/MadhyaPradeshMapPage';
+import StudyDashboardPage from '@/pages/StudyDashboardPage';
 import ProjectEvidenceAssistant from '@/components/ProjectEvidenceAssistant';
 
 const pages: Record<string, ComponentType> = {
-  '/': HomePage,
-  '/madhya-pradesh-map': MadhyaPradeshMapPage,
+  '/': StudyDashboardPage,
+  '/madhya-pradesh-map': StudyDashboardPage,
+  '/forest-fire-change': StudyDashboardPage,
   '/how-sar-works': HowSarWorksPage,
-  '/forest-fire-change': ForestFireChangePage,
-  '/physical-drivers': PhysicalDriversPage,
-  '/future-applications': FutureApplicationsPage,
   '/sources': SourcesPage,
-  '/upcoming': UpcomingPage,
 };
 
 function NotFoundPage() {
@@ -42,9 +34,9 @@ export default function App() {
   const pathname = usePathname();
   const Page = pages[pathname] ?? NotFoundPage;
   const routeTitle = routes.find((route) => route.path === pathname)?.label;
-  const title = pathname === '/' ? 'Reading change in radar' : routeTitle;
+  const title = pathname === '/' ? 'NISAR study map' : routeTitle;
   const [assistantOpen, setAssistantOpen] = useState(false);
-  const topic = pathname === '/future-applications' ? 'applications' : 'drivers';
+  const topic = pathname === '/how-sar-works' ? 'drivers' : 'applications';
 
   useEffect(() => {
     document.title = title ? `${title} | Dancing with the SARs` : 'Dancing with the SARs';

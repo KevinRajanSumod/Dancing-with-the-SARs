@@ -62,6 +62,11 @@ interface MadhyaPradeshMapCanvasProps {
   selectedClusterKey: string | null;
   viewMode: 'grouped' | 'density' | 'individual';
   showFootprint: boolean;
+  selectedDate?: string;
+  showNisarDaily?: boolean;
+  showNisar12Day?: boolean;
+  showSentinel1?: boolean;
+  showOptical?: boolean;
   zoom: number;
   resetViewKey: number;
   onSelectDistrict: (name: string) => void;
@@ -193,6 +198,11 @@ export default function MadhyaPradeshMapCanvas({
   selectedClusterKey,
   viewMode,
   showFootprint,
+  selectedDate = '2026-11-05',
+  showNisarDaily = false,
+  showNisar12Day = false,
+  showSentinel1 = false,
+  showOptical = false,
   zoom,
   resetViewKey,
   onSelectDistrict,
@@ -256,6 +266,23 @@ export default function MadhyaPradeshMapCanvas({
     [footprint, projection],
   );
   const maxDistrictCount = Math.max(0, ...districtCounts.values());
+
+  const rasterBounds = useMemo(() => {
+    const left = projection.x(projection.minLongitude);
+    const right = projection.x(projection.maxLongitude);
+    const top = projection.y(projection.maxLatitude);
+    const bottom = projection.y(projection.minLatitude);
+    return { x: left, y: top, width: right - left, height: bottom - top };
+  }, [projection]);
+  const gibsUrl = (layer: string, date: string, transparent = true) => {
+    const params = new URLSearchParams({
+      SERVICE: 'WMS', VERSION: '1.1.1', REQUEST: 'GetMap', LAYERS: layer,
+      STYLES: '', FORMAT: 'image/png', TRANSPARENT: String(transparent),
+      SRS: 'EPSG:4326', BBOX: `${projection.minLongitude},${projection.minLatitude},${projection.maxLongitude},${projection.maxLatitude}`,
+      WIDTH: '900', HEIGHT: '700', TIME: date,
+    });
+    return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`;
+  };
 
   const clusters = useMemo(() => {
     if (viewMode === 'individual') return [];
@@ -352,6 +379,13 @@ export default function MadhyaPradeshMapCanvas({
         {gridLines.latitudeLines.map((line) => <line key={`lat-${line.latitude}`} x1={projection.minX} x2={projection.maxX} y1={line.y} y2={line.y} />)}
       </g>
 
+      <g clipPath="url(#mp-state-clip)" pointerEvents="none">
+        {showOptical && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate, false)} {...rasterBounds} preserveAspectRatio="none" opacity="0.86" />}
+        {showSentinel1 && <image href={gibsUrl('OPERA_L2_Radiometric_Terrain_Corrected_SAR_Sentinel-1', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" />}
+        {showNisar12Day && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance_12Day', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" />}
+        {showNisarDaily && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.95" />}
+      </g>
+
       <g>
         {districtPaths.map(({ feature, path }) => {
           const name = feature.properties.name;
@@ -363,7 +397,7 @@ export default function MadhyaPradeshMapCanvas({
               d={path}
               fill={districtFill(count, maxDistrictCount)}
               fillRule="evenodd"
-              fillOpacity={selectedDistrict === 'all' || selected ? 0.92 : 0.42}
+              fillOpacity={showNisarDaily || showNisar12Day || showSentinel1 || showOptical ? (selected ? 0.2 : 0.08) : selectedDistrict === 'all' || selected ? 0.92 : 0.42}
               stroke={selected ? '#67d9ec' : '#7c9aa7'}
               strokeWidth={selected ? radius * 1.8 : radius * 0.58}
               vectorEffect="non-scaling-stroke"

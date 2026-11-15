@@ -1,61 +1,30 @@
-# Data and scene record
+# Study data and evidence
 
-This story pairs a project-provided radar browse image set with a local snapshot of satellite heat detections. The two sources are displayed as separate evidence layers and should not be read as a causal match.
+This dashboard is an educational, Madhya Pradesh-first view of NISAR L-band radar browse mosaics, with separately identified optical and thermal-detection context. It does not currently calculate calibrated SAR change or attribute a signal to fire.
 
 ## NISAR radar imagery
 
-- 30 Sep 2026 scene: NISAR_L2_PR_GCOV_032_005_D_077_2005_QPDH_A_20260930T132451_20260930T132525_P05023_N_F_J_001.
-- 5 Nov 2026 scene: NISAR_L2_PR_GCOV_035_005_D_077_4005_DHDH_A_20261105T132451_20261105T132526_P05036_N_F_J_001.
-- Data access: [Alaska Satellite Facility (ASF) Vertex](https://search.asf.alaska.edu/). Browse images are low-resolution previews, not measurement rasters. The scene configurations and processing versions differ; both scenes include HV.
-- Reference: [NISAR Data User Guide](https://nisar-docs.asf.alaska.edu/) (Kristenson et al., 2026, [doi:10.5281/ZENODO.20075813](https://doi.org/10.5281/ZENODO.20075813)).
+- The map requests the daily GIBS visualization `NISAR_L2_Geocoded_Polarimetric_Covariance` and the 12-day `NISAR_L2_Geocoded_Polarimetric_Covariance_12Day` for the selected timeline date.
+- NASA GIBS provides display visualizations of Earth-observation products through public map services. These are false-color browse mosaics, not the underlying calibrated measurements or a derived change layer. The user-selected date is a request date; an observation may not exist for every day.
+- GIBS documentation: [access basics and time behavior](https://nasa-gibs.github.io/gibs-api-docs/access-basics/), [visualization catalog](https://nasa-gibs.github.io/gibs-api-docs/available-visualizations/). NISAR product interpretation: [ASF NISAR Data User Guide](https://nisar-docs.asf.alaska.edu/).
+- The archive’s two supplied browse scenes remain documented as historical project material: 30 Sep 2026 `NISAR_L2_PR_GCOV_032_005_D_077_2005_QPDH_A_20260930T132451_20260930T132525_P05023_N_F_J_001`; 5 Nov 2026 `NISAR_L2_PR_GCOV_035_005_D_077_4005_DHDH_A_20261105T132451_20261105T132526_P05036_N_F_J_001`. They use different configurations and processing releases, so visual differences are not a quantitative change estimate.
 
-## Live feeds
+## Other map layers
 
-- Live mode requests public NISAR GCOV catalog metadata from the [ASF Search API](https://docs.asf.alaska.edu/api/basics/). Where ASF returns a browse URL, the page displays that remote quicklook; it does not download a full science product or treat the preview as a calibrated raster.
-- The [NISAR product notes](https://nisar-docs.asf.alaska.edu/product-known-issues/) describe calibration artifacts in some pre-calibration BETA products. The collection and processing metadata for each returned scene should be checked before drawing conclusions; this project does not assume that every live scene is a BETA product.
-- Live thermal detections come from the [NASA FIRMS Area API](https://firms.modaps.eosdis.nasa.gov/api/area), VIIRS NOAA-21 near-real-time, for the latest five-day query. The Supabase Edge Function filters the bounding-box response against the project footprint polygon.
-- A server-side request to the [NASA FIRMS WMS](https://firms.modaps.eosdis.nasa.gov/mapserver/wms-info/) can return a monthly MODIS burned-area image for the selected month. Its map key is kept server-side and is never sent to the browser.
-- The historical Sep–Nov archive continues to use the project's georeferenced preview overlays and fixed FIRMS snapshot. Those images and point layers are spatially framed for the archive; remote live browse quicklooks are kept separate because their preview projection is not suitable for an overlay claim.
+- OPERA Sentinel-1 RTC is requested from [NASA GIBS](https://nasa-gibs.github.io/gibs-api-docs/) at the selected timeline date. The underlying OPERA RTC-S1 product is Sentinel-1 C-band radar data with near-global land coverage, produced separately from NISAR. It is a cross-mission comparison, not an interchangeable NISAR observation; see [NASA/JPL OPERA coverage](https://www.jpl.nasa.gov/go/opera/products/) and [RTC product description](https://www.jpl.nasa.gov/go/opera/products/rtc-product/).
+- MODIS Terra corrected reflectance true color is requested from [NASA GIBS](https://nasa-gibs.github.io/gibs-api-docs/) for the selected date as optical context. Its resolution, spectral response, and acquisition timing differ from NISAR.
+- VIIRS NOAA-21 thermal detection records come from the supplied [NASA FIRMS archive snapshot](https://firms.modaps.eosdis.nasa.gov/active_fire/), 30 Sep–5 Nov 2026. The interface filters records by selected date and district. District shading counts records; it does not count unique events.
+- Madhya Pradesh and district boundaries come from GADM v4.1 and the 2021 geoBoundaries India ADM2 simplified dataset, respectively. The original NISAR study footprint is shown only as a reference outline and does not mean NISAR coverage is limited to or complete across that footprint.
 
-## Additional NASA context integrations
+## Method and interpretation
 
-- Home, Drivers, and Applications request daily precipitation and near-surface air temperature for the study window from the [NASA POWER daily API](https://power.larc.nasa.gov/docs/services/api/temporal/daily/). POWER's meteorological parameters use NASA GMAO MERRA-2 assimilation-model data; these values are regional context, not measurements at each radar pixel.
-- Drivers requests the SMAP L4 aliases `SFMC` (surface soil moisture) and `RZMC` (root-zone soil moisture) from NASA POWER's Hydrology community for the same date window. NASA POWER describes the native SMAP L4 grid as approximately 9 km and serves daily values on an approximately 0.09° latitude–longitude grid. This is a nearby regional point series, not field-scale moisture.
-- Fire Story can request the NASA FIRMS WMS monthly `modis_burned_area` layer for MCD64A1. The layer appears as a separate image with its own selected month; the app does not overlay it on NISAR browse previews, compute spatial overlap with FIRMS detections, or interpret it as proof of fire cause.
-- The monthly MCD64A1 layer can lag the selected month. An empty image alone cannot distinguish a month with no mapped burns from a month without available coverage.
-- [GEDI L4B biomass](https://data.nasa.gov/dataset/gedi-l4b-gridded-aboveground-biomass-density-version-2), [OPERA DIST-ALERT-HLS](https://www.earthdata.nasa.gov/data/catalog/lpcloud-opera-l3-dist-alert-hls-v1-1), [OPERA DSWx-HLS](https://podaac.jpl.nasa.gov/dataset/OPERA_L3_DSWX-HLS_V1), and [NASA SRTM elevation](https://search.earthdata.nasa.gov/search?q=SRTMGL1) remain follow-up product references. This project has not downloaded or analyzed them.
+- A date slider requests the same date from the visible GIBS image layers. Dates outside the FIRMS snapshot have no thermal records to display.
+- The dashboard clips the image layers to the state outline, renders supplied FIRMS records, and summarizes records by district. It does not load or process the full NISAR HDF5 products.
+- Thermal detections are not burned area; one record is not necessarily one distinct event; near-real-time detection values may be revised. The map does not show that fire caused a radar change.
+- Rainfall and soil moisture can affect radar backscatter alongside vegetation, surface structure, incidence geometry, and processing. A defensible quantitative change study requires compatible calibrated NISAR science products, masking and processing controls, and independent validation.
 
-## FIRMS thermal detections
+## Further study
 
-- Source: [NASA FIRMS archive](https://nrt3.modaps.eosdis.nasa.gov/archive/FIRMS/), NOAA-21 VIIRS, South Asia, version 2.0NRT.
-- Snapshot: 38 daily files from 30 Sep through 5 Nov 2026. The project filtered by acquisition date and the radar footprint, without removing any confidence category.
-- Result: 2,050 detection records in the footprint: 435 low, 1,604 nominal and 11 high confidence. On 9 Oct, the project record contains 24 detections, 17 nominal and 7 low.
-- A FIRMS row is one thermal detection record. It does not necessarily represent a unique or confirmed fire, and it does not measure burned area. Near-real-time values may be revised.
-- The Detection evidence panel charts daily counts by reported confidence, marks both NISAR pass dates, counts records strictly between the pass times (using minute-resolution FIRMS times and the NISAR acquisition spans), reports the peak day and confidence share, and summarizes selected-day fire radiative power records with values, median, and maximum.
-
-## Madhya Pradesh statewide map
-
-- The state map uses the supplied NASA FIRMS VIIRS NOAA-21 archive filtered to the GADM v4.1 Madhya Pradesh boundary: 4,762 records from 30 Sep through 5 Nov 2026 (998 low, 3,727 nominal and 37 high confidence).
-- District outlines use the geoBoundaries India ADM2 simplified dataset, pinned from the geoBoundaries GitHub release data at commit `9469f09`. Its boundary vintage is 2021 and its reported license is Open Database License 1.0 (ODbL). See the [geoBoundaries API metadata](https://www.geoboundaries.org/api/current/gbOpen/IND/ADM2/) and [ODbL terms](https://opendatacommons.org/licenses/odbl/1-0/).
-- The 2021 district polygons are selected by representative point within the GADM Madhya Pradesh state outline. Twelve state-filtered FIRMS points do not intersect those district polygons; they remain available under the unassigned map filter. District counts are counts of detection records, not distinct fires.
-- The NISAR outline on the state map is the project's original study footprint only. It does not represent statewide NISAR coverage.
-
-## Study footprint and method
-
-- Approximate extent: 21.2–24.3° N, 76.6–80.0° E; NISAR Track 5, Frame 77. FIRMS points were selected against the project footprint polygon.
-- The before and after browse previews were georeferenced in QGIS and exported as grayscale overlays. The visual comparison is not a calibrated backscatter change analysis.
-- The radar previews and FIRMS points were not matched to a burned-area product or field observations. Radar change is not proven to have been caused by fire.
-- Provenance gap: the supplied notes do not record the exact ASF Vertex access date for the two browse scenes. Add it if you need a complete retrieval log.
-
-## NASA imagery and mission data
-
-- The homepage background uses NASA/JSC's [Earth Illuminated](https://svs.gsfc.nasa.gov/11474) still photograph from the International Space Station. It is illustrative Earth-observation context, not the project's NISAR image or data.
-- The SAR basics page includes NASA/JPL-Caltech's [NISAR launch and deployment animation](https://science.nasa.gov/video-detail/amf-ffc8740c-2d65-4712-a4dd-78152649ab49/) and [NISAR image of Mount Desert Island, Maine](https://science.nasa.gov/image-detail/amf-pia26616/). These are mission examples from outside the Central India project footprint; the Maine radar image was acquired during commissioning on 21 August 2025.
-- The home mission cards summarize NASA's [NISAR mission overview](https://science.nasa.gov/mission/nisar/mission-overview/): 12-day exact repeat cycle, approximately 6-day average sampling, mode-dependent 3–10 m SAR resolution, and L- and S-band wavelengths.
-- The Drivers and Applications pages describe broader use cases and link to relevant product records. SMAP L4 moisture and the MCD64A1 map are now called through NASA services as described above. Other linked datasets are references only; products have different spatial scales and observation periods, and the app does not claim a derived forest-loss or fire-impact result.
-
-## Mission context
-
-- [NASA NISAR mission overview](https://science.nasa.gov/mission/nisar/mission-overview/): mission scope, instruments and observation cadence.
-- [NASA NISAR ecosystem science](https://science.nasa.gov/mission/nisar/ecosystem/): vegetation, biomass, disturbance and recovery context.
-- [NASA NISAR mission requirements](https://science.nasa.gov/mission/nisar/mission-requirements/): measurement objectives for vegetation, agriculture, ice and deformation.
+- [NISAR mission overview](https://science.nasa.gov/mission/nisar/mission-overview/) describes mission goals and instruments.
+- [ASF NISAR GCOV Worldview guide](https://hyp3-docs.asf.alaska.edu/nisar-docs/worldview/) explains how to inspect the browse visualization and connect it to source products.
+- Full GCOV science products can be searched through [ASF Vertex](https://search.asf.alaska.edu/); downloads require an Earthdata account. This dashboard uses the public browse service and needs no user API key.
