@@ -147,7 +147,7 @@ export default function StudyDashboardPage() {
   const index = dateIndex(selectedDate);
 
   const toggle = (active: boolean, setter: (value: boolean) => void, label: string) => (
-    <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-line bg-canvas/70 px-3 py-2 text-xs font-semibold text-ink">
+    <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-line bg-canvas/70 px-3 py-2 text-sm font-semibold text-ink">
       <input type="checkbox" checked={active} onChange={(event) => setter(event.currentTarget.checked)} className="accent-radar" />{label}
     </label>
   );
@@ -175,16 +175,16 @@ export default function StudyDashboardPage() {
         <p className="mt-3 text-xs leading-relaxed text-muted">Drag the slider to change the date. The map and any available satellite layers update together. Some layers have no image for some dates.</p>
       </section>
 
-      <div className="grid items-start gap-5 xl:grid-cols-[19rem_minmax(0,1fr)]">
+      <div className="grid items-start gap-5 xl:grid-cols-[21rem_minmax(0,1fr)] 2xl:grid-cols-[23rem_minmax(0,1fr)]">
         <aside className="space-y-4">
-          <section className="surface-card p-5" aria-labelledby="layers-heading">
+          <section className="surface-card p-5 sm:p-6" aria-labelledby="layers-heading">
             <div className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-lg bg-radar/10 text-radar"><Layers3 className="h-4 w-4" /></span><div><p className="eyebrow">Step 2 · Choose what to see</p><h2 id="layers-heading" className="mt-1 text-lg">Map layers</h2></div></div>
             <div className="mt-4 grid gap-2" role="radiogroup" aria-label="Choose the satellite image layer">
           {([
                 ['nisar-daily', 'Radar image · daily (NISAR)'],
                 ['nisar-12day', 'Radar image · 12-day view (NISAR)'],
                 ['sentinel1', 'Radar image · daily (Sentinel-1)'],
-              ] as const).map(([value, label]) => <label key={value} className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold ${imageryLayer === value ? 'border-radar/30 bg-radar/10 text-radar' : 'border-line bg-canvas/70 text-ink'}`}><input type="radio" name="imagery-layer" value={value} checked={imageryLayer === value} onChange={() => setImageryLayer(value)} className="accent-radar" />{label}</label>)}
+              ] as const).map(([value, label]) => <label key={value} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold ${imageryLayer === value ? 'border-radar/30 bg-radar/10 text-radar' : 'border-line bg-canvas/70 text-ink'}`}><input type="radio" name="imagery-layer" value={value} checked={imageryLayer === value} onChange={() => setImageryLayer(value)} className="accent-radar" />{label}</label>)}
               {toggle(showOpticalContext, setShowOpticalContext, 'Show satellite photo background')}
               {toggle(showDetections, setShowDetections, 'Show heat-signal dots')}
               {toggle(showFootprint, setShowFootprint, 'Show study-area outline')}
@@ -200,7 +200,7 @@ export default function StudyDashboardPage() {
         </aside>
 
         <section className="surface-card overflow-hidden p-3 sm:p-4" aria-labelledby="map-heading">
-          <div className="flex flex-wrap items-center justify-between gap-3 px-1 pb-3 sm:px-2"><div><p className="eyebrow">Interactive study map</p><h2 id="map-heading" className="mt-1 text-xl">Madhya Pradesh · {selectedDate}</h2></div><div className="flex gap-1 overflow-hidden rounded-lg border border-line bg-canvas"><button type="button" aria-label="Zoom in" onClick={() => setZoom((value) => Math.min(2.4, Number((value + 0.2).toFixed(1))))} className="grid h-9 w-9 place-items-center text-ink hover:bg-white/10"><ZoomIn className="h-4 w-4" /></button><button type="button" aria-label="Zoom out" onClick={() => setZoom((value) => Math.max(1, Number((value - 0.2).toFixed(1))))} className="grid h-9 w-9 place-items-center text-ink hover:bg-white/10"><ZoomOut className="h-4 w-4" /></button><button type="button" aria-label="Reset map" onClick={() => { setZoom(1); setResetViewKey((v) => v + 1); setSelectedDistrict('all'); }} className="grid h-9 w-9 place-items-center text-ink hover:bg-white/10"><RotateCcw className="h-4 w-4" /></button></div></div>
+          <div className="flex flex-wrap items-center justify-between gap-3 px-1 pb-3 sm:px-2"><div><p className="eyebrow">Interactive study map</p><h2 id="map-heading" className="mt-1 text-xl">Madhya Pradesh · {selectedDate}</h2></div><div className="flex gap-1 overflow-hidden rounded-lg border border-line bg-canvas" aria-label={`Map zoom: ${Math.round(zoom * 100)} percent`}><button type="button" aria-label="Zoom in" title="Zoom in" disabled={zoom >= 3} onClick={() => setZoom((value) => Math.min(3, Number((value + 0.5).toFixed(1))))} className="grid h-11 w-11 place-items-center text-ink hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"><ZoomIn className="h-5 w-5" /></button><button type="button" aria-label="Zoom out" title="Zoom out" disabled={zoom <= 1} onClick={() => setZoom((value) => Math.max(1, Number((value - 0.5).toFixed(1))))} className="grid h-11 w-11 place-items-center text-ink hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"><ZoomOut className="h-5 w-5" /></button><button type="button" aria-label="Reset map" title="Reset map view" onClick={() => { setZoom(1); setResetViewKey((v) => v + 1); setSelectedDistrict('all'); }} className="grid h-11 w-11 place-items-center text-ink hover:bg-white/10"><RotateCcw className="h-5 w-5" /></button></div></div>
           <div className="relative aspect-[1.12] min-h-[27rem] overflow-hidden rounded-xl border border-white/10 bg-[#07131d] sm:aspect-[1.38] xl:aspect-[1.2]">
             {error && <div role="alert" className="absolute inset-0 z-20 grid place-items-center bg-canvas/90 p-6 text-center text-sm text-ember">{error}</div>}
             {!data && !error && <div role="status" className="absolute inset-0 z-20 grid place-items-center bg-canvas/75 text-sm text-muted">Loading Madhya Pradesh map…</div>}

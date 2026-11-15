@@ -10,7 +10,7 @@ interface SiteHeaderProps {
 const desktopPaths = ['/', '/study-map', '/case-study', '/future-applications', '/sources', '/upcoming'];
 
 function linkClass(isActive: boolean): string {
-  const base = 'rounded-full px-3 py-2 text-[12px] font-semibold transition-colors focus-visible:outline-radar';
+  const base = 'rounded-full px-3.5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-radar';
   return isActive
     ? `${base} border border-radar/25 bg-radar/10 text-radar`
     : `${base} text-muted hover:bg-white/[.06] hover:text-white`;
@@ -35,13 +35,13 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 sm:px-5">
-      <div className="mx-auto flex min-h-[5rem] max-w-7xl items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#0b1d2a]/95 px-3 shadow-[0_12px_36px_rgba(0,0,0,.22)] backdrop-blur-xl sm:min-h-[5.75rem] sm:px-4 lg:px-5">
+      <div className="mx-auto flex min-h-[5.5rem] max-w-7xl items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#0b1d2a]/95 px-3 shadow-[0_12px_36px_rgba(0,0,0,.22)] backdrop-blur-xl sm:min-h-[6.5rem] sm:px-5 lg:px-6">
         <AppLink to="/" className="group flex min-w-0 shrink-0 items-center gap-2.5 text-white sm:gap-3" aria-label="TerraScope home">
           <img src="/images/brand/terrascope-logo.png" alt="" className="h-14 w-14 shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-[4.75rem] sm:w-[4.75rem]" />
           <span className="font-sans text-lg font-bold tracking-tight text-white sm:text-2xl">TerraScope</span>
         </AppLink>
 
-        <nav aria-label="Main" className="hidden min-w-0 items-center gap-0.5 xl:flex">
+        <nav aria-label="Main" className="hidden min-w-0 items-center gap-1 xl:flex">
           {desktopPaths.slice(0, 3).map((path) => {
             const route = routes.find((item) => item.path === path);
             if (!route) return null;
@@ -70,7 +70,7 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-2 xl:ml-0">
-          <AppLink to="/study-map" className="hidden min-h-10 items-center gap-1.5 rounded-full bg-radar px-4 py-2 text-xs font-bold text-canvas transition hover:bg-radar-200 sm:inline-flex">Open the map <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" /></AppLink>
+          <AppLink to="/study-map" className="hidden min-h-12 items-center gap-2 rounded-full bg-radar px-5 py-3 text-sm font-bold text-canvas transition hover:bg-radar-200 sm:inline-flex">Open the map <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></AppLink>
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-white transition-colors hover:bg-white/[.08] xl:hidden"
