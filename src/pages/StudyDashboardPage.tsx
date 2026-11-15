@@ -8,6 +8,7 @@ interface DataState { state: MapFeature; districts: MapFeature<DistrictPropertie
 interface DetectionProps extends Record<string, unknown> { date: string; time: string; confidence: string; frp: number | null; daynight: string; district: string; satellite?: string; source?: string }
 
 const VIIRS_FIRST_DAY = '2012-01-20';
+const NISAR_FIRST_DAY = '2025-10-28';
 const DAY_MS = 86_400_000;
 const today = new Date().toISOString().slice(0, 10);
 const MAX_DAY = today < VIIRS_FIRST_DAY ? VIIRS_FIRST_DAY : today;
@@ -67,7 +68,7 @@ export default function StudyDashboardPage() {
   const [selectedDate, setSelectedDate] = useState(MAX_DAY);
   const [imageryLayer, setImageryLayer] = useState<'nisar-daily' | 'nisar-12day' | 'sentinel1'>('nisar-12day');
   const [showDetections, setShowDetections] = useState(true);
-  const [showOpticalContext, setShowOpticalContext] = useState(true);
+  const [showOpticalContext, setShowOpticalContext] = useState(false);
   const [showFootprint, setShowFootprint] = useState(false);
   const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [selectedDetection, setSelectedDetection] = useState<MapDetection | null>(null);
@@ -119,6 +120,13 @@ export default function StudyDashboardPage() {
       controller.abort();
     };
   }, [data, selectedDate]);
+
+  useEffect(() => {
+    if (selectedDate < NISAR_FIRST_DAY && imageryLayer !== 'sentinel1') {
+      setImageryLayer('sentinel1');
+      setShowOpticalContext(false);
+    }
+  }, [imageryLayer, selectedDate]);
 
   const firmsCovered = selectedDate >= VIIRS_FIRST_DAY && selectedDate <= MAX_DAY;
   const snapshotBounds = useMemo(() => {
@@ -183,8 +191,9 @@ export default function StudyDashboardPage() {
           {([
                 ['nisar-daily', 'Radar image · daily (NISAR)'],
                 ['nisar-12day', 'Radar image · 12-day view (NISAR)'],
-                ['sentinel1', 'Radar image · daily (Sentinel-1)'],
-              ] as const).map(([value, label]) => <label key={value} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold ${imageryLayer === value ? 'border-radar/30 bg-radar/10 text-radar' : 'border-line bg-canvas/70 text-ink'}`}><input type="radio" name="imagery-layer" value={value} checked={imageryLayer === value} onChange={() => setImageryLayer(value)} className="accent-radar" />{label}</label>)}
+                ['sentinel1', 'Radar image · Sentinel-1'],
+              ] as const).map(([value, label]) => <label key={value} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold ${imageryLayer === value ? 'border-radar/30 bg-radar/10 text-radar' : 'border-line bg-canvas/70 text-ink'}`}><input type="radio" name="imagery-layer" value={value} checked={imageryLayer === value} disabled={value !== 'sentinel1' && selectedDate < NISAR_FIRST_DAY} onChange={() => { setImageryLayer(value); setShowOpticalContext(false); }} className="accent-radar disabled:cursor-not-allowed" />{label}</label>)}
+              {selectedDate < NISAR_FIRST_DAY && <p className="rounded-lg border border-amber/25 bg-amber/5 p-3 text-xs leading-relaxed text-muted">NISAR browse imagery starts on 28 Oct 2025. For this earlier date, the map uses Sentinel‑1 instead.</p>}
               {toggle(showOpticalContext, setShowOpticalContext, 'Show satellite photo background')}
               {toggle(showDetections, setShowDetections, 'Show heat-signal dots')}
               {toggle(showFootprint, setShowFootprint, 'Show study-area outline')}
