@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, ImageOff, LoaderCircle, Satellite } from 'lucide-react';
+import { Check, ChevronDown, ImageOff, LoaderCircle, Satellite } from 'lucide-react';
 
 type RadarLayer = 'nisar-daily' | 'nisar-12day' | 'sentinel1';
 type PreviewStatus = 'loading' | 'loaded' | 'unavailable';
@@ -14,9 +14,9 @@ interface SatelliteLayerPreviewsProps {
 
 const stateBounds = { west: 73.03175, south: 20.07379, east: 83.80923, north: 27.86861 };
 const radarLayers: Array<{ value: RadarLayer; title: string; description: string; gibsLayer: string }> = [
-  { value: 'nisar-daily', title: 'NISAR · one day', description: 'A single-date L-band radar browse image.', gibsLayer: 'NISAR_L2_Geocoded_Polarimetric_Covariance' },
+  { value: 'nisar-daily', title: 'NISAR · one day', description: 'One date of L-band radar; gaps mean no visible observation.', gibsLayer: 'NISAR_L2_Geocoded_Polarimetric_Covariance' },
   { value: 'nisar-12day', title: 'NISAR · 12 days', description: 'Rolling view for this date and the previous 11 days.', gibsLayer: 'NISAR_L2_Geocoded_Polarimetric_Covariance_12Day' },
-  { value: 'sentinel1', title: 'Sentinel-1 radar', description: 'A separate C-band radar source; coverage can differ.', gibsLayer: 'OPERA_L2_Radiometric_Terrain_Corrected_SAR_Sentinel-1' },
+  { value: 'sentinel1', title: 'Sentinel-1 radar', description: 'Different satellite and radar band; coverage can differ.', gibsLayer: 'OPERA_L2_Radiometric_Terrain_Corrected_SAR_Sentinel-1' },
 ];
 
 function gibsPreviewUrl(layer: string, date: string) {
@@ -68,7 +68,7 @@ export default function SatelliteLayerPreviews({ date, activeLayer, showNaturalC
         <span className="grid h-8 w-8 place-items-center rounded-lg bg-radar/10 text-radar"><Satellite className="h-4 w-4" aria-hidden="true" /></span>
         <div>
           <h3 id="satellite-preview-heading" className="text-sm font-bold text-ink">Compare real satellite views</h3>
-          <p className="text-xs text-muted">Images below use the selected date. Select one to show it on the large map.</p>
+          <p className="text-xs text-muted">Images below use the selected date. Select one to show it on the large map. These are visual browse layers, not before-and-after change measurements.</p>
         </div>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" role="group" aria-label="Satellite imagery previews for the selected date">
@@ -101,6 +101,38 @@ export default function SatelliteLayerPreviews({ date, activeLayer, showNaturalC
         </button>
       </div>
       <p className="mt-3 rounded-lg border border-line bg-canvas/45 px-3 py-2 text-[11px] leading-relaxed text-muted">MODIS burned-area maps are monthly products, so they appear under the separate MODIS layer with a month selector. Radar and optical images can have different coverage.</p>
+      <details className="mt-3 rounded-xl border border-line bg-canvas/45 p-3">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-xs font-semibold text-radar focus-visible:outline focus-visible:outline-2 focus-visible:outline-radar">
+          <span>Quick guide: layer differences, dark gaps, and project footprint</span>
+          <ChevronDown className="h-4 w-4 shrink-0" aria-hidden="true" />
+        </summary>
+        <div className="mt-3 grid gap-3 text-xs leading-relaxed text-muted sm:grid-cols-2">
+          <article className="rounded-lg border border-line/80 bg-paper/60 p-3">
+            <h4 className="font-semibold text-ink">NISAR daily vs. 12-day</h4>
+            <p className="mt-1">These NISAR layers are SAR data shown as false-color backscatter browse images—not natural-color photos or raw radar files. Daily shows one date; the 12-day layer rolls up observations from the selected date and up to the previous 11 days, so it may fill gaps. They can look similar; neither is a before/after change measurement.</p>
+          </article>
+          <article className="rounded-lg border border-line/80 bg-paper/60 p-3">
+            <h4 className="font-semibold text-ink">Why Sentinel-1 looks different—or similar</h4>
+            <p className="mt-1">Sentinel-1 is a separate C-band radar satellite; the NISAR layer here uses L-band radar. Both show radar backscatter, but wavelength, viewing geometry, date range, and coverage differ. Their colors are not directly comparable, and a visual difference is not a measured land change.</p>
+          </article>
+          <article className="rounded-lg border border-line/80 bg-paper/60 p-3">
+            <h4 className="font-semibold text-ink">Dark stripes and missing areas</h4>
+            <p className="mt-1">A black or dark wedge marks pixels with no image data for that place and date, often at an image-swath edge. It is not a fire scar or ground feature. Preview styling can blend dark gaps into the background, but cannot fill in missing observations.</p>
+          </article>
+          <article className="rounded-lg border border-line/80 bg-paper/60 p-3">
+            <h4 className="font-semibold text-ink">Natural color vs. MODIS burned area</h4>
+            <p className="mt-1">Natural color is an optical satellite photo used as a background; clouds or missing coverage can hide the ground. The MODIS burned-area layer is a separate monthly product. If the photo is off or unavailable, the map can show its dark base behind the burn layer.</p>
+          </article>
+          <article className="rounded-lg border border-line/80 bg-paper/60 p-3">
+            <h4 className="font-semibold text-ink">Study footprint, boundaries, and heat reports</h4>
+            <p className="mt-1">The project footprint is a smaller study area inside Madhya Pradesh. It clips the MODIS overlay; this map does not draw it as a separate outline. White lines are state or district borders. The footprint is not satellite coverage or a fire boundary.</p>
+          </article>
+          <article className="rounded-lg border border-line/80 bg-paper/60 p-3">
+            <h4 className="font-semibold text-ink">Heat signals and EchoGuide</h4>
+            <p className="mt-1">Colored heat signals are NASA FIRMS detections from another satellite—not confirmed fires, burn boundaries, or radar measurements. EchoGuide can search for nearby web reports when available, but cannot inspect image pixels or calculate change. This guide explains the map even when AI is unavailable.</p>
+          </article>
+        </div>
+      </details>
     </section>
   );
 }
