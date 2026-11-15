@@ -180,17 +180,17 @@ export default function DetectionEvidence({ selectedDate, onSelectDate }: { sele
         </div>
 
         <div className="mt-5 grid gap-3 md:grid-cols-3">
-          <article className="rounded-xl border border-white/10 bg-white/[.035] p-4">
+          <article className="rounded-xl border border-line bg-raised/70 p-4">
             <p className="eyebrow !text-[10px]">Between radar passes</p>
             <p className="mt-2 text-2xl font-semibold tabular-nums text-ember">{formatCount(betweenPasses)}</p>
             <p className="mt-1 text-xs leading-relaxed text-muted">Detections after the first pass and before the second. On 5 Nov, only records before 13:24:51 UTC are included.</p>
           </article>
-          <article className="rounded-xl border border-white/10 bg-white/[.035] p-4">
+          <article className="rounded-xl border border-line bg-raised/70 p-4">
             <p className="eyebrow !text-[10px]">Peak day</p>
             <p className="mt-2 text-2xl font-semibold tabular-nums text-radar">{formatCount(peak.count)}</p>
             <p className="mt-1 text-xs leading-relaxed text-muted">{dateLabel(peak.date, { day: 'numeric', month: 'long', year: 'numeric' })} · detections</p>
           </article>
-          <article className="rounded-xl border border-white/10 bg-white/[.035] p-4">
+          <article className="rounded-xl border border-line bg-raised/70 p-4">
             <p className="eyebrow !text-[10px]">Reported confidence</p>
             <p className="mt-2 text-2xl font-semibold tabular-nums text-analysis">{nominalHighShare.toFixed(1)}%</p>
             <p className="mt-1 text-xs leading-relaxed text-muted">Nominal + high of records with known confidence; low confidence {lowShare.toFixed(1)}%.</p>
@@ -198,7 +198,7 @@ export default function DetectionEvidence({ selectedDate, onSelectDate }: { sele
         </div>
 
         <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_15rem]">
-          <div className="min-w-0 rounded-xl border border-white/10 bg-canvas/55 p-3 sm:p-4">
+          <div className="min-w-0 rounded-xl border border-line bg-canvas/55 p-3 sm:p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="text-base">Daily detections by confidence</h3>
               <div className="flex flex-wrap gap-3 text-xs text-muted" aria-label="Chart legend">
@@ -210,7 +210,7 @@ export default function DetectionEvidence({ selectedDate, onSelectDate }: { sele
             </div>
             <p className="mt-1 text-xs text-muted" aria-live="polite">{dateLabel(selectedDate, { day: 'numeric', month: 'long', year: 'numeric' })}: {(detectionsByDate.get(selectedDate) ?? []).length.toLocaleString('en-US')} detections. {nov5BeforePass ? `${nov5Included} occurred before the 5 Nov NISAR pass; later detections are excluded from the between-pass statistic.` : 'Choose a date bar to inspect its map records.'}</p>
           </div>
-          <aside className="rounded-xl border border-white/10 bg-canvas/55 p-4" aria-label="Selected date fire radiative power summary">
+          <aside className="rounded-xl border border-line bg-canvas/55 p-4" aria-label="Selected date fire radiative power summary">
             <p className="eyebrow !text-[10px]">Selected date / FRP</p>
             <h3 className="mt-2 text-base">Fire radiative power</h3>
             <p className="mt-1 text-xs leading-relaxed text-muted">Fire radiative power (MW), a thermal intensity measure.</p>

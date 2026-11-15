@@ -17,7 +17,7 @@ const NASA_NISAR_DEPLOYMENT_VIDEO = 'https://assets.science.nasa.gov/content/dam
 
 function RadarPulseDiagram() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-paper p-4 sm:p-8">
+    <div className="overflow-hidden rounded-2xl border border-line bg-paper p-4 sm:p-8">
       <svg viewBox="0 0 1000 340" role="img" aria-labelledby="pulse-title pulse-desc" className="h-auto w-full">
         <title id="pulse-title">Illustration of a synthetic aperture radar pulse</title>
         <desc id="pulse-desc">A satellite moves above a textured ground surface, sending a cyan microwave pulse down and receiving an amber echo back.</desc>
@@ -106,27 +106,27 @@ function NisarMissionMedia() {
                 <p className="text-xs font-semibold uppercase tracking-[0.15em] text-radar">55-second mission animation</p>
                 <h3 className="mt-2 text-xl">NISAR launch and deployment</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">NASA/JPL-Caltech · animation of the spacecraft launch and reflector deployment.</p>
-                <a href="https://science.nasa.gov/video-detail/amf-ffc8740c-2d65-4712-a4dd-78152649ab49/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline underline-offset-4 hover:text-radar-200">
+                <a href="https://science.nasa.gov/video-detail/amf-ffc8740c-2d65-4712-a4dd-78152649ab49/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline underline-offset-4 hover:text-navy">
                   NASA video details <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </figcaption>
             </figure>
 
             <figure className="min-w-0 p-4 sm:p-6">
-              <div className="relative overflow-hidden rounded-xl border border-white/10 bg-canvas">
+              <div className="relative overflow-hidden rounded-xl border border-line bg-canvas">
                 <img
                   src={NASA_NISAR_RADAR_IMAGE}
                   alt="False-color NISAR L-band radar image of Mount Desert Island, Maine, with water in dark tones, forest in green, and hard or regular surfaces in magenta."
                   className="aspect-video w-full object-cover"
                   loading="lazy"
                 />
-                <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-canvas/90 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur">NASA NISAR sample · Maine</span>
+                <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-navy/90 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur">NASA NISAR sample · Maine</span>
               </div>
               <figcaption className="pt-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.15em] text-analysis">Different place · mission example</p>
                 <h3 className="mt-2 text-xl">Radar can reveal surface patterns.</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">This L-band image shows Mount Desert Island, Maine, acquired Aug. 21, 2025 during commissioning. It is not project data or a change result.</p>
-                <a href="https://science.nasa.gov/image-detail/amf-pia26616/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline underline-offset-4 hover:text-radar-200">
+                <a href="https://science.nasa.gov/image-detail/amf-pia26616/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline underline-offset-4 hover:text-navy">
                   Image details and credit · NASA/JPL-Caltech <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </figcaption>
@@ -167,7 +167,7 @@ export default function HowSarWorksPage() {
               <Reveal delayMs={index * 70} className="h-full">
                 <Card className="h-full">
                   <div className="flex items-center justify-between">
-                    <span className={`grid h-10 w-10 place-items-center rounded-xl border border-white/10 ${stepIconTones[index]}`}><step.icon className="h-5 w-5" aria-hidden="true" /></span>
+                    <span className={`grid h-10 w-10 place-items-center rounded-xl border border-line ${stepIconTones[index]}`}><step.icon className="h-5 w-5" aria-hidden="true" /></span>
                     <span className="text-xs font-semibold tracking-[0.12em] text-subtle">STEP 0{index + 1}</span>
                   </div>
                   <h3 className="mt-5">{step.title}</h3>
@@ -189,9 +189,9 @@ export default function HowSarWorksPage() {
             <p className="mt-4 text-base leading-relaxed text-muted">Radar brightness is a measured response shaped by the material and the way the radar views it. It is useful evidence, but it does not label a land-cover change on its own.</p>
           </div>
           <div className="mt-9 grid gap-4 md:grid-cols-3">
-            <Reveal className="h-full"><Card className="h-full"><span className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-eco/10 text-eco"><LocateFixed className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-5">Structure and roughness</h3><p className="mt-3 text-sm leading-relaxed text-muted">Leaves, branches, trunks, bare ground and surface texture scatter microwave energy in different ways.</p></Card></Reveal>
-            <Reveal delayMs={80} className="h-full"><Card className="h-full"><span className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-radar/10 text-radar"><Activity className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-5">Moisture</h3><p className="mt-3 text-sm leading-relaxed text-muted">Water in soil and vegetation can change the electrical response of a surface and affect the signal returned.</p></Card></Reveal>
-            <Reveal delayMs={160} className="h-full"><Card className="h-full"><span className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-analysis/10 text-analysis"><ArrowUp className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-5">Viewing setup</h3><p className="mt-3 text-sm leading-relaxed text-muted">Polarization, orbit geometry, processing and acquisition conditions also matter when two scenes are compared.</p></Card></Reveal>
+            <Reveal className="h-full"><Card className="h-full"><span className="grid h-10 w-10 place-items-center rounded-xl border border-line bg-eco/10 text-eco"><LocateFixed className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-5">Structure and roughness</h3><p className="mt-3 text-sm leading-relaxed text-muted">Leaves, branches, trunks, bare ground and surface texture scatter microwave energy in different ways.</p></Card></Reveal>
+            <Reveal delayMs={80} className="h-full"><Card className="h-full"><span className="grid h-10 w-10 place-items-center rounded-xl border border-line bg-radar/10 text-radar"><Activity className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-5">Moisture</h3><p className="mt-3 text-sm leading-relaxed text-muted">Water in soil and vegetation can change the electrical response of a surface and affect the signal returned.</p></Card></Reveal>
+            <Reveal delayMs={160} className="h-full"><Card className="h-full"><span className="grid h-10 w-10 place-items-center rounded-xl border border-line bg-analysis/10 text-analysis"><ArrowUp className="h-5 w-5" aria-hidden="true" /></span><h3 className="mt-5">Viewing setup</h3><p className="mt-3 text-sm leading-relaxed text-muted">Polarization, orbit geometry, processing and acquisition conditions also matter when two scenes are compared.</p></Card></Reveal>
           </div>
           <div className="mt-7 flex items-start gap-3 rounded-xl border border-line bg-canvas p-4 text-sm leading-relaxed text-muted">
             <ArrowDown className="mt-0.5 h-4 w-4 shrink-0 text-ember" aria-hidden="true" />

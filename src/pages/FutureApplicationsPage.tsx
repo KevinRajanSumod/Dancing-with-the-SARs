@@ -143,9 +143,9 @@ export default function FutureApplicationsPage() {
         <p className="eyebrow">Beyond this case study / Applications</p>
         <PageIntro title="Where repeat radar observations can help">
           <p>
-            NASA’s published NISAR science requirements and application material describe uses in ecosystems,
-            agriculture, water, and hazard monitoring. The examples below summarize those documented applications;
-            they are not results calculated from this project’s two browse previews.
+            NASA’s published NISAR science requirements describe possible uses in ecosystems, agriculture, water,
+            and hazard monitoring. TerraScope currently investigates fire-related evidence in Madhya Pradesh;
+            the other applications below are future research directions, not completed analyses in this release.
           </p>
         </PageIntro>
       </section>
@@ -155,7 +155,7 @@ export default function FutureApplicationsPage() {
           {applications.map((application, index) => (
             <Reveal key={application.title} delayMs={index * 70} className="h-full">
               <Card className="flex h-full flex-col" interactive>
-                <span className={`grid h-11 w-11 place-items-center rounded-xl border border-white/10 ${applicationIconTones[index]}`}><application.icon className="h-5 w-5" aria-hidden="true" /></span>
+                <span className={`grid h-11 w-11 place-items-center rounded-xl border border-line ${applicationIconTones[index]}`}><application.icon className="h-5 w-5" aria-hidden="true" /></span>
                 <h2 className="mt-6 text-2xl">{application.title}</h2>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{application.text}</p>
                 <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4">
@@ -192,16 +192,16 @@ export default function FutureApplicationsPage() {
           <p className="eyebrow">NASA data products / Ecosystems, water and hazards</p>
           <h2 id="data-heading" className="mt-3 max-w-3xl">Bring the right evidence to each application.</h2>
           <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
-            These NASA products now have clearly labeled roles in the app: ASF/NISAR browse metadata, FIRMS detections, SMAP moisture context, and a separate MCD64A1 monthly map. The remaining products are research references only. Product context is not a measured NISAR change result.
+            Fire detection is the current analysis. This list distinguishes inputs used in this release from products that may support later flood, crop, vegetation, and land-change studies; a source link does not mean that product has already been analyzed here.
           </p>
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {datasets.map((dataset) => (
               <Card key={dataset.title} className="h-full !p-5">
                 <div className="flex items-center justify-between gap-3">
-                  <span className={`grid h-10 w-10 place-items-center rounded-xl border border-white/10 ${dataset.tone}`}><dataset.icon className="h-5 w-5" aria-hidden="true" /></span>
-                  <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[.08em] ${dataset.integration === 'Reference only' ? 'border-white/10 bg-white/[.03] text-subtle' : 'border-radar/20 bg-radar/10 text-radar'}`}>{dataset.integration}</span>
+                  <span className={`grid h-10 w-10 place-items-center rounded-xl border border-line ${dataset.tone}`}><dataset.icon className="h-5 w-5" aria-hidden="true" /></span>
+                  <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[.08em] ${dataset.integration === 'Reference only' ? 'border-line bg-raised text-subtle' : 'border-radar/20 bg-radar/10 text-radar'}`}>{dataset.integration}</span>
                 </div>
-                <p className="mt-4 text-[11px] font-semibold uppercase tracking-[.12em] text-ember">{dataset.meta}</p>
+                <p className="mt-4 text-[11px] font-semibold uppercase tracking-[.12em] text-amber">{dataset.meta}</p>
                 <h3 className="mt-2">{dataset.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted">{dataset.description}</p>
                 <a href={dataset.href} target="_blank" rel="noopener noreferrer" className={sourceLinkClass}>

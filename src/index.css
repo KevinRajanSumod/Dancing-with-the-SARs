@@ -5,13 +5,13 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    background: #07131d;
+    background: #f3f2ec;
   }
 
   body {
     @apply bg-canvas font-sans text-ink antialiased;
-    background-color: #07131d;
-    background-image: radial-gradient(circle at 85% -10%, rgba(103, 217, 236, 0.1), transparent 27rem), radial-gradient(circle at 8% 46%, rgba(248, 131, 121, 0.055), transparent 31rem);
+    background-color: #f3f2ec;
+    background-image: radial-gradient(circle at 88% -10%, rgba(39, 109, 99, 0.055), transparent 30rem), radial-gradient(circle at 5% 55%, rgba(181, 122, 32, 0.035), transparent 32rem);
     font-size: 16px;
     line-height: 1.6;
   }
@@ -42,7 +42,7 @@
   }
 
   :focus-visible {
-    outline: 3px solid #67D9EC;
+    outline: 3px solid #276d63;
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -71,19 +71,27 @@
   }
 
   .lift {
-    transition: transform 200ms ease, box-shadow 200ms ease;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
   }
 
-  .lift:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(103, 217, 236, 0.14), 0 14px 34px rgba(248, 131, 121, 0.08);
+  .lift:hover,
+  .lift:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(35, 51, 45, 0.14), 0 0 0 1px rgba(39, 109, 99, 0.16);
+  }
+
+  @supports selector(.surface-card:has(button:hover)) {
+    .surface-card:has(a:hover, button:hover, input:hover, select:hover) {
+      border-color: #a9b0a5;
+      box-shadow: 0 10px 28px rgba(35, 51, 45, 0.11);
+    }
   }
 
   .surface-card {
     @apply rounded-2xl border bg-paper shadow-card;
-    border-color: #405461;
-    background-image: linear-gradient(145deg, rgba(248, 131, 121, 0.035), transparent 48%);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 211, 172, 0.055);
+    border-color: #d3d4c9;
+    background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(252, 251, 247, 0.92) 48%);
+    box-shadow: 0 8px 24px rgba(35, 51, 45, 0.08), inset 0 1px rgba(255, 255, 255, 0.75);
   }
 
   .eyebrow {
@@ -91,14 +99,14 @@
   }
 
   .radar-grain {
-    background-image: radial-gradient(rgba(103, 217, 236, 0.18) 0.8px, transparent 0.8px);
+    background-image: radial-gradient(rgba(39, 109, 99, 0.16) 0.8px, transparent 0.8px);
     background-size: 13px 13px;
   }
 
   .glass-panel {
     border: 1px solid rgba(198, 208, 215, 0.18);
-    background: linear-gradient(135deg, rgba(248, 131, 121, 0.075), rgba(21, 38, 51, 0.9) 38%, rgba(9, 19, 29, 0.8));
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.06);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(233, 232, 224, 0.94) 58%, rgba(252, 251, 247, 0.92));
+    box-shadow: 0 14px 38px rgba(35, 51, 45, 0.13), inset 0 1px rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(22px);
   }
 
@@ -106,22 +114,22 @@
     position: absolute;
     width: min(58rem, 86vw);
     height: min(58rem, 86vw);
-    border: 1px solid rgba(103, 217, 236, 0.19);
+    border: 1px solid rgba(39, 109, 99, 0.16);
     border-radius: 9999px;
-    background: radial-gradient(circle at 50% 50%, rgba(103, 217, 236, 0.12), transparent 48%);
+    background: radial-gradient(circle at 50% 50%, rgba(39, 109, 99, 0.1), transparent 48%);
     animation: orbit-drift 14s ease-in-out infinite alternate;
   }
 
   .orbit-field::before,
   .orbit-field::after {
     position: absolute;
-    border: 1px solid rgba(103, 217, 236, 0.12);
+    border: 1px solid rgba(39, 109, 99, 0.11);
     border-radius: inherit;
     content: '';
   }
 
   .orbit-field::before { inset: 8%; }
-  .orbit-field::after { inset: 18%; border-color: rgba(248, 131, 121, 0.24); }
+  .orbit-field::after { inset: 18%; border-color: rgba(185, 78, 54, 0.2); }
 
   .orbit-dot {
     position: absolute;
@@ -130,19 +138,19 @@
     width: .75rem;
     height: .75rem;
     border-radius: 9999px;
-    background: #67d9ec;
-    box-shadow: 0 0 0 7px rgba(103, 217, 236, .12), 0 0 23px rgba(103, 217, 236, .72);
+    background: #276d63;
+    box-shadow: 0 0 0 7px rgba(39, 109, 99, .12), 0 0 23px rgba(39, 109, 99, .48);
     animation: signal-pulse 2.6s ease-in-out infinite;
   }
 
   .mission-grid {
-    background-image: linear-gradient(rgba(103, 217, 236, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(103, 217, 236, .07) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(39, 109, 99, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(39, 109, 99, .07) 1px, transparent 1px);
     background-size: 2rem 2rem;
     mask-image: linear-gradient(to bottom, black, transparent 92%);
   }
 
   .telemetry-line {
-    background: linear-gradient(90deg, transparent, rgba(103, 217, 236, .9), transparent);
+    background: linear-gradient(90deg, transparent, rgba(39, 109, 99, .85), transparent);
     background-size: 200% 100%;
     animation: telemetry-scan 4s linear infinite;
   }
@@ -150,25 +158,25 @@
 
 main select,
 main input:not([type='range']):not([type='checkbox']):not([type='radio']) {
-  color: #f1f5f7;
-  background-color: #152633;
-  border-color: #3a4a56;
-  color-scheme: dark;
+  color: #202c27;
+  background-color: #fcfbf7;
+  border-color: #d3d4c9;
+  color-scheme: light;
 }
 
 main select:focus,
 main input:not([type='range']):not([type='checkbox']):not([type='radio']):focus {
-  border-color: #67d9ec;
+  border-color: #276d63;
 }
 
 main option {
-  background: #152633;
-  color: #f1f5f7;
+  background: #fcfbf7;
+  color: #202c27;
 }
 
 main input[type='range'] {
-  color-scheme: dark;
-  accent-color: #f6c463;
+  color-scheme: light;
+  accent-color: #b57a20;
 }
 
 .timeline-range {
@@ -177,15 +185,15 @@ main input[type='range'] {
   height: 1.75rem;
   border: 0;
   background: transparent;
-  color-scheme: dark;
-  accent-color: #f6c463;
+  color-scheme: light;
+  accent-color: #b57a20;
 }
 
 .timeline-range::-webkit-slider-runnable-track {
   height: 0.45rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(35, 51, 45, 0.12);
   border-radius: 9999px;
-  background: linear-gradient(90deg, #f6c463 0%, #f6c463 var(--range-progress), #405461 var(--range-progress), #405461 100%);
+  background: linear-gradient(90deg, #b57a20 0%, #b57a20 var(--range-progress), #d3d4c9 var(--range-progress), #d3d4c9 100%);
 }
 
 .timeline-range::-webkit-slider-thumb {
@@ -193,10 +201,10 @@ main input[type='range'] {
   width: 1.15rem;
   height: 1.15rem;
   margin-top: -0.42rem;
-  border: 3px solid #07131d;
+  border: 3px solid #f3f2ec;
   border-radius: 50%;
-  background: #f6c463;
-  box-shadow: 0 0 0 2px rgba(246, 196, 99, 0.3);
+  background: #b57a20;
+  box-shadow: 0 0 0 2px rgba(181, 122, 32, 0.25);
   transition: box-shadow 160ms ease, transform 160ms ease;
 }
 
@@ -204,22 +212,22 @@ main input[type='range'] {
   height: 0.45rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 9999px;
-  background: #3a4a56;
+  background: #d3d4c9;
 }
 
 .timeline-range::-moz-range-progress {
   height: 0.45rem;
   border-radius: 9999px;
-  background: #f6c463;
+  background: #b57a20;
 }
 
 .timeline-range::-moz-range-thumb {
   width: 0.9rem;
   height: 0.9rem;
-  border: 3px solid #07131d;
+  border: 3px solid #f3f2ec;
   border-radius: 50%;
-  background: #f6c463;
-  box-shadow: 0 0 0 2px rgba(246, 196, 99, 0.3);
+  background: #b57a20;
+  box-shadow: 0 0 0 2px rgba(181, 122, 32, 0.25);
   transition: box-shadow 160ms ease, transform 160ms ease;
 }
 
@@ -227,11 +235,16 @@ main input[type='range'] {
 .timeline-range:focus-visible::-webkit-slider-thumb,
 .timeline-range:hover::-moz-range-thumb,
 .timeline-range:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 5px rgba(246, 196, 99, 0.22);
+  box-shadow: 0 0 0 5px rgba(181, 122, 32, 0.2);
 }
 
+.bg-navy .text-muted { color: #d4ddd6; }
+.bg-navy .text-subtle { color: #b8c5bc; }
+.bg-navy .text-radar { color: #d8ece7; }
+.bg-navy .text-amber { color: #f0d69c; }
+
 main tbody tr:nth-child(odd) {
-  background-color: #152633;
+  background-color: #f0efe8;
 }
 
 @keyframes radar-flow {
@@ -293,7 +306,8 @@ main tbody tr:nth-child(odd) {
     transform: none;
   }
 
-  .lift:hover {
+  .lift:hover,
+  .lift:focus-within {
     transform: none;
   }
 

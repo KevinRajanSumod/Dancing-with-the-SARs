@@ -162,11 +162,11 @@ export default function NasaPowerContext() {
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-radar/20 bg-radar/10 text-radar"><CloudRain className="h-5 w-5" aria-hidden="true" /></span>
             <div>
               <p className="eyebrow">NASA POWER · rainfall context for SAR</p>
-              <h2 id="power-heading" className="mt-2 text-xl text-white sm:text-2xl">Could rainfall have influenced the radar return?</h2>
+              <h2 id="power-heading" className="mt-2 text-xl text-ink sm:text-2xl">Could rainfall have influenced the radar return?</h2>
               <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">Rain can change soil and canopy wetness, which can affect L-band radar backscatter without a lasting land-cover change. These daily, model-based precipitation values add regional context for 30 Sep–5 Nov 2026; they are not measurements at each radar pixel or proof of a cause. POWER’s meteorological fields use NASA GMAO MERRA-2 data.</p>
             </div>
           </div>
-          <button type="button" onClick={() => void refresh()} disabled={loading} className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-white/15 bg-white/[.05] px-3 text-xs font-semibold text-ink transition hover:bg-white/10 disabled:cursor-wait disabled:opacity-60">
+          <button type="button" onClick={() => void refresh()} disabled={loading} className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-line-strong bg-paper px-3 text-xs font-semibold text-ink transition hover:bg-raised disabled:cursor-wait disabled:opacity-60">
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} aria-hidden="true" /> Refresh NASA data
           </button>
         </div>
@@ -182,24 +182,24 @@ export default function NasaPowerContext() {
         {data && (
           <>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-white/10 bg-canvas/65 p-4">
+              <div className="rounded-xl border border-line bg-canvas/65 p-4">
                 <p className="text-xs font-semibold uppercase tracking-[.13em] text-subtle">Rainfall total</p>
                 <p className="mt-1 text-2xl font-semibold tabular-nums text-ink">{formatNumber(summaries.totalRain)} <span className="text-sm font-medium text-muted">mm</span></p>
                 <p className="mt-1 text-xs text-muted">{summaries.rainCoverage} daily values in the window</p>
               </div>
-              <div className="rounded-xl border border-white/10 bg-canvas/65 p-4">
+              <div className="rounded-xl border border-line bg-canvas/65 p-4">
                 <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[.13em] text-subtle"><CloudRain className="h-3.5 w-3.5 text-radar" aria-hidden="true" /> Wet days</p>
                 <p className="mt-1 text-2xl font-semibold tabular-nums text-ink">{summaries.rainDays}</p>
                 <p className="mt-1 text-xs text-muted">days with at least 1 mm at the grid cell</p>
               </div>
-              <div className="rounded-xl border border-white/10 bg-canvas/65 p-4">
+              <div className="rounded-xl border border-line bg-canvas/65 p-4">
                 <p className="text-xs font-semibold uppercase tracking-[.13em] text-subtle">Wettest day</p>
                 <p className="mt-1 text-2xl font-semibold tabular-nums text-ink">{formatNumber(summaries.wettestDay?.precipitationMm ?? null)} <span className="text-sm font-medium text-muted">mm</span></p>
                 <p className="mt-1 text-xs text-muted">{summaries.wettestDay ? displayDate(summaries.wettestDay.date) : 'no daily value available'}</p>
               </div>
             </div>
 
-            <div className="mt-5 rounded-xl border border-white/10 bg-canvas/55 p-4 sm:p-5">
+            <div className="mt-5 rounded-xl border border-line bg-canvas/55 p-4 sm:p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm font-semibold text-ink">Daily precipitation <span className="font-normal text-muted">· select a bar for the day</span></p>
                 <span className="rounded-full border border-radar/20 bg-radar/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[.12em] text-radar">mm / day</span>
@@ -216,18 +216,18 @@ export default function NasaPowerContext() {
               </div>
               <div className="mt-2 flex justify-between text-[10px] text-subtle"><span>{chartRecords[0] ? displayDate(chartRecords[0].date) : '—'}</span><span>{chartRecords.length ? displayDate(chartRecords[chartRecords.length - 1].date) : '—'}</span></div>
               {selectedRecord && (
-                <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border border-white/10 bg-white/[.03] px-3 py-2 text-xs text-muted" aria-live="polite">
+                <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border border-line bg-raised/70 px-3 py-2 text-xs text-muted" aria-live="polite">
                   <span className="font-semibold text-ink">{displayDate(selectedRecord.date)}</span>
                   <span>{formatNumber(selectedRecord.precipitationMm)} mm precipitation</span>
                 </p>
               )}
             </div>
 
-            <div className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4 text-xs leading-relaxed text-muted sm:flex-row sm:items-start sm:justify-between">
+            <div className="mt-4 flex flex-col gap-2 border-t border-line pt-4 text-xs leading-relaxed text-muted sm:flex-row sm:items-start sm:justify-between">
               <p className="max-w-3xl">Nearest NASA POWER grid cell to 22.75° N, 78.28° E: {data.gridLatitude.toFixed(3)}° N, {data.gridLongitude.toFixed(3)}° E. This coarse rainfall estimate helps check wetness as a possible influence on SAR backscatter; it is not a radar-pixel measurement or evidence of fire.</p>
               <div className="flex shrink-0 flex-wrap gap-x-4 gap-y-2">
-                <a href="https://power.larc.nasa.gov/docs/services/api/temporal/daily/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4">API details <ExternalLink className="h-3 w-3" aria-hidden="true" /></a>
-                <a href="https://power.larc.nasa.gov/docs/methodology/data/sources_meteorology/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4">Data source & resolution <ExternalLink className="h-3 w-3" aria-hidden="true" /></a>
+                <a href="https://power.larc.nasa.gov/docs/services/api/temporal/daily/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4 hover:text-navy">API details <ExternalLink className="h-3 w-3" aria-hidden="true" /></a>
+                <a href="https://power.larc.nasa.gov/docs/methodology/data/sources_meteorology/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4 hover:text-navy">Data source & resolution <ExternalLink className="h-3 w-3" aria-hidden="true" /></a>
               </div>
             </div>
           </>

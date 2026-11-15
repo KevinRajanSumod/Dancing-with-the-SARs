@@ -65,10 +65,10 @@ export default function App() {
       <SiteFooter />
       {assistantOpen && (
         <div className="fixed inset-0 z-[60] bg-black/55" onMouseDown={(event) => { if (event.target === event.currentTarget) setAssistantOpen(false); }}>
-          <aside className="absolute inset-y-0 right-0 w-full max-w-xl overflow-y-auto border-l border-white/15 bg-canvas shadow-2xl" role="dialog" aria-modal="true" aria-label="EchoGuide assistant">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-canvas/95 px-5 py-4 backdrop-blur">
-              <span className="font-semibold text-white">EchoGuide · SAR research assistant</span>
-              <button type="button" onClick={() => setAssistantOpen(false)} className="rounded-lg p-2 text-white hover:bg-white/10" aria-label="Close EchoGuide"><X className="h-5 w-5" /></button>
+          <aside className="absolute inset-y-0 right-0 w-full max-w-xl overflow-y-auto border-l border-line bg-paper text-ink shadow-2xl" role="dialog" aria-modal="true" aria-label="EchoGuide assistant">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-paper/95 px-5 py-4 backdrop-blur">
+              <span className="font-semibold text-ink">EchoGuide · SAR research assistant</span>
+              <button type="button" onClick={() => setAssistantOpen(false)} className="rounded-lg p-2 text-ink hover:bg-raised" aria-label="Close EchoGuide"><X className="h-5 w-5" /></button>
             </div>
             <ProjectEvidenceAssistant topic={topic} />
           </aside>

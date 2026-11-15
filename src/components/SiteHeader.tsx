@@ -8,10 +8,10 @@ interface SiteHeaderProps {
 }
 
 function linkClass(isActive: boolean): string {
-  const base = 'rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 focus-visible:outline-white';
+  const base = 'rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 focus-visible:outline-radar';
   return isActive
-    ? `${base} border border-radar/25 bg-radar/10 text-radar shadow-[0_0_22px_rgba(103,217,236,.12)]`
-    : `${base} text-muted hover:bg-white/[0.07] hover:text-white`;
+    ? `${base} border border-radar/25 bg-radar/10 text-radar shadow-[0_4px_14px_rgba(39,109,99,.10)]`
+    : `${base} text-muted hover:bg-raised hover:text-ink`;
 }
 
 export default function SiteHeader({ pathname }: SiteHeaderProps) {
@@ -30,13 +30,13 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
   useEffect(() => setMenuOpen(false), [pathname]);
 
   return (
-    <header className="sticky top-0 z-40 px-3 pt-3 text-white sm:px-5">
-      <div className="mx-auto flex min-h-[4.25rem] max-w-7xl items-center justify-between gap-4 rounded-2xl border border-white/10 bg-canvas/90 px-3 shadow-[0_16px_40px_rgba(0,0,0,.24)] backdrop-blur-2xl sm:px-4 lg:px-5">
-        <AppLink to="/" className="group flex min-w-0 items-center gap-3 text-white">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-radar/30 bg-radar/10 text-radar shadow-[0_0_24px_rgba(103,217,236,.12)] transition-colors group-hover:bg-radar/20">
+    <header className="sticky top-0 z-40 px-3 pt-3 text-ink sm:px-5">
+      <div className="mx-auto flex min-h-[4.25rem] max-w-7xl items-center justify-between gap-4 rounded-2xl border border-line bg-paper/95 px-3 shadow-card backdrop-blur-2xl sm:px-4 lg:px-5">
+        <AppLink to="/" className="group flex min-w-0 items-center gap-3 text-ink">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-radar/20 bg-radar/10 text-radar transition-colors group-hover:bg-radar/20">
             <Radar className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
           </span>
-          <span className="truncate text-sm font-semibold tracking-wide sm:text-base">TerraScope</span>
+          <span><span className="block truncate text-sm font-semibold tracking-wide sm:text-base">TerraScope</span><span className="hidden text-[10px] font-medium text-muted sm:block">Earth observation research</span></span>
         </AppLink>
 
         <nav aria-label="Main" className="hidden xl:block">
@@ -56,7 +56,7 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
 
         <button
           type="button"
-          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white transition-colors hover:bg-white/10 xl:hidden"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-ink transition-colors hover:bg-raised xl:hidden"
           aria-expanded={menuOpen}
           aria-controls={menuId}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -67,7 +67,7 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
       </div>
 
       {menuOpen && (
-        <nav id={menuId} aria-label="Mobile" className="mx-auto mt-2 max-w-7xl rounded-2xl border border-white/10 bg-canvas/95 px-4 pb-5 pt-3 shadow-[0_16px_40px_rgba(0,0,0,.24)] backdrop-blur-2xl xl:hidden">
+        <nav id={menuId} aria-label="Mobile" className="mx-auto mt-2 max-w-7xl rounded-2xl border border-line bg-paper px-4 pb-5 pt-3 shadow-card xl:hidden">
           <ul className="mx-auto grid max-w-7xl gap-1 sm:grid-cols-2">
             {routes.map((route) => {
               const isActive = route.path === pathname;

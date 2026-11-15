@@ -36,10 +36,10 @@ export default function UpcomingPage() {
   return (
     <>
       <section className="mx-auto max-w-7xl px-5 pb-10 pt-14 sm:px-8 md:pb-14 md:pt-20">
-        <p className="eyebrow">Roadmap / Next questions</p>
-        <PageIntro title="What would make the next answer stronger?">
+        <p className="eyebrow">Research plan / Current and upcoming work</p>
+        <PageIntro title="Fire detection now. Broader Earth monitoring next.">
           <p>
-            The project now reports what its existing evidence supports and what needs more data. Some questions can be answered from the supplied archive; quantitative radar change cannot be inferred from browse pictures.
+            Current analysis focuses on fire-related satellite evidence in Madhya Pradesh. Upcoming releases will add independently analyzed flood, crop, vegetation, and surface-change studies as comparable data becomes available.
           </p>
         </PageIntro>
       </section>
@@ -49,9 +49,9 @@ export default function UpcomingPage() {
           {nextSteps.map((step, index) => (
             <li key={step.title} className="list-none">
               <Reveal delayMs={index * 80} className="h-full">
-                <article className="surface-card flex h-full flex-col p-5">
+                <article className="surface-card lift flex h-full flex-col p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <span className={`grid h-11 w-11 place-items-center rounded-xl border border-white/10 ${roadmapIconTones[index]}`}><step.icon className="h-5 w-5" aria-hidden="true" /></span>
+                    <span className={`grid h-11 w-11 place-items-center rounded-xl border border-line ${roadmapIconTones[index]}`}><step.icon className="h-5 w-5" aria-hidden="true" /></span>
                     <span className="rounded-full bg-canvas px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.13em] text-subtle">{step.tag}</span>
                   </div>
                   <p className="mt-6 text-xs font-semibold tracking-[0.15em] text-radar">EVIDENCE CHECK 0{index + 1}</p>
