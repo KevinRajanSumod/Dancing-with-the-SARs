@@ -2,11 +2,20 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Droplets, ExternalLink, RefreshCw } from 'lucide-react';
 
 const API_URL = 'https://power.larc.nasa.gov/api/temporal/daily/point';
-const START_DATE = '20260930';
-const END_DATE = '20261105';
+function recentWindow() {
+  const end = new Date();
+  end.setUTCDate(end.getUTCDate() - 2);
+  const start = new Date(end);
+  start.setUTCDate(start.getUTCDate() - 36);
+  return {
+    start: start.toISOString().slice(0, 10).replace(/-/g, ''),
+    end: end.toISOString().slice(0, 10).replace(/-/g, ''),
+  };
+}
+const { start: START_DATE, end: END_DATE } = recentWindow();
 const REQUEST_LATITUDE = 22.75;
 const REQUEST_LONGITUDE = 78.28;
-const CACHE_KEY = 'nasa-power-smap-central-india-20260930-20261105-v1';
+const CACHE_KEY = `nasa-power-smap-central-india-${START_DATE}-${END_DATE}-v2`;
 const CACHE_TTL_MS = 12 * 60 * 60 * 1000;
 
 interface MoistureDay {
@@ -162,7 +171,7 @@ export default function NasaSmapContext() {
             <div>
               <p className="eyebrow">NASA POWER Hydrology · SMAP L4</p>
               <h2 id="smap-heading" className="mt-2 text-xl text-ink sm:text-2xl">Daily soil moisture near the study area.</h2>
-              <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">Surface (0–5 cm) and root-zone (0–100 cm) volumetric moisture, 30 Sep–5 Nov 2026. Click a day to inspect its values.</p>
+              <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">Surface (0–5 cm) and root-zone (0–100 cm) volumetric moisture over a recent daily window. Click a day to inspect its values.</p>
             </div>
           </div>
           <button type="button" onClick={() => void refresh()} disabled={loading} className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-line-strong bg-paper px-3 text-xs font-semibold text-ink transition hover:bg-raised disabled:cursor-wait disabled:opacity-60">
@@ -178,7 +187,7 @@ export default function NasaSmapContext() {
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <div className="rounded-xl border border-line bg-canvas/65 p-4"><p className="text-xs font-semibold uppercase tracking-[.13em] text-subtle">Mean surface moisture</p><p className="mt-1 text-2xl font-semibold tabular-nums text-ink">{formatValue(summaries.meanSurface)} <span className="text-sm font-medium text-muted">m³/m³</span></p><p className="mt-1 text-xs text-muted">top 0–5 cm · window mean</p></div>
               <div className="rounded-xl border border-line bg-canvas/65 p-4"><p className="text-xs font-semibold uppercase tracking-[.13em] text-subtle">Mean root-zone moisture</p><p className="mt-1 text-2xl font-semibold tabular-nums text-ink">{formatValue(summaries.meanRoot)} <span className="text-sm font-medium text-muted">m³/m³</span></p><p className="mt-1 text-xs text-muted">0–100 cm column · window mean</p></div>
-              <div className="rounded-xl border border-line bg-canvas/65 p-4"><p className="text-xs font-semibold uppercase tracking-[.13em] text-subtle">Available daily records</p><p className="mt-1 text-2xl font-semibold tabular-nums text-ink">{summaries.days}</p><p className="mt-1 text-xs text-muted">of at most 37 dates in this window</p></div>
+              <div className="rounded-xl border border-line bg-canvas/65 p-4"><p className="text-xs font-semibold uppercase tracking-[.13em] text-subtle">Available daily records</p><p className="mt-1 text-2xl font-semibold tabular-nums text-ink">{summaries.days}</p><p className="mt-1 text-xs text-muted">within the requested recent window</p></div>
             </div>
 
             <div className="mt-5 rounded-xl border border-line bg-canvas/55 p-4 sm:p-5">

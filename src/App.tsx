@@ -79,7 +79,7 @@ export default function App() {
           </aside>
         </div>
       )}
-      <button type="button" onClick={() => setAssistantOpen(true)} className="fixed bottom-4 right-4 z-50 grid h-12 w-12 place-items-center rounded-full bg-radar text-canvas shadow-xl transition hover:bg-radar-200 sm:bottom-5 sm:right-5 sm:flex sm:h-auto sm:w-auto sm:gap-2 sm:px-5 sm:py-3 sm:font-bold" aria-label="Open EchoGuide assistant">
+      <button type="button" onClick={() => setAssistantOpen(true)} className="fixed bottom-24 right-4 z-50 grid h-12 w-12 place-items-center rounded-full bg-radar text-canvas shadow-xl transition hover:bg-radar-200 sm:bottom-24 sm:right-5 sm:flex sm:h-auto sm:w-auto sm:gap-2 sm:px-5 sm:py-3 sm:font-bold" aria-label="Open EchoGuide assistant" title="Open the AI research assistant">
         <MessageCircle className="h-5 w-5" aria-hidden="true" /><span className="sr-only sm:not-sr-only">Ask EchoGuide</span>
       </button>
       </div>

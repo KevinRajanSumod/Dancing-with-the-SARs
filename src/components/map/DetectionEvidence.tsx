@@ -1,23 +1,8 @@
 import { useMemo } from 'react';
-import { confidenceCounts, detections, detectionsByDate, isNominal, type Detection } from '@/data/detections';
-import { RADAR_PASSES_UTC } from '@/data/studyArea';
-
-const FIRST_DATE = RADAR_PASSES_UTC[0].date;
-const LAST_DATE = RADAR_PASSES_UTC[1].date;
+import { confidenceCounts, detections, detectionsByDate, detectionDates, isNominal, type Detection } from '@/data/detections';
 const LOW = '#f88379';
 const NOMINAL = '#f6b14d';
 const HIGH = '#67d9ec';
-
-function datesBetween(start: string, end: string): string[] {
-  const dates: string[] = [];
-  const date = new Date(`${start}T00:00:00Z`);
-  const last = new Date(`${end}T00:00:00Z`);
-  while (date <= last) {
-    dates.push(date.toISOString().slice(0, 10));
-    date.setUTCDate(date.getUTCDate() + 1);
-  }
-  return dates;
-}
 
 function confidenceKind(value: string): 'low' | 'nominal' | 'high' | null {
   const normalized = value.trim().toLowerCase();
@@ -25,17 +10,6 @@ function confidenceKind(value: string): 'low' | 'nominal' | 'high' | null {
   if (isNominal(normalized)) return 'nominal';
   if (normalized === 'h' || normalized === 'high') return 'high';
   return null;
-}
-
-function detectionTimeSeconds(time: string): number | null {
-  const match = time.trim().match(/^(\d{1,2}):(\d{2})$/);
-  if (!match) return null;
-  return Number(match[1]) * 3600 + Number(match[2]) * 60;
-}
-
-function clockSeconds(time: string): number {
-  const [hours, minutes, seconds] = time.split(':').map(Number);
-  return hours * 3600 + minutes * 60 + seconds;
 }
 
 function dateLabel(date: string, options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' }): string {
@@ -74,22 +48,12 @@ function DailyBars({ rows, selectedDate, onSelectDate }: { rows: DailyCount[]; s
   const maximum = Math.max(1, ...rows.map((row) => row.low + row.nominal + row.high));
   const scaleMaximum = Math.ceil(maximum / 10) * 10 || 10;
   const ticks = [0, 0.5, 1].map((fraction) => Math.round(scaleMaximum * fraction));
-  const beforeIndex = rows.findIndex((row) => row.date === RADAR_PASSES_UTC[0].date);
-  const afterIndex = rows.findIndex((row) => row.date === RADAR_PASSES_UTC[1].date);
-
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="mt-4 block w-full min-w-[600px] sm:min-w-0" role="group" aria-label="Daily FIRMS detections stacked by reported confidence. Select a bar to update the map date.">
-      <title>Daily thermal detections, stacked by confidence, with NISAR pass dates</title>
+      <title>Daily thermal detections, stacked by reported confidence</title>
       {ticks.map((tick) => {
         const y = top + plotHeight - (tick / scaleMaximum) * plotHeight;
         return <g key={tick} aria-hidden="true"><line x1={left} x2={width - right} y1={y} y2={y} stroke="#405461" strokeWidth="1" /><text x={left - 8} y={y + 4} textAnchor="end" fill="#aab7be" fontSize="11">{tick}</text></g>;
-      })}
-      {[
-        { index: beforeIndex, text: 'NISAR before', anchor: 'start' as const, dx: 4 },
-        { index: afterIndex, text: 'NISAR after', anchor: 'end' as const, dx: -4 },
-      ].map((pass) => {
-        const x = left + (pass.index + 0.5) * slot;
-        return <g key={pass.text} aria-hidden="true"><line x1={x} x2={x} y1={top} y2={top + plotHeight} stroke="#67d9ec" strokeDasharray="4 4" strokeWidth="1.5" /><text x={x + pass.dx} y={top - 8} textAnchor={pass.anchor} fill="#67d9ec" fontSize="11" fontWeight="600">{pass.text}</text></g>;
       })}
       {rows.map((row, index) => {
         const x = left + index * slot + (slot - barWidth) / 2;
@@ -129,7 +93,7 @@ function DailyBars({ rows, selectedDate, onSelectDate }: { rows: DailyCount[]; s
 }
 
 export default function DetectionEvidence({ selectedDate, onSelectDate }: { selectedDate: string; onSelectDate: (date: string) => void }) {
-  const dates = useMemo(() => datesBetween(FIRST_DATE, LAST_DATE), []);
+  const dates = useMemo(() => detectionDates, []);
   const dailyCounts = useMemo<DailyCount[]>(() => dates.map((date) => {
     const counts = { low: 0, nominal: 0, high: 0 };
     (detectionsByDate.get(date) ?? []).forEach((detection) => {
@@ -138,14 +102,6 @@ export default function DetectionEvidence({ selectedDate, onSelectDate }: { sele
     });
     return { date, ...counts };
   }), [dates]);
-
-  const betweenPasses = useMemo(() => detections.filter((detection) => {
-    const seconds = detectionTimeSeconds(detection.time);
-    if (seconds === null) return false;
-    if (detection.date === FIRST_DATE) return seconds > clockSeconds(RADAR_PASSES_UTC[0].end);
-    if (detection.date === LAST_DATE) return seconds < clockSeconds(RADAR_PASSES_UTC[1].start);
-    return detection.date > FIRST_DATE && detection.date < LAST_DATE;
-  }).length, []);
 
   const peak = useMemo(() => dailyCounts.reduce((best, row) => {
     const count = row.low + row.nominal + row.high;
@@ -164,26 +120,20 @@ export default function DetectionEvidence({ selectedDate, onSelectDate }: { sele
     return { count: values.length, median: median(values), maximum: values.length ? Math.max(...values) : null };
   }, [selectedDate]);
 
-  const nov5BeforePass = selectedDate === LAST_DATE;
-  const nov5Included = (detectionsByDate.get(LAST_DATE) ?? []).filter((detection) => {
-    const seconds = detectionTimeSeconds(detection.time);
-    return seconds !== null && seconds < clockSeconds(RADAR_PASSES_UTC[1].start);
-  }).length;
-
   return (
     <section className="mx-auto max-w-7xl px-5 py-6 sm:px-8 md:py-8" aria-labelledby="detection-evidence-heading">
       <div className="surface-card p-5 sm:p-6">
         <div className="max-w-3xl">
           <p className="eyebrow">FIRMS snapshot / temporal context</p>
           <h2 id="detection-evidence-heading" className="mt-2 text-2xl">Detection evidence</h2>
-          <p className="mt-2 text-sm leading-relaxed text-muted">Daily thermal-detection records across the radar observation window. Select a bar to update the map and date controls.</p>
+          <p className="mt-2 text-sm leading-relaxed text-muted">Daily thermal-detection records across the available archive. Select a bar to update the map and date controls.</p>
         </div>
 
         <div className="mt-5 grid gap-3 md:grid-cols-3">
           <article className="rounded-xl border border-line bg-raised/70 p-4">
-            <p className="eyebrow !text-[10px]">Between radar passes</p>
-            <p className="mt-2 text-2xl font-semibold tabular-nums text-ember">{formatCount(betweenPasses)}</p>
-            <p className="mt-1 text-xs leading-relaxed text-muted">Detections after the first pass and before the second. On 5 Nov, only records before 13:24:51 UTC are included.</p>
+            <p className="eyebrow !text-[10px]">Archive records</p>
+            <p className="mt-2 text-2xl font-semibold tabular-nums text-ember">{formatCount(detections.length)}</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted">Satellite detections available for this study area across the snapshot dates.</p>
           </article>
           <article className="rounded-xl border border-line bg-raised/70 p-4">
             <p className="eyebrow !text-[10px]">Peak day</p>
@@ -208,7 +158,7 @@ export default function DetectionEvidence({ selectedDate, onSelectDate }: { sele
             <div className="overflow-x-auto">
               <DailyBars rows={dailyCounts} selectedDate={selectedDate} onSelectDate={onSelectDate} />
             </div>
-            <p className="mt-1 text-xs text-muted" aria-live="polite">{dateLabel(selectedDate, { day: 'numeric', month: 'long', year: 'numeric' })}: {(detectionsByDate.get(selectedDate) ?? []).length.toLocaleString('en-US')} detections. {nov5BeforePass ? `${nov5Included} occurred before the 5 Nov NISAR pass; later detections are excluded from the between-pass statistic.` : 'Choose a date bar to inspect its map records.'}</p>
+            <p className="mt-1 text-xs text-muted" aria-live="polite">{dateLabel(selectedDate, { day: 'numeric', month: 'long', year: 'numeric' })}: {(detectionsByDate.get(selectedDate) ?? []).length.toLocaleString('en-US')} detections. Choose a date bar to inspect its map records.</p>
           </div>
           <aside className="rounded-xl border border-line bg-canvas/55 p-4" aria-label="Selected date fire radiative power summary">
             <p className="eyebrow !text-[10px]">Selected date / FRP</p>
@@ -223,7 +173,6 @@ export default function DetectionEvidence({ selectedDate, onSelectDate }: { sele
         </div>
 
         <p className="mt-5 rounded-lg border border-ember/20 bg-ember/5 px-4 py-3 text-xs leading-relaxed text-muted">Satellite detections are not burned area, one row is not necessarily one fire, near-real-time values can be revised, and this chart does not show that fire caused any radar change.</p>
-        <p className="mt-3 text-[11px] leading-relaxed text-subtle">NISAR pass markers: 30 Sep 2026, about 13:24:51–13:25:25 UTC · 5 Nov 2026, about 13:24:51–13:25:26 UTC. FIRMS times are recorded to the minute.</p>
       </div>
     </section>
   );

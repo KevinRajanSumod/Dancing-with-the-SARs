@@ -13,7 +13,7 @@ function popupTransform(x: number, y: number): string {
   return `translate(${translateX}, ${translateY})`;
 }
 
-// Stops taps on markers and popups from also moving the before and after divider.
+// Stops marker and popup taps from triggering gestures on the surrounding map.
 function stopPointer(event: PointerEvent<HTMLDivElement>) {
   event.stopPropagation();
 }

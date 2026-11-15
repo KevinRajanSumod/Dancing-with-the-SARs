@@ -6,7 +6,6 @@ const corsHeaders = {
 
 const CMR = 'https://cmr.earthdata.nasa.gov/search/granules.json';
 const FOOTPRINT = '76.5863,21.2904,79.8633,21.2277,79.9711,24.2345,76.6216,24.3072,76.5863,21.2904';
-const PERIOD = '2026-09-30T00:00:00Z,2026-11-06T00:00:00Z';
 const PRODUCTS = [
   { id: 'C2565786756-LPCLOUD', name: 'MODIS MCD64A1 burned area', resolution: '500 m · monthly' },
   { id: 'C2746980408-LPCLOUD', name: 'OPERA DIST-ALERT-HLS', resolution: '30 m · optical disturbance alerts' },
@@ -20,6 +19,21 @@ function record(value: unknown): Record<string, unknown> {
   return typeof value === 'object' && value !== null ? value as Record<string, unknown> : {};
 }
 
+function recentPeriod() {
+  const end = new Date();
+  end.setUTCDate(end.getUTCDate() - 2);
+  const start = new Date(end);
+  start.setUTCDate(start.getUTCDate() - 35);
+  const exclusiveEnd = new Date(end);
+  exclusiveEnd.setUTCDate(exclusiveEnd.getUTCDate() + 1);
+  const isoDate = (date: Date) => date.toISOString().slice(0, 10);
+  return {
+    start: isoDate(start),
+    end: isoDate(end),
+    temporal: `${isoDate(start)}T00:00:00Z,${isoDate(exclusiveEnd)}T00:00:00Z`,
+  };
+}
+
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   if (request.method !== 'POST') return json({ error: 'Use POST.' }, 405);
@@ -28,11 +42,12 @@ Deno.serve(async (request) => {
   if (!token) return json({ error: 'EARTHDATA_TOKEN is not configured in Supabase Edge Function Secrets.' }, 503);
 
   try {
+    const period = recentPeriod();
     const products = await Promise.all(PRODUCTS.map(async (product) => {
       const url = new URL(CMR);
       url.searchParams.set('collection_concept_id', product.id);
       url.searchParams.set('polygon', FOOTPRINT);
-      url.searchParams.set('temporal', PERIOD);
+      url.searchParams.set('temporal', period.temporal);
       url.searchParams.set('page_size', '50');
       url.searchParams.set('sort_key[]', '-start_date');
       const response = await fetch(url, { headers: { Accept: 'application/json', Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(25000) });
@@ -54,7 +69,7 @@ Deno.serve(async (request) => {
       const hitCount = typeof feed.hits === 'number' ? feed.hits : Number(feed.hits);
       return { ...product, count: Number.isFinite(hitCount) ? hitCount : granules.length, granules };
     }));
-    return json({ period: '2026-09-30 through 2026-11-05', products });
+    return json({ period: `${period.start} through ${period.end}`, products });
   } catch (error) {
     return json({ error: error instanceof Error ? error.message : 'NASA Earthdata catalog request failed.' }, 502);
   }

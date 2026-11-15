@@ -133,7 +133,7 @@ export default function ProjectEvidenceAssistant({ topic }: ProjectEvidenceAssis
           )}
 
           <p className="mt-5 border-t border-line pt-4 text-xs leading-relaxed text-subtle">
-            Research support only: the two NISAR browse previews differ in product configuration and processing version. Their visible contrast is not a measured forest-loss or burn result, and FIRMS detections do not confirm a fire or burned area.
+            Research support only: NISAR browse imagery provides visual context, not a calibrated change measurement. FIRMS detections do not confirm a fire or measure burned area.
           </p>
         </div>
       </div>

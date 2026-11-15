@@ -62,8 +62,8 @@ export default function PhysicalDriversPage() {
         <PageIntro title="What could drive a radar change?">
           <p>
             NASA’s SAR guidance describes backscatter as a response to both the observed surface and the radar setup.
-            The supplied browse previews have not been calibrated or analyzed as a change-detection pair, so the
-            explanations below are sourced hypotheses to test—not findings about this footprint.
+            The map uses browse visualizations for exploration. The explanations below are sourced hypotheses to
+            test—not findings about this footprint.
           </p>
         </PageIntro>
       </section>
@@ -107,27 +107,26 @@ export default function PhysicalDriversPage() {
       <section className="bg-raised py-16 md:py-20" aria-labelledby="polarization-heading">
         <div className="mx-auto grid max-w-7xl gap-9 px-5 sm:px-8 md:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <p className="eyebrow">What the scene metadata shows</p>
-            <h2 id="polarization-heading" className="mt-3">These scenes are not a like-for-like pair.</h2>
+            <p className="eyebrow">Before measuring change</p>
+            <h2 id="polarization-heading" className="mt-3">Build a compatible radar time series.</h2>
           </div>
           <div className="max-w-3xl text-base leading-relaxed text-muted">
             <p>
-              The scene IDs identify different polarization configurations: <strong>QPDH</strong> on 30 September and
-              <strong> DHDH</strong> on 5 November. Their processing releases also differ: <strong>P05023</strong> and
-              <strong> P05036</strong>. Both previews show an HV layer, but that alone does not make them a calibrated
-              change pair.
+              A quantitative comparison needs calibrated measurements with compatible orbit geometry, polarization,
+              frequency, product collection, and processing. Browse colors alone do not make two acquisitions
+              comparable.
             </p>
             <p className="mt-4">
-              This project includes browse PNGs and georeferenced display overlays, not the source GCOV measurement
-              rasters. This page reports the metadata mismatch and shows the previews, but it cannot calculate calibrated
-              pixel-level change from these images.
+              The timeline presents NASA GIBS visualizations, not the source measurement rasters or a derived change
+              layer. It supports visual exploration across available dates and sensors, but it does not calculate
+              calibrated pixel-level change.
             </p>
             <a href="https://nisar-docs.asf.alaska.edu/gcov/" target="_blank" rel="noopener noreferrer" className={sourceLinkClass}>
-              Optional reference: NISAR GCOV product details<span className="sr-only"> (opens in a new tab)</span>
+              NISAR GCOV product details<span className="sr-only"> (opens in a new tab)</span>
             </a>
             <div className="mt-6 flex items-start gap-3 rounded-xl border border-ember/20 bg-ember/5 p-4 text-sm leading-relaxed text-muted">
               <ScanLine className="mt-0.5 h-4 w-4 shrink-0 text-ember" aria-hidden="true" />
-              <p>The contrast has not been quantified. No forest-loss, burn-area, or cause estimate is made on this page.</p>
+              <p>No forest-loss, burn-area, or cause estimate is made from browse imagery on this page.</p>
             </div>
           </div>
         </div>

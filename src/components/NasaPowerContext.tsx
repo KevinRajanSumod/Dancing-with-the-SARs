@@ -2,11 +2,20 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CloudRain, ExternalLink, RefreshCw } from 'lucide-react';
 
 const API_URL = 'https://power.larc.nasa.gov/api/temporal/daily/point';
-const START_DATE = '20260930';
-const END_DATE = '20261105';
+function recentWindow() {
+  const end = new Date();
+  end.setUTCDate(end.getUTCDate() - 2);
+  const start = new Date(end);
+  start.setUTCDate(start.getUTCDate() - 36);
+  return {
+    start: start.toISOString().slice(0, 10).replace(/-/g, ''),
+    end: end.toISOString().slice(0, 10).replace(/-/g, ''),
+  };
+}
+const { start: START_DATE, end: END_DATE } = recentWindow();
 const REQUEST_LATITUDE = 22.75;
 const REQUEST_LONGITUDE = 78.28;
-const CACHE_KEY = 'nasa-power-central-india-20260930-20261105-v1';
+const CACHE_KEY = `nasa-power-central-india-${START_DATE}-${END_DATE}-v2`;
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
 interface DailyContext {
@@ -163,7 +172,7 @@ export default function NasaPowerContext() {
             <div>
               <p className="eyebrow">NASA POWER · rainfall context for SAR</p>
               <h2 id="power-heading" className="mt-2 text-xl text-ink sm:text-2xl">Could rainfall have influenced the radar return?</h2>
-              <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">Rain can change soil and canopy wetness, which can affect L-band radar backscatter without a lasting land-cover change. These daily, model-based precipitation values add regional context for 30 Sep–5 Nov 2026; they are not measurements at each radar pixel or proof of a cause. POWER’s meteorological fields use NASA GMAO MERRA-2 data.</p>
+              <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">Rain can change soil and canopy wetness, which can affect L-band radar backscatter without a lasting land-cover change. These recent daily, model-based precipitation values add regional context; they are not measurements at each radar pixel or proof of a cause. POWER’s meteorological fields use NASA GMAO MERRA-2 data.</p>
             </div>
           </div>
           <button type="button" onClick={() => void refresh()} disabled={loading} className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-line-strong bg-paper px-3 text-xs font-semibold text-ink transition hover:bg-raised disabled:cursor-wait disabled:opacity-60">

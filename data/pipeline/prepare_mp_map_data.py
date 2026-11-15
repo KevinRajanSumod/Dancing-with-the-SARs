@@ -118,7 +118,7 @@ def main() -> None:
         {"type": "FeatureCollection", "features": districts},
     )
     write_json(
-        PUBLIC_DATA_DIR / "madhya-pradesh-firms-2026.geojson",
+        PUBLIC_DATA_DIR / "madhya-pradesh-firms.geojson",
         {"type": "FeatureCollection", "features": detections},
     )
     write_json(PUBLIC_DATA_DIR / "project-footprint.geojson", read_json(FOOTPRINT_FILE))

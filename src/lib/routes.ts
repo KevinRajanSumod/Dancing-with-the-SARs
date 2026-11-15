@@ -12,5 +12,5 @@ export const routes: AppRoute[] = [
   { path: '/future-applications', label: 'Applications' },
   { path: '/sources', label: 'Sources' },
   { path: '/upcoming', label: 'Project progress' },
-  { path: '/case-study', label: 'Case study' },
+  { path: '/case-study', label: 'Live data' },
 ];

@@ -16,7 +16,7 @@ DATA_DIR = Path(__file__).resolve().parent
 RAW_DIR = DATA_DIR / "firms_raw"
 
 # The one new combined file we will create (outside firms_raw).
-OUTPUT_FILE = DATA_DIR / "firms_combined_2026-09-30_to_2026-11-05.csv"
+OUTPUT_FILE = DATA_DIR / "firms_combined.csv"
 
 # Columns we keep in the output (the NASA files have extra columns we drop).
 KEEP_COLUMNS = [
@@ -28,10 +28,6 @@ KEEP_COLUMNS = [
     "frp",
     "daynight",
 ]
-
-# Study dates: keep this first and last day, and every day in between.
-DATE_START = pd.Timestamp("2026-09-30")
-DATE_END = pd.Timestamp("2026-11-05")
 
 # Radar footprint corners as (longitude, latitude), in the order you gave.
 # We close the shape by returning to the first corner at the end of the test.
@@ -105,22 +101,16 @@ def main():
     # Keep only the columns we need (still includes every confidence value).
     all_rows = all_rows[KEEP_COLUMNS].copy()
 
-    # Turn acq_date text into real dates so we can compare them fairly.
-    # We use the acq_date COLUMN, not the number in the file name.
+    # Turn acq_date text into real dates and discard rows with no usable date.
     all_rows["acq_date"] = pd.to_datetime(all_rows["acq_date"], errors="coerce")
+    all_rows = all_rows[all_rows["acq_date"].notna()].copy()
 
-    # Filter A: keep detections from 2026-09-30 through 2026-11-05 inclusive.
-    after_date = all_rows[
-        (all_rows["acq_date"] >= DATE_START) & (all_rows["acq_date"] <= DATE_END)
-    ].copy()
-    rows_after_date = len(after_date)
-
-    # Filter B: keep detections whose lon/lat fall inside the four-corner footprint.
+    # Keep detections whose lon/lat fall inside the four-corner footprint.
     inside_mask = [
         point_in_polygon(lon, lat, FOOTPRINT)
-        for lon, lat in zip(after_date["longitude"], after_date["latitude"])
+        for lon, lat in zip(all_rows["longitude"], all_rows["latitude"])
     ]
-    kept = after_date[inside_mask].copy()
+    kept = all_rows[inside_mask].copy()
     rows_after_footprint = len(kept)
 
     # Sort by date, then by time, so the file reads in time order.
@@ -148,7 +138,7 @@ def main():
     else:
         print("  (none)")
     print(f"Total rows read: {total_rows_read}")
-    print(f"Rows kept after the date filter: {rows_after_date}")
+    print(f"Rows with a usable acquisition date: {len(all_rows)}")
     print(f"Rows kept after the footprint filter: {rows_after_footprint}")
     print("Count of kept rows by confidence:")
     for label in ["low", "nominal", "high"]:

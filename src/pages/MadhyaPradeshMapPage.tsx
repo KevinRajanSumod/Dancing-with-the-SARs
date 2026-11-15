@@ -6,6 +6,7 @@ import MadhyaPradeshMapCanvas, {
   type MapDetection,
   type MapFeature,
 } from '@/components/maps/MadhyaPradeshMapCanvas';
+import { detectionDates } from '@/data/detections';
 
 interface FeatureCollection<Properties extends Record<string, unknown> = Record<string, unknown>> {
   type: 'FeatureCollection';
@@ -30,8 +31,8 @@ interface LoadedMapData {
 
 type Confidence = 'low' | 'nominal' | 'high';
 
-const SOURCE_START = '2026-09-30';
-const SOURCE_END = '2026-11-05';
+const SOURCE_START = detectionDates[0] ?? new Date().toISOString().slice(0, 10);
+const SOURCE_END = detectionDates[detectionDates.length - 1] ?? SOURCE_START;
 const CONFIDENCE_VALUES: Confidence[] = ['low', 'nominal', 'high'];
 
 async function fetchGeoJson<Properties extends Record<string, unknown> = Record<string, unknown>>(url: string): Promise<FeatureCollection<Properties>> {
@@ -86,7 +87,7 @@ export default function MadhyaPradeshMapPage() {
     Promise.all([
       fetchGeoJson('/data/madhya-pradesh-boundary.geojson'),
       fetchGeoJson<DistrictProperties>('/data/madhya-pradesh-districts.geojson'),
-      fetchGeoJson<DetectionProperties>('/data/madhya-pradesh-firms-2026.geojson'),
+      fetchGeoJson<DetectionProperties>('/data/madhya-pradesh-firms.geojson'),
       fetchGeoJson('/data/project-footprint.geojson'),
     ]).then(([state, districts, detections, footprint]) => {
       if (cancelled) return;

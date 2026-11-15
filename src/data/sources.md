@@ -1,30 +1,25 @@
 # Study data and evidence
 
-This dashboard is an educational, Madhya Pradesh-first view of NISAR L-band radar browse mosaics, with separately identified optical and thermal-detection context. It does not currently calculate calibrated SAR change or attribute a signal to fire.
+TerraScope is an educational, date-driven view of Madhya Pradesh using satellite radar browse imagery, optical context, and thermal-detection records. It does not calculate calibrated SAR change or attribute a signal to fire.
 
-## NISAR radar imagery
+## Map layers
 
-- The map requests the daily GIBS visualization `NISAR_L2_Geocoded_Polarimetric_Covariance` and the 12-day `NISAR_L2_Geocoded_Polarimetric_Covariance_12Day` for the selected timeline date.
-- NASA GIBS provides display visualizations of Earth-observation products through public map services. These are false-color browse mosaics, not the underlying calibrated measurements or a derived change layer. The user-selected date is a request date; an observation may not exist for every day.
-- GIBS documentation: [access basics and time behavior](https://nasa-gibs.github.io/gibs-api-docs/access-basics/), [visualization catalog](https://nasa-gibs.github.io/gibs-api-docs/available-visualizations/). NISAR product interpretation: [ASF NISAR Data User Guide](https://nisar-docs.asf.alaska.edu/).
-- The two supplied browse scenes from 30 Sep and 5 Nov 2026 are not used as the dashboard’s main comparison because their configurations and processing releases differ. They cannot support a quantitative change estimate.
-
-## Other map layers
-
-- OPERA Sentinel-1 RTC is requested from [NASA GIBS](https://nasa-gibs.github.io/gibs-api-docs/) at the selected timeline date. The underlying OPERA RTC-S1 product is Sentinel-1 C-band radar data with near-global land coverage, produced separately from NISAR. It is a cross-mission comparison, not an interchangeable NISAR observation; see [NASA/JPL OPERA coverage](https://www.jpl.nasa.gov/go/opera/products/) and [RTC product description](https://www.jpl.nasa.gov/go/opera/products/rtc-product/).
-- MODIS Terra corrected reflectance true color is requested from [NASA GIBS](https://nasa-gibs.github.io/gibs-api-docs/) for the selected date and provides a full-state visual background beneath radar swaths. It is optical context, not radar measurement; resolution, spectral response, and acquisition timing differ from NISAR.
-- VIIRS thermal detection records are queried from the [NASA FIRMS archive](https://firms.modaps.eosdis.nasa.gov/active_fire/) for the selected date and filtered to Madhya Pradesh; the supplied NOAA-21 snapshot (30 Sep–5 Nov 2026) is the fallback for that window. Platform and product availability varies by date. Standard products are preferred when available; near-real-time records can be revised. District shading counts records, not unique events or burned area.
-- Madhya Pradesh and district boundaries come from GADM v4.1 and the 2021 geoBoundaries India ADM2 simplified dataset, respectively. The original NISAR study footprint is shown only as a reference outline and does not mean NISAR coverage is limited to or complete across that footprint.
+- The timeline requests NASA GIBS visualizations of NISAR L-band radar for the selected date. Browse mosaics are visualizations, not the underlying calibrated measurements or a derived change layer. An observation may not exist for every date.
+- OPERA Sentinel-1 RTC is requested from NASA GIBS at the selected date. It is a separate C-band radar source with different acquisition and processing characteristics; it is not interchangeable with NISAR.
+- MODIS Terra corrected reflectance provides optical context beneath radar swaths where available. It differs in resolution, spectral response, and observation timing.
+- VIIRS thermal detections are requested from the NASA FIRMS archive for the selected date and filtered to Madhya Pradesh. A bundled NOAA-21 snapshot provides a fallback where available. Platform and product coverage varies by date; near-real-time records can be revised.
+- Madhya Pradesh and district boundaries come from GADM v4.1 and the 2021 geoBoundaries India ADM2 simplified dataset. The study-area outline is geographic context, not a statement that satellite coverage is limited to that boundary.
 
 ## Method and interpretation
 
-- A date slider requests the same date from the visible GIBS image layers. Dates outside the FIRMS snapshot have no thermal records to display.
-- The dashboard clips the image layers to the state outline, renders supplied FIRMS records, and summarizes records by district. It does not load or process the full NISAR HDF5 products.
-- Thermal detections are not burned area; one record is not necessarily one distinct event; near-real-time detection values may be revised. The map does not show that fire caused a radar change.
-- Rainfall and soil moisture can affect radar backscatter alongside vegetation, surface structure, incidence geometry, and processing. A defensible quantitative change study requires compatible calibrated NISAR science products, masking and processing controls, and independent validation.
+- The date slider requests the same date from the visible GIBS layers. Each source has its own coverage, acquisition schedule, and processing.
+- The dashboard clips image layers to the state outline, displays FIRMS records, groups nearby map points, and summarizes records by district. It does not load or process the full NISAR HDF5 science products.
+- A thermal detection is not burned area; one record is not necessarily one distinct event; and near-real-time values may change during processing.
+- Rainfall, soil moisture, vegetation, surface structure, incidence geometry, and product processing can all affect radar backscatter. Quantitative change analysis requires compatible calibrated science products, documented processing, and independent validation.
 
-## Further study
+## References
 
-- [NISAR mission overview](https://science.nasa.gov/mission/nisar/mission-overview/) describes mission goals and instruments.
-- [ASF NISAR GCOV Worldview guide](https://hyp3-docs.asf.alaska.edu/nisar-docs/worldview/) explains how to inspect the browse visualization and connect it to source products.
-- Full GCOV science products can be searched through [ASF Vertex](https://search.asf.alaska.edu/); downloads require an Earthdata account. This dashboard uses the public browse service and needs no user API key.
+- [NASA GIBS access and time behavior](https://nasa-gibs.github.io/gibs-api-docs/access-basics/) and [visualization catalog](https://nasa-gibs.github.io/gibs-api-docs/available-visualizations/)
+- [ASF NISAR Data User Guide](https://nisar-docs.asf.alaska.edu/)
+- [NASA FIRMS active-fire data](https://firms.modaps.eosdis.nasa.gov/active_fire/)
+- [NASA/JPL OPERA products](https://www.jpl.nasa.gov/go/opera/products/)

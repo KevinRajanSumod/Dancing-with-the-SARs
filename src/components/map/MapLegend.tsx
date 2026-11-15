@@ -13,7 +13,7 @@ export default function MapLegend() {
             Density by grid cell
           </span>
         </div>
-        <p className="mt-3 text-xs leading-relaxed text-muted">Density colours show relative counts in the selected full period (30 Sep–5 Nov 2026). A dot is one satellite detection, not one confirmed fire.</p>
+        <p className="mt-3 text-xs leading-relaxed text-muted">Density colours show relative detection counts for the selected period. A dot is one satellite detection, not one confirmed fire.</p>
       </div>
       <div className="sm:border-l sm:border-line sm:pl-5">
         <p className="font-semibold text-ink">About each detection</p>

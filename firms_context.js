@@ -1,4 +1,4 @@
-// All 2050 detections from Data/firms_combined_2026-09-30_to_2026-11-05.csv (read-only source).
+// All available study-area detections from the bundled FIRMS archive snapshot.
 // Fields: lat, lon, date, time, conf, frp. No filtering applied.
 const firmsContext = [
  {

@@ -8,15 +8,14 @@ const GEMINI_INTERACTIONS_URL = 'https://generativelanguage.googleapis.com/v1bet
 const MODEL = 'gemini-3.8-flash';
 
 const projectContext = `
-Project: Dancing with the SARs, an educational story about a Central India footprint.
-The archive contains two NASA-ISRO NISAR L-band GCOV browse previews from 30 September and 5 November 2026. Their product polarization configurations and processing versions differ. Both display an HV layer, but that does not make them a calibrated change-detection pair. The previews have not been quantified, and this project has not established forest loss, burned area, or a cause for their visual contrast.
-The project also displays a separate NASA FIRMS VIIRS NOAA-21 near-real-time snapshot: 2,050 detection records in 38 daily files from 30 September through 5 November 2026 (435 low, 1,604 nominal, 11 high confidence). A record is a satellite thermal detection, not necessarily a unique or confirmed fire. FIRMS detections do not measure burned area or establish that fire caused radar contrast.
-The archive browse images were georeferenced in QGIS and shown as grayscale overlays. No calibrated radar change analysis, NDVI calculation, tree count, slope analysis, water-resource map, or field validation has been performed for this project.
+Project: Dancing with the SARs, an educational, Madhya Pradesh-first satellite evidence dashboard.
+The map brings together date-based NASA-ISRO NISAR browse imagery, NASA GIBS optical and Sentinel-1 context layers, and NASA FIRMS VIIRS thermal detections. A local FIRMS snapshot contains 2,050 records across 38 daily source files (435 low, 1,604 nominal, 11 high confidence); the map also requests historical records by selected date when the service is configured. A record is a satellite thermal detection, not necessarily a unique or confirmed fire. FIRMS detections do not measure burned area or establish that fire caused a radar pattern.
+NISAR images in the timeline are browse visualizations, not calibrated change measurements. No calibrated radar change analysis, NDVI calculation, tree count, slope analysis, water-resource map, or field validation has been performed for this project.
 `;
 
 const systemInstruction = `You are the Dancing with the SARs evidence guide. Help users understand synthetic aperture radar, NISAR products, NASA FIRMS detections, and defensible follow-up methods.
 
-Use the supplied project context exactly. Never invent project measurements, locations, validation, or results. The two browse previews differ in product configuration and processing version; their visible contrast is only a prompt for further analysis, not a measured forest-loss or burn result. Do not attribute radar contrast to fire. Explain that FIRMS detections show satellite heat detections, not confirmed fires or burned area.
+Use the supplied project context exactly. Never invent project measurements, locations, validation, or results. Browse imagery is visual context, not a calibrated change product. Do not attribute radar patterns to fire. Explain that FIRMS detections show satellite heat detections, not confirmed fires or burned area.
 
 For general scientific and mission questions, use Google Search grounding and prioritize NASA, NASA Earthdata, NISAR, Alaska Satellite Facility, and other primary agency sources. Cite factual claims with the provided source citations. If current authoritative sources do not support an answer, say so. Distinguish the project record from general remote-sensing methods. Keep answers concise and practical. Do not provide investment, legal, or emergency-response instructions.`;
 
@@ -78,7 +77,8 @@ Deno.serve(async (request: Request) => {
         system_instruction: systemInstruction,
         tools: [{ type: 'google_search' }],
         store: false,
-        generation_config: { temperature: 0.2, max_output_tokens: 700 },
+        // Gemini 3.8 rejects temperature/top_p/top_k; use supported token cap only.
+        generation_config: { max_output_tokens: 700 },
       }),
       signal: AbortSignal.timeout(30000),
     });
@@ -92,14 +92,17 @@ Deno.serve(async (request: Request) => {
       }
       const upstreamError = await response.text();
       let detail = '';
+      let upstreamCode = '';
       try {
-        const parsed = asRecord(JSON.parse(upstreamError));
-        const error = asRecord(parsed.error);
+        const payload = asRecord(JSON.parse(upstreamError));
+        const error = asRecord(payload.error ?? payload);
         if (typeof error.message === 'string') detail = error.message.slice(0, 400);
+        if (typeof error.status === 'string') upstreamCode = error.status;
       } catch {
         detail = upstreamError.slice(0, 400);
       }
-      return jsonResponse({ error: `EchoGuide request failed (Google HTTP ${response.status})${detail ? `: ${detail}` : '.'}` }, 502);
+      const statusLabel = upstreamCode ? `, ${upstreamCode}` : '';
+      return jsonResponse({ error: `EchoGuide request failed (Google HTTP ${response.status}${statusLabel})${detail ? `: ${detail}` : '.'}` }, 502);
     }
 
     const interaction = asRecord(await response.json());

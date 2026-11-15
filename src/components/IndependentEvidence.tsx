@@ -43,7 +43,7 @@ export default function IndependentEvidence() {
           <div>
             <p className="eyebrow">Live NASA catalog check · independent evidence</p>
             <h2 id="independent-evidence-title" className="mt-2 text-2xl">Check burned-area and disturbance products</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">Searches NASA Earthdata for MODIS MCD64A1 and OPERA DIST-ALERT-HLS granules intersecting this project footprint from 30 Sep–5 Nov 2026. Matching granules are data availability, not a measured burn or proof of cause.</p>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">Searches NASA Earthdata for MODIS MCD64A1 and OPERA DIST-ALERT-HLS granules intersecting this study area. Matching granules are data availability, not a measured burn or proof of cause.</p>
           </div>
           <button type="button" onClick={search} disabled={loading} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-radar px-4 py-2 text-sm font-bold text-canvas disabled:opacity-60">
             {loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Satellite className="h-4 w-4" />}

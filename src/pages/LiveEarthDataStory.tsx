@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, ExternalLink, Flame, Info, Loader2, Radio, RefreshCw, Satellite } from 'lucide-react';
-import BeforeAfterSlider from '@/components/map/BeforeAfterSlider';
+import { AlertTriangle, ExternalLink, Flame, Info, Loader2, Map, Radio, RefreshCw, Satellite } from 'lucide-react';
+import AppLink from '@/components/AppLink';
 import Card from '@/components/Card';
 import type { LiveEarthData, LiveRadarScene } from '@/lib/liveEarthData';
 import { fetchLiveEarthData } from '@/lib/liveEarthData';
@@ -17,24 +17,6 @@ function timeLabel(value: string): string {
   if (!rawDigits) return 'Time unavailable';
   const digits = rawDigits.padStart(4, '0').slice(-4);
   return digits.length === 4 ? `${digits.slice(0, 2)}:${digits.slice(2)} UTC` : 'Time unavailable';
-}
-
-function latestCompatiblePair(scenes: LiveRadarScene[]): [LiveRadarScene, LiveRadarScene] | null {
-  const byConfiguration = new Map<string, LiveRadarScene[]>();
-  scenes
-    .filter((scene) => scene.track === '005' && scene.direction === 'D' && scene.frame === '077' && scene.browseUrl)
-    .sort((a, b) => b.acquiredAt.localeCompare(a.acquiredAt))
-    .forEach((scene) => {
-      const group = byConfiguration.get(scene.comparisonKey) ?? [];
-      if (!group.some((item) => item.acquiredAt === scene.acquiredAt)) group.push(scene);
-      byConfiguration.set(scene.comparisonKey, group);
-    });
-
-  const pairs = [...byConfiguration.values()]
-    .filter((group) => group.length >= 2)
-    .map((group) => [group[1], group[0]] as [LiveRadarScene, LiveRadarScene])
-    .sort((a, b) => b[1].acquiredAt.localeCompare(a[1].acquiredAt));
-  return pairs[0] ?? null;
 }
 
 function ScenePreview({ scene }: { scene: LiveRadarScene }) {
@@ -88,23 +70,32 @@ export default function LiveEarthDataStory() {
     () => (data?.firms.records ?? []).filter((record) => record.date === activeDate).sort((a, b) => a.time.localeCompare(b.time)),
     [activeDate, data],
   );
-  const pair = useMemo(() => latestCompatiblePair(data?.nisar.scenes ?? []), [data]);
-  const latestProjectScene = useMemo(
+  const scenes = useMemo(
     () => (data?.nisar.scenes ?? [])
-      .filter((scene) => scene.track === '005' && scene.direction === 'D' && scene.frame === '077' && scene.browseUrl)
-      .sort((a, b) => b.acquiredAt.localeCompare(a.acquiredAt))[0],
+      .filter((scene) => scene.browseUrl)
+      .sort((a, b) => b.acquiredAt.localeCompare(a.acquiredAt))
+      .slice(0, 6),
     [data],
   );
 
   return (
     <section className="mx-auto max-w-7xl px-5 pb-20 pt-8 sm:px-8 md:pb-28" aria-labelledby="live-data-heading">
+      <div className="mb-5 flex flex-col gap-4 rounded-2xl border border-radar/20 bg-radar/[.06] p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="eyebrow">Want to explore Madhya Pradesh?</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">This page lists current data feeds. Open the full-state map to see satellite layers, districts, and heat-signal locations together.</p>
+        </div>
+        <AppLink to="/study-map" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-radar px-4 py-2 text-sm font-bold text-canvas transition hover:bg-radar-200">
+          <Map className="h-4 w-4" aria-hidden="true" /> Open the full map
+        </AppLink>
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-radar/25 bg-navy p-5 text-white sm:p-6">
         <div className="flex items-start gap-3">
           <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-radar/15 text-radar"><Radio className="h-5 w-5" aria-hidden="true" /></span>
           <div>
-            <p className="eyebrow text-radar">Live feeds · fetched on request</p>
-            <h2 id="live-data-heading" className="mt-2 text-2xl text-white sm:text-3xl">The latest view of this NISAR frame</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">ASF catalog quicklooks and NASA FIRMS detections are fetched independently. Live heat detections are shown in a dated list, not painted over the radar preview.</p>
+            <p className="eyebrow text-radar">Live catalog check · fetched on request</p>
+            <h2 id="live-data-heading" className="mt-2 text-2xl text-white sm:text-3xl">What is available now for this project?</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">Refresh to load current ASF NISAR scenes and NASA FIRMS detections. Browse previews and thermal records are shown as separate evidence streams.</p>
           </div>
         </div>
         <button
@@ -166,22 +157,23 @@ export default function LiveEarthDataStory() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="eyebrow">ASF Search API · remote browse preview</p>
-                  <h3 id="live-radar-heading" className="mt-2">Latest matched-configuration previews</h3>
+                  <h3 id="live-radar-heading" className="mt-2">Latest NISAR scene previews</h3>
                 </div>
                 <a href={data.nisar.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-radar hover:bg-radar/10">
                   Open ASF Search <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               </div>
 
-              {pair ? (
+              {scenes.length > 0 ? (
                 <>
-                  <p className="mt-3 text-sm text-muted">Matched on track, frame, orbit direction, polarization, frequency and collection where ASF provides it; the newest two acquisitions are shown. This catalog match is a screening step, not proof that the products are fully compatible for quantitative analysis.</p>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    {[pair[0], pair[1]].map((scene, index) => (
-                      <div key={`${scene.sceneName}-${scene.processingVersion}`} className="rounded-xl border border-line bg-raised p-3">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-subtle">{index === 0 ? 'Earlier scene' : 'Later scene'} · {longDate(scene.acquiredAt)}</p>
-                        <p className="mt-2 break-all text-xs leading-relaxed text-ink">{scene.sceneName}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">Each browse preview is listed on its own with its acquisition metadata. Use these images for visual orientation, and check the product record before attempting quantitative analysis.</p>
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    {scenes.map((scene) => (
+                      <article key={`${scene.sceneName}-${scene.processingVersion}`} className="rounded-xl border border-line bg-raised p-3">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-subtle">{longDate(scene.acquiredAt)} · Track {scene.track} · Frame {scene.frame}</p>
+                        <ScenePreview scene={scene} />
                         <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+                          <dt className="text-subtle">Orbit</dt><dd className="font-medium text-ink">{scene.direction === 'D' ? 'Descending' : 'Ascending'}</dd>
                           <dt className="text-subtle">Polarization</dt><dd className="font-medium text-ink">{scene.polarization}</dd>
                           <dt className="text-subtle">Frequency</dt><dd className="font-medium text-ink">{scene.frequency}</dd>
                           <dt className="text-subtle">Processing ID</dt><dd className="font-medium text-ink">{scene.processingVersion}</dd>
@@ -191,38 +183,15 @@ export default function LiveEarthDataStory() {
                             Open product record <ExternalLink className="h-3 w-3" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
                           </a>
                         )}
-                      </div>
+                      </article>
                     ))}
                   </div>
-                  {pair[0].processingVersion !== pair[1].processingVersion && (
-                    <p role="note" className="mt-3 rounded-xl border border-ember/25 bg-ember/5 p-3 text-xs leading-relaxed text-muted">
-                      These scenes match the available acquisition settings, but their processing IDs differ ({pair[0].processingVersion} and {pair[1].processingVersion}). Treat this pair as a candidate for review, not a strict calibrated comparison; check product maturity and processing notes before measuring change.
-                    </p>
-                  )}
-                  <div className="mt-4">
-                    <BeforeAfterSlider
-                      beforeSrc={pair[0].browseUrl}
-                      afterSrc={pair[1].browseUrl}
-                      beforeAlt={`Illustrative ASF NISAR browse quicklook acquired ${longDate(pair[0].acquiredAt)}. This is not a calibrated change map.`}
-                      afterAlt={`Illustrative ASF NISAR browse quicklook acquired ${longDate(pair[1].acquiredAt)}. This is not a calibrated change map.`}
-                      beforeLabel={`Earlier · ${longDate(pair[0].acquiredAt)}`}
-                      afterLabel={`Later · ${longDate(pair[1].acquiredAt)}`}
-                      imageFit="contain"
-                    />
-                  </div>
-                  <p className="mt-3 break-words text-xs leading-relaxed text-subtle">{pair[0].sceneName}<br />{pair[1].sceneName}</p>
                 </>
-              ) : latestProjectScene ? (
-                <div className="mt-4">
-                <p className="mb-3 text-sm leading-relaxed text-muted">A current descending-orbit browse preview is available, but ASF has not returned two acquisitions with matching configuration for this frame yet. The historical Sep–Nov comparison remains available in Archive mode.</p>
-                  <ScenePreview scene={latestProjectScene} />
-                  <p className="mt-3 text-xs leading-relaxed text-subtle">{longDate(latestProjectScene.acquiredAt)} · Descending · Track {latestProjectScene.track} · Frame {latestProjectScene.frame} · {latestProjectScene.polarization} · Frequency {latestProjectScene.frequency}</p>
-                </div>
               ) : (
                 <div role="status" className="mt-5 rounded-xl bg-canvas p-5 text-sm leading-relaxed text-muted">
                   {data.nisar.status === 'unavailable'
                     ? data.nisar.message || 'The ASF catalog is unavailable right now.'
-                    : 'No public browse preview for Track 5 · Frame 77 was returned for this footprint. Try refreshing or inspect the ASF catalog.'}
+                    : 'No public browse previews were returned for this study area. Try refreshing or inspect the ASF catalog.'}
                 </div>
               )}
               <div className="mt-5 flex gap-3 rounded-xl border border-radar/20 bg-radar/5 p-4 text-xs leading-relaxed text-muted">

@@ -8,13 +8,13 @@ const nextSteps = [
     icon: Satellite,
     tag: 'Strengthen the comparison',
     title: 'Use matched NISAR measurements',
-    description: 'Not yet computable from the browse images. The two supplied scenes differ in configuration and processing. A valid comparison needs compatible calibrated GCOV products from the same repeat geometry.',
+    description: 'An offline change-analysis runner is available for compatible, geocoded GCOV measurement layers. Browse imagery is not suitable input for quantitative change calculations.',
   },
   {
     icon: Database,
     tag: 'Add independent evidence',
     title: 'Check for mapped burn impact',
-    description: 'Partly analyzed in this project: MODIS MCD64A1 identifies 32 QA-valid 500 m burn-date pixels in the footprint, dated 21–30 September 2026. They precede the 30 September radar pass and do not show that fire caused a later radar pattern.',
+    description: 'Add a date-matched burned-area product and independent validation to the current fire-detection timeline. Product availability and spatial resolution must be checked before drawing conclusions.',
   },
   {
     icon: Waves,
@@ -57,7 +57,7 @@ export default function UpcomingPage() {
                   <p className="mt-6 text-xs font-semibold tracking-[0.15em] text-radar">EVIDENCE CHECK 0{index + 1}</p>
                   <h2 className="mt-2 text-2xl">{step.title}</h2>
                   <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{step.description}</p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-subtle">{index === 1 ? <Check className="h-4 w-4 text-eco"/> : <CircleAlert className="h-4 w-4 text-ember"/>}{index === 1 ? 'Analyzed from supplied MODIS product' : index === 3 ? 'Deferred · India-wide is the next phase' : 'Needs compatible scene data'}</span>
+                  <span className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-subtle">{index === 1 ? <Check className="h-4 w-4 text-eco"/> : <CircleAlert className="h-4 w-4 text-ember"/>}{index === 1 ? 'Analyzed from supplied MODIS product' : index === 0 ? 'Runner ready · needs matched GCOV inputs' : index === 3 ? 'Deferred · India-wide is the next phase' : 'Needs compatible scene data'}</span>
                 </article>
               </Reveal>
             </li>
@@ -69,11 +69,11 @@ export default function UpcomingPage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <p className="eyebrow">Independent evidence already analyzed</p>
           <h2 className="mt-3 max-w-2xl">Burn-date pixels are separate from radar observations.</h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted">The supplied MODIS MCD64A1 monthly product contains 32 valid burn-date pixels in the original study footprint for September 2026. They are dated 21–30 September. This is a product-level observation before the 30 September NISAR pass; it does not identify the cause of radar brightness or confirm every thermal detection.</p>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">For a matched change measurement, the user must provide compatible NISAR L2 GCOV science files (same orbit/track, polarization, comparable geometry and calibration). The repository currently contains browse previews, not the HDF5 measurement files needed to calculate dB change.</p>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted">The current map brings radar browse layers, optical context, and thermal detections together across the available timeline. A measured burn impact still requires an independently mapped burned-area product, compatible calibrated radar measurements, and validation at an appropriate spatial scale.</p>
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">The map is an exploratory visualization. It does not calculate pixel-level dB change or attribute a surface pattern to fire.</p>
           <AppLink to="/study-map" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-radar underline underline-offset-4">View the full-state study map <Map className="h-4 w-4"/></AppLink>
           <div className="mt-7 flex flex-wrap gap-2 text-xs font-semibold text-ink">
-            {['Burn area: 32 QA-valid pixels', 'Burn dates: 21–30 Sep 2026', 'Pixel size: 500 m', 'No causal attribution'].map((label) => <span key={label} className="rounded-full border border-line bg-canvas px-3 py-2">{label}</span>)}
+            {['Compatible calibrated radar data', 'Independent burned-area evidence', 'Scale-aware validation', 'No causal attribution from detections alone'].map((label) => <span key={label} className="rounded-full border border-line bg-canvas px-3 py-2">{label}</span>)}
           </div>
         </div>
       </section>

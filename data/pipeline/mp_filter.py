@@ -7,11 +7,10 @@ deletes those files. Each kept row is one satellite detection.
 What it does, in order:
 1. Find the Madhya Pradesh shape in the state-boundary file.
 2. Read every daily detection file.
-3. Keep dates from 2026-09-30 through 2026-11-05.
-4. Keep points that sit inside the Madhya Pradesh shape.
-5. Keep every confidence level (low, nominal, and high).
-6. Save one point per detection to data/processed/mp_firms.geojson.
-7. Print how many detections fall on each date.
+3. Keep points that sit inside the Madhya Pradesh shape.
+4. Keep every confidence level (low, nominal, and high).
+5. Save one point per detection to data/processed/mp_firms.geojson.
+6. Print how many detections fall on each date.
 """
 
 import sys
@@ -45,11 +44,6 @@ KEEP_COLUMNS = [
     "frp",
     "daynight",
 ]
-
-# Keep this first day, this last day, and every day in between.
-DATE_START = pd.Timestamp("2026-09-30")
-DATE_END = pd.Timestamp("2026-11-05")
-
 
 def stop(message):
     """Print a plain-language reason and end the script."""
@@ -144,24 +138,9 @@ def read_detection_files():
     return detections
 
 
-def filter_dates(detections):
-    """Step 3. Keep rows whose acq_date is inside the study window."""
-    print("Step 3 — dates from 2026-09-30 through 2026-11-05")
-    dates = pd.to_datetime(detections["acq_date"], errors="coerce").dt.normalize()
-    unreadable = int(dates.isna().sum())
-    if unreadable:
-        print(f"Rows with an unreadable acq_date: {unreadable}")
-
-    in_window = dates.notna() & (dates >= DATE_START) & (dates <= DATE_END)
-    kept = detections.loc[in_window].copy()
-    kept["acq_date"] = dates.loc[in_window].dt.strftime("%Y-%m-%d")
-    print(f"Detections in this date range: {len(kept)}")
-    return kept
-
-
 def keep_inside_state(detections, state):
-    """Step 4. Turn each row into a point and keep points inside the state."""
-    print("Step 4 — detections inside Madhya Pradesh")
+    """Step 3. Turn each row into a point and keep points inside the state."""
+    print("Step 3 — detections inside Madhya Pradesh")
     points = gpd.GeoDataFrame(
         detections,
         geometry=gpd.points_from_xy(detections["longitude"], detections["latitude"]),
@@ -185,8 +164,8 @@ def keep_inside_state(detections, state):
 
 
 def print_confidence(detections):
-    """Step 5. Count each confidence label. Do not drop any of them."""
-    print("Step 5 — confidence (all levels kept)")
+    """Step 4. Count each confidence label. Do not drop any of them."""
+    print("Step 4 — confidence (all levels kept)")
     counts = detections["confidence"].value_counts(dropna=False)
     for label in ("low", "nominal", "high"):
         print(f"Detections with confidence {label}: {int(counts.get(label, 0))}")
@@ -196,8 +175,8 @@ def print_confidence(detections):
 
 
 def save_geojson(detections):
-    """Step 6. Save one point per detection, with only the needed properties."""
-    print("Step 6 — save the Madhya Pradesh detection file")
+    """Step 5. Save one point per detection, with only the needed properties."""
+    print("Step 5 — save the Madhya Pradesh detection file")
     output = gpd.GeoDataFrame(
         {
             "date": detections["acq_date"].astype(str),
@@ -226,8 +205,8 @@ def save_geojson(detections):
 
 
 def print_dates(saved):
-    """Step 7. Print how many detections there are on each saved date."""
-    print("Step 7 — detections per date")
+    """Step 6. Print how many detections there are on each saved date."""
+    print("Step 6 — detections per date")
     counts = saved["date"].astype(str).value_counts().sort_index()
     for date, count in counts.items():
         print(f"{date}: {int(count)}")
@@ -237,7 +216,6 @@ def print_dates(saved):
 def main():
     state = load_state()
     detections = read_detection_files()
-    detections = filter_dates(detections)
     detections = keep_inside_state(detections, state)
     print_confidence(detections)
     saved = save_geojson(detections)

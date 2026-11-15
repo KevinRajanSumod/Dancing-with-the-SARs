@@ -35,9 +35,10 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 sm:px-5">
-      <div className="mx-auto flex min-h-[4.25rem] max-w-7xl items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#0b1d2a]/95 px-3 shadow-[0_12px_36px_rgba(0,0,0,.22)] backdrop-blur-xl sm:px-4 lg:px-5">
-        <AppLink to="/" className="group flex min-w-0 shrink-0 items-center text-white" aria-label="TerraScope home">
-          <img src="/images/brand/terrascope-logo.png" alt="TerraScope — See Earth. Think Bigger." className="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-14 sm:w-14" />
+      <div className="mx-auto flex min-h-[5rem] max-w-7xl items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#0b1d2a]/95 px-3 shadow-[0_12px_36px_rgba(0,0,0,.22)] backdrop-blur-xl sm:min-h-[5.75rem] sm:px-4 lg:px-5">
+        <AppLink to="/" className="group flex min-w-0 shrink-0 items-center gap-2.5 text-white sm:gap-3" aria-label="TerraScope home">
+          <img src="/images/brand/terrascope-logo.png" alt="" className="h-14 w-14 shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-[4.75rem] sm:w-[4.75rem]" />
+          <span className="font-sans text-lg font-bold tracking-tight text-white sm:text-2xl">TerraScope</span>
         </AppLink>
 
         <nav aria-label="Main" className="hidden min-w-0 items-center gap-0.5 xl:flex">

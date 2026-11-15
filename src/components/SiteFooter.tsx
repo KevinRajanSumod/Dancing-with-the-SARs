@@ -23,7 +23,7 @@ export default function SiteFooter() {
           </AppLink>
           <p className="mt-5 text-sm font-medium italic text-radar">See our planet differently. Act more wisely.</p>
           <p className="mt-3 text-sm leading-relaxed text-white/70">An independent Earth-observation research dashboard. The current study explores fire-related satellite evidence across Madhya Pradesh; broader land and water studies are planned.</p>
-          <p className="mt-4 text-xs leading-relaxed text-white/55">FIRMS archive records load by date; the supplied snapshot covers 30 September–5 November 2026. Detections are not burned area. NISAR browse imagery is not a calibrated change measurement.</p>
+          <p className="mt-4 text-xs leading-relaxed text-white/55">FIRMS archive records load by date, with the project snapshot available as a fallback. Detections are not burned area. NISAR browse imagery is not a calibrated change measurement.</p>
         </div>
 
         <nav aria-label="Project pages" className="grid content-start gap-3">

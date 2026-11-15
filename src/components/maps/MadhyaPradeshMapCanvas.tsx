@@ -201,7 +201,7 @@ export default function MadhyaPradeshMapCanvas({
   selectedClusterKey,
   viewMode,
   showFootprint,
-  selectedDate = '2026-11-05',
+  selectedDate = new Date().toISOString().slice(0, 10),
   showNisarDaily = false,
   showNisar12Day = false,
   showSentinel1 = false,
@@ -383,16 +383,18 @@ export default function MadhyaPradeshMapCanvas({
         {gridLines.latitudeLines.map((line) => <line key={`lat-${line.latitude}`} x1={projection.minX} x2={projection.maxX} y1={line.y} y2={line.y} />)}
       </g>
 
+      {/* Keep the land fill behind satellite imagery so it cannot wash the imagery out. */}
+      <path d={statePath} fill="#263b46" fillRule="evenodd" fillOpacity="0.9" stroke="none" pointerEvents="none" />
+
       <g clipPath="url(#mp-state-clip)" pointerEvents="none">
-        {showOpticalContext && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate, false)} {...rasterBounds} preserveAspectRatio="none" opacity="1" />}
-        {showOptical && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate, false)} {...rasterBounds} preserveAspectRatio="none" opacity="0.86" />}
+        {showOpticalContext && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="1" />}
+        {showOptical && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.86" />}
         {showSentinel1 && <image href={gibsUrl('OPERA_L2_Radiometric_Terrain_Corrected_SAR_Sentinel-1', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" />}
         {showNisar12Day && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance_12Day', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" />}
         {showNisarDaily && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.95" />}
       </g>
 
       <g>
-        <path d={statePath} fill="#263b46" fillRule="evenodd" fillOpacity="0.9" stroke="none" pointerEvents="none" />
         {districtPaths.map(({ feature, path }) => {
           const name = feature.properties.name;
           const count = districtCounts.get(name) ?? 0;
