@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, ExternalLink, Flame, Info, Loader2, Map, Radio, RefreshCw, Satellite } from 'lucide-react';
 import AppLink from '@/components/AppLink';
 import Card from '@/components/Card';
+import ModisBurnedAreaPanel from '@/components/ModisBurnedAreaPanel';
 import type { LiveEarthData, LiveRadarScene } from '@/lib/liveEarthData';
 import { fetchLiveEarthData } from '@/lib/liveEarthData';
 
@@ -17,6 +18,33 @@ function timeLabel(value: string): string {
   if (!rawDigits) return 'Time unavailable';
   const digits = rawDigits.padStart(4, '0').slice(-4);
   return digits.length === 4 ? `${digits.slice(0, 2)}:${digits.slice(2)} UTC` : 'Time unavailable';
+}
+
+function orbitAccuracyLabel(value: string): string {
+  if (value === 'P') return 'precise orbit';
+  if (value === 'M') return 'medium-accuracy orbit';
+  if (value === 'N') return 'near-real-time orbit';
+  return `orbit solution ${value}`;
+}
+
+function comparableScenePairs(scenes: LiveRadarScene[]) {
+  const groups = new globalThis.Map<string, LiveRadarScene[]>();
+  scenes.filter((scene) => scene.maturity === 'VALIDATED')
+    .forEach((scene) => {
+      const key = `${scene.comparisonKey}:${scene.processingVersion}`;
+      groups.set(key, [...(groups.get(key) ?? []), scene]);
+    });
+  const pairs: Array<{ before: LiveRadarScene; after: LiveRadarScene; days: number }> = [];
+  groups.forEach((group) => {
+    const ordered = [...group].sort((a, b) => a.acquiredAt.localeCompare(b.acquiredAt));
+    for (let index = 1; index < ordered.length; index += 1) {
+      const before = ordered[index - 1];
+      const after = ordered[index];
+      const days = Math.round((Date.parse(`${after.acquiredAt}T00:00:00Z`) - Date.parse(`${before.acquiredAt}T00:00:00Z`)) / 86_400_000);
+      if (days > 0) pairs.push({ before, after, days });
+    }
+  });
+  return pairs.sort((a, b) => b.after.acquiredAt.localeCompare(a.after.acquiredAt) || Math.abs(a.days - 12) - Math.abs(b.days - 12)).slice(0, 6);
 }
 
 function ScenePreview({ scene }: { scene: LiveRadarScene }) {
@@ -77,6 +105,7 @@ export default function LiveEarthDataStory() {
       .slice(0, 6),
     [data],
   );
+  const scenePairs = useMemo(() => comparableScenePairs(data?.nisar.scenes ?? []), [data]);
 
   return (
     <section className="mx-auto max-w-7xl px-5 pb-20 pt-8 sm:px-8 md:pb-28" aria-labelledby="live-data-heading">
@@ -175,8 +204,10 @@ export default function LiveEarthDataStory() {
                         <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
                           <dt className="text-subtle">Orbit</dt><dd className="font-medium text-ink">{scene.direction === 'D' ? 'Descending' : 'Ascending'}</dd>
                           <dt className="text-subtle">Polarization</dt><dd className="font-medium text-ink">{scene.polarization}</dd>
+                          <dt className="text-subtle">Acquisition mode</dt><dd className="font-medium text-ink">{scene.mode}</dd>
                           <dt className="text-subtle">Frequency</dt><dd className="font-medium text-ink">{scene.frequency}</dd>
-                          <dt className="text-subtle">Processing ID</dt><dd className="font-medium text-ink">{scene.processingVersion}</dd>
+                          <dt className="text-subtle">Data maturity</dt><dd className="font-medium text-ink">{scene.maturity}</dd>
+                          <dt className="text-subtle">Processing release</dt><dd className="font-medium text-ink">{scene.processingVersion}</dd>
                         </dl>
                         {scene.sourceUrl && scene.sourceUrl !== data.nisar.sourceUrl && (
                           <a href={scene.sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-teal underline underline-offset-2">
@@ -259,11 +290,40 @@ export default function LiveEarthDataStory() {
             </section>
           </div>
 
+          <section className="mt-8 surface-card p-5 sm:p-6" aria-labelledby="matched-scenes-heading">
+            <p className="eyebrow">Repeat observations · same acquisition setup</p>
+            <h3 id="matched-scenes-heading" className="mt-2 text-xl">Validated NISAR pairs intersecting the study area</h3>
+            <p className="mt-2 max-w-4xl text-sm leading-relaxed text-muted">These pairs match track, orbit direction, frame, acquisition mode, polarization, frequency, validated collection, and processing release. A scene may cover only part of the study area: the shared scene footprint must still be checked. Catalog matching does not align pixels or calculate change.</p>
+            {scenePairs.length > 0 ? (
+              <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                {scenePairs.map(({ before, after, days }) => (
+                  <article key={`${before.sceneName}-${after.sceneName}`} className="rounded-xl border border-line bg-canvas/50 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-semibold text-ink">{longDate(before.acquiredAt)} → {longDate(after.acquiredAt)} <span className="font-normal text-muted">({days} days)</span></p>
+                      <span className="rounded-full border border-eco/20 bg-eco/10 px-2.5 py-1 text-[11px] font-semibold text-eco">VALIDATED · {before.processingVersion}</span>
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed text-muted">Track {before.track} · {before.direction === 'D' ? 'descending' : 'ascending'} · frame {before.frame} · mode {before.mode} · polarization {before.polarization} · band {before.frequency} · {orbitAccuracyLabel(before.orbitAccuracy)} · {before.frameCoverage === 'F' ? 'full source frame' : 'partial source frame'}</p>
+                    <div className="mt-3 grid gap-2 text-[11px] text-subtle">
+                      <p className="break-all"><span className="font-semibold text-ink">Before:</span> {before.sceneName}</p>
+                      <p className="break-all"><span className="font-semibold text-ink">After:</span> {after.sceneName}</p>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-3 text-xs">
+                      {[before, after].map((scene, index) => scene.sourceUrl && scene.sourceUrl !== data.nisar.sourceUrl ? <a key={scene.sceneName} href={scene.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-radar underline underline-offset-2">Open {index === 0 ? 'before' : 'after'} ASF record <ExternalLink className="h-3 w-3" /></a> : null)}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : <p className="mt-4 rounded-lg border border-line bg-canvas/50 p-4 text-sm text-muted">{data.nisar.scenes.some((scene) => scene.maturity === 'UNKNOWN') ? 'The current live-data function does not identify collection maturity, so this page will not guess which records are validated. Refresh this section after deploying the updated live-earth-data function.' : 'No two scenes currently match in the validated collection and processing release within the catalog window. Provisional or browse-only scenes are not treated as quantitative pairs.'}</p>}
+            <p className="mt-4 rounded-lg border border-amber/20 bg-amber/5 p-4 text-xs leading-relaxed text-muted">The scene files require a free NASA Earthdata Login and are multi-gigabyte products. Check the orbit-solution and coverage fields in each record too. The project currently has no GCOV measurement exports, so no calibrated difference has been computed. The offline processor is in <code className="text-ink">data/pipeline/README_nisar_change.md</code>.</p>
+          </section>
+
+          <ModisBurnedAreaPanel />
+
           <section className="mt-8" aria-labelledby="independent-evidence-heading">
             <div className="mb-4 max-w-3xl">
-              <p className="eyebrow">Independent evidence · not yet analyzed here</p>
-              <h3 id="independent-evidence-heading" className="mt-2">Check a fire hypothesis with separate products</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">Open each NASA source for the same area and date window. The current app has not downloaded or analyzed these products, so this section reports no burn perimeter, burned area, or disturbance result.</p>
+              <p className="eyebrow">Independent evidence · context, not ground truth</p>
+              <h3 id="independent-evidence-heading" className="mt-2">What else must agree before calling this fire damage?</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">The MCD64A1 image above is a separate monthly burned-area product. No field observations were supplied, and this app does not yet compare its quality-screened pixels numerically with the NISAR change raster. A cause claim remains unverified.</p>
             </div>
             <div className="grid gap-4 md:grid-cols-3">
               <Card>
@@ -297,7 +357,7 @@ export default function LiveEarthDataStory() {
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-ember" aria-hidden="true" />
               <div>
                 <h3>What this live comparison can and cannot show</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted">The radar browse image and FIRMS points come from separate sensors and are not spatially registered together here. A same-configuration NISAR pair improves the scene-to-scene comparison, but processing versions may still differ and quicklooks alone do not quantify surface change or show that fire caused it. That needs calibrated geocoded measurements, a verified burned-area product, and ideally field evidence.</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted">This page now finds same-geometry NISAR pairs only when the validated collection and processing release also match, and it provides a separate MODIS MCD64A1 burned-area layer. It still does not report pixel-level radar change until the GCOV measurement files are processed and checked against their quality masks. No field observations are available, so this project cannot verify that a measured change was caused by fire.</p>
               </div>
             </div>
           </div>
