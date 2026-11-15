@@ -235,8 +235,8 @@ export default function NasaPowerContext() {
             <div className="mt-4 flex flex-col gap-2 border-t border-line pt-4 text-xs leading-relaxed text-muted sm:flex-row sm:items-start sm:justify-between">
               <p className="max-w-3xl">Nearest NASA POWER grid cell to 22.75° N, 78.28° E: {data.gridLatitude.toFixed(3)}° N, {data.gridLongitude.toFixed(3)}° E. This coarse rainfall estimate helps check wetness as a possible influence on SAR backscatter; it is not a radar-pixel measurement or evidence of fire.</p>
               <div className="flex shrink-0 flex-wrap gap-x-4 gap-y-2">
-                <a href="https://power.larc.nasa.gov/docs/services/api/temporal/daily/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4 hover:text-navy">API details <ExternalLink className="h-3 w-3" aria-hidden="true" /></a>
-                <a href="https://power.larc.nasa.gov/docs/methodology/data/sources_meteorology/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4 hover:text-navy">Data source & resolution <ExternalLink className="h-3 w-3" aria-hidden="true" /></a>
+                <a href="https://power.larc.nasa.gov/docs/services/api/temporal/daily/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4 hover:text-radar-200">API details <ExternalLink className="h-3 w-3" aria-hidden="true" /></a>
+                <a href="https://power.larc.nasa.gov/docs/methodology/data/sources_meteorology/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4 hover:text-radar-200">Data source & resolution <ExternalLink className="h-3 w-3" aria-hidden="true" /></a>
               </div>
             </div>
           </>

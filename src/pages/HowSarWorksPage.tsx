@@ -11,9 +11,8 @@ const steps = [
 ];
 
 const stepIconTones = ['bg-radar/10 text-radar', 'bg-eco/10 text-eco', 'bg-ember/10 text-ember', 'bg-analysis/10 text-analysis'];
-const NASA_NISAR_ORBIT_IMAGE = 'https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia26/pia26613/PIA26613.jpg';
 const NASA_NISAR_RADAR_IMAGE = 'https://images-assets.nasa.gov/image/PIA26616/PIA26616~large.jpg';
-const NASA_NISAR_DEPLOYMENT_VIDEO = 'https://assets.science.nasa.gov/content/dam/science/missions/nisar/nisar-jpl/multimedia/1_PAR_NISAR_LaunchAndDeploy_Short_V2a_1080p_1.mp4';
+const NASA_NISAR_DEPLOYMENT_YOUTUBE_ID = '7fvTqm8Lt2U';
 
 function RadarPulseDiagram() {
   return (
@@ -88,24 +87,22 @@ function NisarMissionMedia() {
       <Reveal>
         <div className="glass-panel overflow-hidden rounded-2xl">
           <div className="grid lg:grid-cols-2">
-            <figure className="min-w-0 border-b border-line lg:border-b-0 lg:border-r">
-              <div className="relative overflow-hidden bg-canvas">
-                <video
-                  controls
-                  playsInline
-                  preload="none"
-                  poster={NASA_NISAR_ORBIT_IMAGE}
-                  className="aspect-video w-full bg-canvas object-cover"
-                  aria-label="NASA animation of NISAR launch and antenna deployment"
-                >
-                  <source src={NASA_NISAR_DEPLOYMENT_VIDEO} type="video/mp4" />
-                  Your browser does not support this NASA video. <a href="https://science.nasa.gov/video-detail/amf-ffc8740c-2d65-4712-a4dd-78152649ab49/">Open it on NASA Science.</a>
-                </video>
+            <figure className="min-w-0 border-b border-line p-4 sm:p-6 lg:border-b-0 lg:border-r">
+              <div className="relative aspect-video overflow-hidden rounded-xl border border-line bg-canvas">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${NASA_NISAR_DEPLOYMENT_YOUTUBE_ID}`}
+                  title="NISAR antenna deployment animation · NASA/JPL-Caltech"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full"
+                />
               </div>
               <figcaption className="p-5 sm:p-6">
                 <h3 className="mt-2 text-xl">NISAR launch and deployment</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">NASA/JPL-Caltech · animation of the spacecraft launch and reflector deployment.</p>
-                <a href="https://science.nasa.gov/video-detail/amf-ffc8740c-2d65-4712-a4dd-78152649ab49/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline underline-offset-4 hover:text-navy">
+                <a href="https://science.nasa.gov/video-detail/amf-ffc8740c-2d65-4712-a4dd-78152649ab49/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline underline-offset-4 hover:text-radar-200">
                   NASA video details <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </figcaption>
@@ -116,7 +113,7 @@ function NisarMissionMedia() {
                 <img
                   src={NASA_NISAR_RADAR_IMAGE}
                   alt="False-color NISAR L-band radar image of Mount Desert Island, Maine, with water in dark tones, forest in green, and hard or regular surfaces in magenta."
-                  className="aspect-video w-full object-cover"
+                  className="aspect-video w-full bg-[#07131d] object-contain"
                   loading="lazy"
                 />
                 <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-navy/90 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur">NASA NISAR sample · Maine</span>
@@ -125,7 +122,7 @@ function NisarMissionMedia() {
                 <p className="text-xs font-semibold uppercase tracking-[0.15em] text-analysis">Different place · mission example</p>
                 <h3 className="mt-2 text-xl">Radar can reveal surface patterns.</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">This L-band image shows Mount Desert Island, Maine, acquired Aug. 21, 2025 during commissioning. It is not project data or a change result.</p>
-                <a href="https://science.nasa.gov/image-detail/amf-pia26616/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline underline-offset-4 hover:text-navy">
+                <a href="https://science.nasa.gov/image-detail/amf-pia26616/" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-radar underline underline-offset-4 hover:text-radar-200">
                   Image details and credit · NASA/JPL-Caltech <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </figcaption>

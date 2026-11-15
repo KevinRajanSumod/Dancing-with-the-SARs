@@ -1,4 +1,4 @@
-import { ExternalLink, Play } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 const imageExamples = [
   {
@@ -54,7 +54,7 @@ export default function NasaEcosystemGallery() {
           <article key={image.title} className="surface-card lift overflow-hidden">
             <a href={image.href} target="_blank" rel="noopener noreferrer" className="group block" aria-label={`Open NASA source for ${image.title}`}>
               <div className="relative aspect-[1.55] overflow-hidden bg-[#07131d]">
-                <img src={image.src} alt={image.alt} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.035]" />
+                <img src={image.src} alt={image.alt} loading="lazy" className="h-full w-full bg-[#07131d] object-contain" />
                 <span className="absolute bottom-3 left-3 rounded-full border border-white/20 bg-navy/90 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.12em] text-signal">NASA data example</span>
               </div>
               <div className="p-5">
@@ -80,7 +80,6 @@ export default function NasaEcosystemGallery() {
                 allowFullScreen
                 className="absolute inset-0 h-full w-full"
               />
-              <span className="pointer-events-none absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-navy/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-signal"><Play className="h-3 w-3" aria-hidden="true" />NASA video</span>
             </div>
             <div className="px-2 pb-2 pt-4"><h3 className="text-lg">{video.title}</h3><p className="mt-1 text-xs leading-relaxed text-muted">{video.note}</p></div>
           </article>

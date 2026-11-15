@@ -39,7 +39,7 @@ export default function SiteFooter() {
       </div>
 
       <div className="relative border-t border-white/[.08]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-[11px] leading-relaxed text-white/55 sm:px-8 md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-xs leading-relaxed text-white/70 sm:px-8 md:flex-row md:items-center md:justify-between">
           <p>Data credits: NASA · ISRO · NISAR · NASA FIRMS · VIIRS · MODIS · OPERA / Sentinel-1.</p>
           <p>TerraScope is independent. NASA, ISRO, and partner missions do not endorse this project.</p>
         </div>

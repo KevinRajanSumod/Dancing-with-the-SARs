@@ -89,7 +89,7 @@ function PreviewGraphic({ kind }: { kind: 'radar' | 'detections' | 'map' | 'guid
         <div className="mission-grid absolute inset-0 opacity-45" aria-hidden="true" />
         <div className="relative flex h-28 items-center justify-around rounded-lg border border-white/10 bg-white/[.02]">
           {[0, 1, 2, 3, 4].map((index) => <span key={index} className={`rounded-full border border-[#ffe2c0] bg-ember/80 shadow-[0_0_20px_rgba(240,120,89,.24)] ${index % 2 ? 'h-3 w-3' : 'h-2 w-2'}`} />)}
-          <span className="absolute bottom-2 left-3 rounded-full border border-white/10 bg-canvas/90 px-2 py-1 text-[9px] font-semibold text-ember">Illustrative marks · not live data</span>
+          <span className="absolute bottom-2 left-3 rounded-full border border-white/10 bg-canvas/90 px-2 py-1 text-[10px] font-semibold text-ember">Illustrative marks · not live data</span>
         </div>
       </div>
     );
@@ -100,9 +100,9 @@ function PreviewGraphic({ kind }: { kind: 'radar' | 'detections' | 'map' | 'guid
       <div className="relative mt-5 overflow-hidden rounded-xl border border-white/10 bg-[#081b28] p-4" aria-label="Illustrative statewide map controls preview">
         <div className="mission-grid absolute inset-0 opacity-45" aria-hidden="true" />
         <div className="relative flex h-28 items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[.02]">
-          <span className="rounded-lg border border-radar/20 bg-radar/10 px-2 py-2 text-[9px] font-semibold text-radar">Radar view</span>
+          <span className="rounded-lg border border-radar/20 bg-radar/10 px-2 py-2 text-[10px] font-semibold text-radar">Radar view</span>
           <span className="text-subtle">+</span>
-          <span className="rounded-lg border border-ember/20 bg-ember/10 px-2 py-2 text-[9px] font-semibold text-ember">Detection records</span>
+          <span className="rounded-lg border border-ember/20 bg-ember/10 px-2 py-2 text-[10px] font-semibold text-ember">Detection records</span>
         </div>
       </div>
     );
@@ -146,7 +146,7 @@ function DetectionDiagram() {
         <div className="relative grid h-20 w-32 grid-cols-3 place-items-center">
           {[0, 1, 2, 3, 4, 5].map((index) => <span key={index} className="h-2.5 w-2.5 rounded-full border border-[#ffe2c0] bg-ember shadow-[0_0_18px_rgba(240,120,89,.36)]" />)}
         </div>
-        <span className="absolute bottom-3 left-3 rounded-full border border-ember/25 bg-ember/10 px-3 py-1 text-[9px] font-semibold text-ember">Conceptual detections · not a real scene</span>
+        <span className="absolute bottom-3 left-3 rounded-full border border-ember/25 bg-ember/10 px-3 py-1 text-[10px] font-semibold text-ember">Conceptual detections · not a real scene</span>
       </div>
     </div>
   );
@@ -163,7 +163,7 @@ function CheckList({ items }: { items: string[] }) {
 export default function HomePage() {
   return (
     <>
-      <main className="relative mx-auto w-full max-w-7xl px-5 pb-20 pt-8 sm:px-8 md:pb-28 md:pt-14">
+      <section className="relative mx-auto w-full max-w-7xl px-5 pb-20 pt-8 sm:px-8 md:pb-28 md:pt-14" aria-labelledby="hero-title">
         <section className="relative isolate overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-[#142c3a] via-[#0d202c] to-[#091a28] px-5 py-7 shadow-[0_30px_100px_rgba(0,0,0,.32)] sm:px-9 sm:py-10 lg:px-12 lg:py-14" aria-labelledby="hero-title">
           <div className="pointer-events-none absolute -right-48 -top-56 h-[34rem] w-[34rem] rounded-full border border-radar/10 bg-radar/[.035]" aria-hidden="true" />
           <div className="pointer-events-none absolute -bottom-48 -left-28 h-[27rem] w-[27rem] rounded-full border border-ember/10" aria-hidden="true" />
@@ -215,7 +215,7 @@ export default function HomePage() {
             {featureCards.map(({ icon: Icon, title, eyebrow, body, type, size }, index) => (
               <Reveal key={title} delayMs={index * 55} className={size}>
                 <article className="surface-card lift group h-full p-5 sm:p-6">
-                  <div className="flex items-start justify-between gap-4"><span className={`grid h-11 w-11 place-items-center rounded-xl border ${type === 'detections' ? 'border-ember/20 bg-ember/10 text-ember' : 'border-radar/20 bg-radar/10 text-radar'}`}><Icon className="h-5 w-5" aria-hidden="true" /></span><span className="rounded-full bg-canvas px-3 py-1 text-[9px] font-bold tracking-[.15em] text-subtle">{eyebrow}</span></div>
+                  <div className="flex items-start justify-between gap-4"><span className={`grid h-11 w-11 place-items-center rounded-xl border ${type === 'detections' ? 'border-ember/20 bg-ember/10 text-ember' : 'border-radar/20 bg-radar/10 text-radar'}`}><Icon className="h-5 w-5" aria-hidden="true" /></span><span className="rounded-full bg-canvas px-3 py-1 text-[10px] font-bold tracking-[.15em] text-subtle">{eyebrow}</span></div>
                   <h3 className="mt-5 text-xl text-white">{title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted">{body}</p>
                   <PreviewGraphic kind={type} />
@@ -274,8 +274,8 @@ export default function HomePage() {
           </section>
         </Reveal>
 
-        <p className="mx-auto mt-8 max-w-4xl text-center text-[11px] leading-relaxed text-subtle"><RadioTower className="mr-1 inline h-3.5 w-3.5 text-radar" aria-hidden="true" /> A thermal detection is not a confirmed fire. Radar browse imagery is not a calibrated change measurement, and the layers do not establish that fire caused a radar pattern.</p>
-      </main>
+        <p className="mx-auto mt-8 max-w-4xl text-center text-xs leading-relaxed text-muted"><RadioTower className="mr-1 inline h-3.5 w-3.5 text-radar" aria-hidden="true" /> A thermal detection is not a confirmed fire. Radar browse imagery is not a calibrated change measurement, and the layers do not establish that fire caused a radar pattern.</p>
+      </section>
     </>
   );
 }

@@ -169,7 +169,7 @@ export default function StudyDashboardPage() {
       </div>
     </section>
 
-    <main className="mx-auto w-full max-w-7xl px-5 py-6 sm:px-8 md:py-8">
+    <div className="mx-auto w-full max-w-7xl px-5 py-6 sm:px-8 md:py-8">
       <section className="surface-card mb-5 p-5 sm:p-6" aria-labelledby="timeline-heading">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div><p className="eyebrow">Step 1 · Choose a date</p><h2 id="timeline-heading" className="mt-2 text-xl">Showing {formatDate(selectedDate)}</h2></div>
@@ -236,6 +236,6 @@ export default function StudyDashboardPage() {
         </div>
         <p className="mt-4 text-xs text-subtle">Heat signals come from NASA FIRMS. Map images come from NASA GIBS.</p>
       </section>
-    </main>
+    </div>
   </>;
 }

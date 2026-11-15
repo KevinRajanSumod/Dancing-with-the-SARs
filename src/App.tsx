@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type ComponentType } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import AppLink, { buttonClass } from '@/components/AppLink';
 import SiteFooter from '@/components/SiteFooter';
@@ -47,11 +47,47 @@ export default function App() {
   const routeTitle = routes.find((route) => route.path === pathname)?.label;
   const title = routeTitle;
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const assistantTriggerRef = useRef<HTMLButtonElement>(null);
+  const assistantCloseRef = useRef<HTMLButtonElement>(null);
+  const assistantPanelRef = useRef<HTMLElement>(null);
   const topic = pathname === '/how-sar-works' ? 'drivers' : 'applications';
 
   useEffect(() => {
     document.title = title ? `${title} | TerraScope` : 'TerraScope';
   }, [title]);
+
+  useEffect(() => {
+    if (!assistantOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    assistantCloseRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setAssistantOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const focusable = assistantPanelRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable?.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      assistantTriggerRef.current?.focus();
+    };
+  }, [assistantOpen]);
 
   return (
     <>
@@ -70,16 +106,16 @@ export default function App() {
       <SiteFooter />
       {assistantOpen && (
         <div className="fixed inset-0 z-[60] bg-black/55" onMouseDown={(event) => { if (event.target === event.currentTarget) setAssistantOpen(false); }}>
-          <aside className="absolute inset-y-0 right-0 w-full max-w-xl overflow-y-auto border-l border-line bg-paper text-ink shadow-2xl" role="dialog" aria-modal="true" aria-label="EchoGuide assistant">
+          <aside ref={assistantPanelRef} className="absolute inset-y-0 right-0 w-full max-w-xl overflow-y-auto border-l border-line bg-paper text-ink shadow-2xl" role="dialog" aria-modal="true" aria-label="EchoGuide assistant">
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-paper/95 px-5 py-4 backdrop-blur">
               <span className="font-semibold text-ink">EchoGuide · SAR research assistant</span>
-              <button type="button" onClick={() => setAssistantOpen(false)} className="rounded-lg p-2 text-ink hover:bg-raised" aria-label="Close EchoGuide"><X className="h-5 w-5" /></button>
+              <button ref={assistantCloseRef} type="button" onClick={() => setAssistantOpen(false)} className="rounded-lg p-2 text-ink hover:bg-raised" aria-label="Close EchoGuide"><X className="h-5 w-5" /></button>
             </div>
             <ProjectEvidenceAssistant topic={topic} />
           </aside>
         </div>
       )}
-      <button type="button" onClick={() => setAssistantOpen(true)} className="fixed bottom-24 right-4 z-50 grid h-12 w-12 place-items-center rounded-full bg-radar text-canvas shadow-xl transition hover:bg-radar-200 sm:bottom-24 sm:right-5 sm:flex sm:h-auto sm:w-auto sm:gap-2 sm:px-5 sm:py-3 sm:font-bold" aria-label="Open EchoGuide assistant" title="Open the AI research assistant">
+      <button ref={assistantTriggerRef} type="button" onClick={() => setAssistantOpen(true)} className="fixed bottom-24 right-4 z-50 grid h-12 w-12 place-items-center rounded-full bg-radar text-canvas shadow-xl transition hover:bg-radar-200 sm:bottom-24 sm:right-5 sm:flex sm:h-auto sm:w-auto sm:gap-2 sm:px-5 sm:py-3 sm:font-bold" aria-label="Open EchoGuide assistant" title="Open the AI research assistant">
         <MessageCircle className="h-5 w-5" aria-hidden="true" /><span className="sr-only sm:not-sr-only">Ask EchoGuide</span>
       </button>
       </div>
