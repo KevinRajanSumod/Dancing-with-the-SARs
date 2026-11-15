@@ -399,12 +399,12 @@ function parseRadarScene(value: unknown): RadarScene | null {
 }
 
 function findResults(payload: unknown): unknown[] {
-  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload)) return payload.flatMap(findResults);
   const root = asRecord(payload);
-  if (Array.isArray(root.features)) return root.features;
-  if (Array.isArray(root.results)) return root.results;
-  if (Array.isArray(root.Results)) return root.Results;
-  if (Array.isArray(root.data)) return root.data;
+  for (const key of ['features', 'results', 'Results', 'data']) {
+    if (Array.isArray(root[key])) return (root[key] as unknown[]).flatMap(findResults);
+  }
+  if (root.productName || root.sceneName || root.fileName || root.granuleName || root.scene_name) return [payload];
   return [];
 }
 
