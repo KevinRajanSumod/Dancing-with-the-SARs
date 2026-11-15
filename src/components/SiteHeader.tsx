@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react';
-import { ArrowUpRight, ChevronDown, Menu, Radar, X } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 import AppLink from '@/components/AppLink';
 import { routes } from '@/lib/routes';
 
@@ -36,11 +36,8 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 sm:px-5">
       <div className="mx-auto flex min-h-[4.25rem] max-w-7xl items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#0b1d2a]/95 px-3 shadow-[0_12px_36px_rgba(0,0,0,.22)] backdrop-blur-xl sm:px-4 lg:px-5">
-        <AppLink to="/" className="group flex min-w-0 shrink-0 items-center gap-3 text-white" aria-label="TerraScope home">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-radar/20 bg-radar/10 text-radar transition-colors group-hover:bg-radar/20">
-            <Radar className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
-          </span>
-          <span><span className="block truncate text-sm font-bold tracking-wide sm:text-base">TerraScope</span><span className="hidden text-[10px] font-medium text-subtle sm:block">See our planet differently.</span></span>
+        <AppLink to="/" className="group flex min-w-0 shrink-0 items-center text-white" aria-label="TerraScope home">
+          <img src="/images/brand/terrascope-logo.png" alt="TerraScope — See Earth. Think Bigger." className="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-14 sm:w-14" />
         </AppLink>
 
         <nav aria-label="Main" className="hidden min-w-0 items-center gap-0.5 xl:flex">
