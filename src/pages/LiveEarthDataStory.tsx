@@ -20,6 +20,18 @@ function timeLabel(value: string): string {
   return digits.length === 4 ? `${digits.slice(0, 2)}:${digits.slice(2)} UTC` : 'Time unavailable';
 }
 
+function confidenceLabel(value: string): string {
+  switch (value.trim().toLowerCase()) {
+    case 'l':
+    case 'low': return 'Low';
+    case 'n':
+    case 'nominal': return 'Nominal';
+    case 'h':
+    case 'high': return 'High';
+    default: return value || 'Not reported';
+  }
+}
+
 function orbitAccuracyLabel(value: string): string {
   if (value === 'P') return 'precise orbit';
   if (value === 'M') return 'medium-accuracy orbit';
@@ -255,24 +267,28 @@ export default function LiveEarthDataStory() {
                     ))}
                   </select>
                   <p className="mt-4 text-sm font-semibold text-ink">{selectedRecords.length} detection records on {activeDate ? longDate(activeDate) : 'this date'}</p>
+                  <div className="mt-3 rounded-xl border border-radar/20 bg-radar/5 p-3 text-xs leading-relaxed text-muted">
+                    <p><strong className="text-ink">Detection confidence:</strong> NASA’s category for the satellite signal: low, nominal, or high. It is not a percentage or proof of a fire.</p>
+                    <p className="mt-2"><strong className="text-ink">Heat output (FRP):</strong> estimated heat power from that satellite pixel, in megawatts (MW). It does not tell you the fire’s size or burned area.</p>
+                  </div>
                   <div className="mt-3 max-h-[28rem] overflow-auto rounded-xl border border-line">
                     <table className="w-full min-w-[34rem] border-collapse text-left text-xs">
                       <caption className="sr-only">NASA FIRMS thermal detection records for {activeDate ? longDate(activeDate) : 'the selected date'}</caption>
                       <thead className="sticky top-0 bg-canvas text-muted">
                         <tr>
                           <th scope="col" className="px-3 py-2.5 font-semibold">Time</th>
-                          <th scope="col" className="px-3 py-2.5 font-semibold">Confidence</th>
-                          <th scope="col" className="px-3 py-2.5 font-semibold">FRP</th>
-                          <th scope="col" className="px-3 py-2.5 font-semibold">Latitude, longitude</th>
+                          <th scope="col" className="px-3 py-2.5 font-semibold">Detection confidence</th>
+                          <th scope="col" className="px-3 py-2.5 font-semibold">Heat output (MW)</th>
+                          <th scope="col" className="px-3 py-2.5 font-semibold">Location</th>
                         </tr>
                       </thead>
                       <tbody>
                         {selectedRecords.map((record, index) => (
                           <tr key={`${record.date}-${record.time}-${record.lat}-${record.lon}-${index}`} className="border-t border-line odd:bg-raised even:bg-canvas/60">
                             <td className="whitespace-nowrap px-3 py-2.5 tabular-nums">{timeLabel(record.time)}</td>
-                            <td className="px-3 py-2.5">{record.conf || 'Not reported'}</td>
-                            <td className="whitespace-nowrap px-3 py-2.5 tabular-nums">{record.frp === null ? '—' : `${record.frp} MW`}</td>
-                            <td className="whitespace-nowrap px-3 py-2.5 tabular-nums">{record.lat.toFixed(4)}, {record.lon.toFixed(4)}</td>
+                            <td className="px-3 py-2.5">{confidenceLabel(record.conf)}</td>
+                            <td className="whitespace-nowrap px-3 py-2.5 tabular-nums">{record.frp === null ? 'Not reported' : record.frp.toFixed(2)}</td>
+                            <td className="whitespace-nowrap px-3 py-2.5 tabular-nums">{record.lat.toFixed(4)}° N, {record.lon.toFixed(4)}° E</td>
                           </tr>
                         ))}
                       </tbody>
