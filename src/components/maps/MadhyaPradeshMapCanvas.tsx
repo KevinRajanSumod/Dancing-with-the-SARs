@@ -62,7 +62,7 @@ interface MadhyaPradeshMapCanvasProps {
   selectedDistrict: string;
   selectedDetectionId: string | number | null;
   selectedClusterKey: string | null;
-  viewMode: 'grouped' | 'density' | 'individual';
+  viewMode: 'grouped' | 'density' | 'individual' | 'district';
   showFootprint: boolean;
   selectedDate?: string;
   showNisarDaily?: boolean;
@@ -70,6 +70,7 @@ interface MadhyaPradeshMapCanvasProps {
   showSentinel1?: boolean;
   showOptical?: boolean;
   showOpticalContext?: boolean;
+  onImageryStatus?: (kind: 'radar' | 'optical', status: 'loaded' | 'unavailable', key: string) => void;
   zoom: number;
   resetViewKey: number;
   onSelectDistrict: (name: string) => void;
@@ -168,8 +169,8 @@ function pathForGeometry(geometry: MapGeometry, projection: Projection): string 
 function districtFill(count: number, maximum: number): string {
   if (count === 0 || maximum === 0) return '#122431';
   const amount = Math.sqrt(count / maximum);
-  const start = [24, 55, 65];
-  const end = [190, 95, 54];
+  const start = [22, 63, 82];
+  const end = [245, 138, 59];
   const rgb = start.map((value, index) => Math.round(value + (end[index] - value) * amount));
   return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
 }
@@ -207,6 +208,7 @@ export default function MadhyaPradeshMapCanvas({
   showSentinel1 = false,
   showOptical = false,
   showOpticalContext = true,
+  onImageryStatus,
   zoom,
   resetViewKey,
   onSelectDistrict,
@@ -271,18 +273,28 @@ export default function MadhyaPradeshMapCanvas({
   );
   const maxDistrictCount = Math.max(0, ...districtCounts.values());
 
-  const rasterBounds = useMemo(() => {
-    const left = projection.x(projection.minLongitude);
-    const right = projection.x(projection.maxLongitude);
-    const top = projection.y(projection.maxLatitude);
-    const bottom = projection.y(projection.minLatitude);
-    return { x: left, y: top, width: right - left, height: bottom - top };
+  const imageExtent = useMemo(() => {
+    const longitudePadding = (projection.maxLongitude - projection.minLongitude) * 0.16;
+    const latitudePadding = (projection.maxLatitude - projection.minLatitude) * 0.16;
+    return {
+      minLongitude: projection.minLongitude - longitudePadding,
+      maxLongitude: projection.maxLongitude + longitudePadding,
+      minLatitude: projection.minLatitude - latitudePadding,
+      maxLatitude: projection.maxLatitude + latitudePadding,
+    };
   }, [projection]);
+  const rasterBounds = useMemo(() => {
+    const left = projection.x(imageExtent.minLongitude);
+    const right = projection.x(imageExtent.maxLongitude);
+    const top = projection.y(imageExtent.maxLatitude);
+    const bottom = projection.y(imageExtent.minLatitude);
+    return { x: left, y: top, width: right - left, height: bottom - top };
+  }, [imageExtent, projection]);
   const gibsUrl = (layer: string, date: string, transparent = true) => {
     const params = new URLSearchParams({
       SERVICE: 'WMS', VERSION: '1.1.1', REQUEST: 'GetMap', LAYERS: layer,
       STYLES: '', FORMAT: 'image/png', TRANSPARENT: String(transparent),
-      SRS: 'EPSG:4326', BBOX: `${projection.minLongitude},${projection.minLatitude},${projection.maxLongitude},${projection.maxLatitude}`,
+      SRS: 'EPSG:4326', BBOX: `${imageExtent.minLongitude},${imageExtent.minLatitude},${imageExtent.maxLongitude},${imageExtent.maxLatitude}`,
       WIDTH: '900', HEIGHT: '700', TIME: date,
     });
     return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`;
@@ -290,7 +302,7 @@ export default function MadhyaPradeshMapCanvas({
 
   const clusters = useMemo(() => {
     if (viewMode === 'individual') return [];
-    const cellSize = Math.max(projection.width, projection.height) / 42;
+    const cellSize = Math.max(projection.width, projection.height) / (viewMode === 'density' ? 30 : 42);
     const bins = new Map<string, { points: MapDetection[]; x: number; y: number }>();
     detections.forEach((detection) => {
       const [longitude, latitude] = detection.geometry.coordinates as Position;
@@ -356,7 +368,7 @@ export default function MadhyaPradeshMapCanvas({
       viewBox={viewBox}
       className={`h-full w-full touch-none ${dragRef.current ? 'cursor-grabbing' : 'cursor-grab'}`}
       role="group"
-      aria-label="Interactive map of Madhya Pradesh detection records and districts"
+      aria-label="Interactive map of satellite heat detections in Madhya Pradesh"
       preserveAspectRatio="xMidYMid meet"
       onPointerDown={beginPan}
       onPointerMove={movePan}
@@ -386,12 +398,12 @@ export default function MadhyaPradeshMapCanvas({
       {/* Keep the land fill behind satellite imagery so it cannot wash the imagery out. */}
       <path d={statePath} fill="#263b46" fillRule="evenodd" fillOpacity="0.9" stroke="none" pointerEvents="none" />
 
+      {showOpticalContext && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="1" pointerEvents="none" onLoad={() => onImageryStatus?.('optical', 'loaded', `natural:${selectedDate}`)} onError={() => onImageryStatus?.('optical', 'unavailable', `natural:${selectedDate}`)} />}
+      {showOptical && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.86" pointerEvents="none" onLoad={() => onImageryStatus?.('optical', 'loaded', `natural:${selectedDate}`)} onError={() => onImageryStatus?.('optical', 'unavailable', `natural:${selectedDate}`)} />}
       <g clipPath="url(#mp-state-clip)" pointerEvents="none">
-        {showOpticalContext && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="1" />}
-        {showOptical && <image href={gibsUrl('MODIS_Terra_CorrectedReflectance_TrueColor', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.86" />}
-        {showSentinel1 && <image href={gibsUrl('OPERA_L2_Radiometric_Terrain_Corrected_SAR_Sentinel-1', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" />}
-        {showNisar12Day && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance_12Day', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" />}
-        {showNisarDaily && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.95" />}
+        {showSentinel1 && <image href={gibsUrl('OPERA_L2_Radiometric_Terrain_Corrected_SAR_Sentinel-1', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" onLoad={() => onImageryStatus?.('radar', 'loaded', `sentinel1:${selectedDate}`)} onError={() => onImageryStatus?.('radar', 'unavailable', `sentinel1:${selectedDate}`)} />}
+        {showNisar12Day && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance_12Day', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.9" onLoad={() => onImageryStatus?.('radar', 'loaded', `nisar-12day:${selectedDate}`)} onError={() => onImageryStatus?.('radar', 'unavailable', `nisar-12day:${selectedDate}`)} />}
+        {showNisarDaily && <image href={gibsUrl('NISAR_L2_Geocoded_Polarimetric_Covariance', selectedDate)} {...rasterBounds} preserveAspectRatio="none" opacity="0.95" onLoad={() => onImageryStatus?.('radar', 'loaded', `nisar-daily:${selectedDate}`)} onError={() => onImageryStatus?.('radar', 'unavailable', `nisar-daily:${selectedDate}`)} />}
       </g>
 
       <g>
@@ -405,13 +417,13 @@ export default function MadhyaPradeshMapCanvas({
               d={path}
               fill={districtFill(count, maxDistrictCount)}
               fillRule="evenodd"
-              fillOpacity={showOpticalContext || showNisarDaily || showNisar12Day || showSentinel1 || showOptical ? (selected ? 0.16 : 0.06) : selectedDistrict === 'all' || selected ? 0.92 : 0.42}
+              fillOpacity={viewMode === 'district' ? (selectedDistrict === 'all' || selected ? 0.92 : 0.42) : showOpticalContext || showNisarDaily || showNisar12Day || showSentinel1 || showOptical ? (selected ? 0.16 : 0.06) : selectedDistrict === 'all' || selected ? 0.92 : 0.42}
               stroke={selected ? '#67d9ec' : '#7c9aa7'}
               strokeWidth={selected ? radius * 1.8 : radius * 0.58}
               vectorEffect="non-scaling-stroke"
               tabIndex={0}
               role="button"
-              aria-label={`${name}, ${count.toLocaleString('en-US')} FIRMS detection records in the selected filters. Select district.`}
+              aria-label={`${name}, ${count.toLocaleString('en-US')} satellite heat detections in the selected view. Select district.`}
               onClick={() => onSelectDistrict(name)}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
@@ -421,7 +433,7 @@ export default function MadhyaPradeshMapCanvas({
               }}
               className="cursor-pointer outline-none transition-[fill,opacity,stroke] focus-visible:stroke-radar"
             >
-              <title>{`${name} · ${count.toLocaleString('en-US')} detection records`}</title>
+              <title>{`${name} · ${count.toLocaleString('en-US')} heat detections`}</title>
             </path>
           );
         })}
@@ -509,7 +521,7 @@ export default function MadhyaPradeshMapCanvas({
             strokeWidth={radius * (isSelected ? 0.95 : 0.45)}
             role="button"
             tabIndex={0}
-            aria-label={`${cluster.count} FIRMS detection records grouped in this map cell. Select for summary.`}
+            aria-label={`${cluster.count} satellite heat detections grouped in this area. Select for a summary.`}
             onClick={() => onSelectCluster(cluster.summary)}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ') {

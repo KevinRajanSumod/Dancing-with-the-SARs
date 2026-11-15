@@ -1,0 +1,140 @@
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { LoaderCircle, Mic, Send, Sparkles } from 'lucide-react';
+import { askLiveDataInsight, type EvidenceChatTurn } from '@/lib/evidenceAssistant';
+
+interface SpeechRecognitionEventLike {
+  results: ArrayLike<ArrayLike<{ transcript: string }>>;
+}
+
+interface SpeechRecognitionLike {
+  lang: string;
+  interimResults: boolean;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+  start(): void;
+  stop(): void;
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+interface LiveDataInsightProps {
+  title: string;
+  question: string;
+  evidence: string;
+}
+
+export default function LiveDataInsight({ title, question: sectionGuidance, evidence }: LiveDataInsightProps) {
+  const [draft, setDraft] = useState('');
+  const [messages, setMessages] = useState<EvidenceChatTurn[]>([]);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [voiceError, setVoiceError] = useState('');
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+
+  useEffect(() => () => recognitionRef.current?.stop(), []);
+  useEffect(() => {
+    setMessages([]);
+    setDraft('');
+    setError('');
+  }, [evidence, sectionGuidance]);
+
+  function startVoiceInput() {
+    setVoiceError('');
+    const speechWindow = window as Window & { SpeechRecognition?: SpeechRecognitionConstructor; webkitSpeechRecognition?: SpeechRecognitionConstructor };
+    const SpeechRecognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setVoiceError('Voice input is not supported in this browser. You can type your question instead.');
+      return;
+    }
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-IN';
+      recognition.interimResults = false;
+      recognition.onresult = (event) => {
+        const transcript = Array.from(event.results).map((result) => result[0]?.transcript ?? '').join(' ').trim();
+        if (transcript) setDraft((current) => `${current}${current.trim() ? ' ' : ''}${transcript}`.slice(0, 500));
+      };
+      recognition.onerror = () => {
+        setVoiceError('Voice input could not be captured. Check microphone permission or type your question.');
+        setListening(false);
+      };
+      recognition.onend = () => setListening(false);
+      recognitionRef.current = recognition;
+      setListening(true);
+      recognition.start();
+    } catch {
+      setListening(false);
+      setVoiceError('Could not start voice input. Check microphone permission or type your question.');
+    }
+  }
+
+  async function sendMessage(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const text = draft.trim();
+    if (loading || !text || !evidence.trim()) return;
+    setLoading(true);
+    setError('');
+    setDraft('');
+    setMessages((current) => [...current, { role: 'user', text }]);
+    try {
+      const result = await askLiveDataInsight(text, evidence, sectionGuidance, messages);
+      setMessages((current) => [...current, { role: 'assistant', text: result.answer }]);
+    } catch (reason) {
+      setDraft(text);
+      setMessages((current) => current[current.length - 1]?.role === 'user' && current[current.length - 1]?.text === text ? current.slice(0, -1) : current);
+      setError(reason instanceof Error ? reason.message : 'EchoGuide could not answer right now.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <aside className="mt-4 rounded-xl border border-analysis/25 bg-analysis/[.04] p-4" aria-label={`Ask EchoGuide about ${title}`}>
+      <div className="flex items-center gap-2">
+        <Sparkles className="h-4 w-4 text-analysis" aria-hidden="true" />
+        <div>
+          <p className="eyebrow">EchoGuide · ask about this data</p>
+          <p className="mt-1 text-xs leading-relaxed text-muted">Ask a question or follow up. EchoGuide uses this section’s data and explains its limits.</p>
+        </div>
+      </div>
+
+      {messages.length > 0 && (
+        <div className="mt-4 max-h-80 space-y-3 overflow-y-auto rounded-lg border border-line bg-canvas/45 p-3" aria-live="polite">
+          {messages.map((message, index) => (
+            <div key={`${message.role}-${index}`} className={`rounded-lg p-3 ${message.role === 'user' ? 'ml-6 bg-radar/10' : 'mr-3 bg-raised'}`}>
+              <p className={`text-[11px] font-bold uppercase tracking-wide ${message.role === 'user' ? 'text-radar' : 'text-analysis'}`}>{message.role === 'user' ? 'You' : 'EchoGuide'}</p>
+              <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-ink">{message.text}</p>
+            </div>
+          ))}
+          {loading && <p className="flex items-center gap-2 text-xs text-muted" role="status"><LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" /> EchoGuide is thinking…</p>}
+        </div>
+      )}
+
+      <form onSubmit={(event) => void sendMessage(event)} className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-end">
+        <label className="sr-only" htmlFor={`echo-question-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>Ask EchoGuide about {title}</label>
+        <textarea
+          id={`echo-question-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+          value={draft}
+          onChange={(event) => setDraft(event.currentTarget.value.slice(0, 500))}
+          maxLength={500}
+          rows={2}
+          placeholder="What does this mean? What should I check next?"
+          className="min-h-12 w-full resize-y rounded-lg border border-line-strong bg-canvas px-3 py-2.5 text-sm text-ink placeholder:text-subtle focus:border-analysis focus:outline-none focus:ring-2 focus:ring-analysis/20"
+        />
+        <button type="button" onClick={() => listening ? recognitionRef.current?.stop() : startVoiceInput()} disabled={loading} aria-label={listening ? 'Stop voice input' : 'Speak your question'} className={`inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-bold transition disabled:cursor-wait disabled:opacity-60 ${listening ? 'border-ember/30 bg-ember/10 text-ember' : 'border-line-strong bg-canvas text-muted hover:border-analysis/50 hover:text-ink'}`}>
+          <Mic className="h-4 w-4" aria-hidden="true" />{listening ? 'Stop' : 'Speak'}
+        </button>
+        <button type="submit" disabled={loading || !draft.trim()} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-analysis px-4 py-2 text-sm font-bold text-canvas transition hover:brightness-110 disabled:cursor-wait disabled:opacity-60">
+          {loading ? <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Send className="h-4 w-4" aria-hidden="true" />}
+          {loading ? 'Thinking…' : 'Ask'}
+        </button>
+      </form>
+      {listening && <p className="mt-2 text-xs text-ember" role="status">Listening… Speak your question, then press Ask.</p>}
+      {voiceError && <p className="mt-2 text-xs text-muted" role="status">{voiceError}</p>}
+      {error && <p className="mt-3 rounded-lg border border-ember/25 bg-ember/5 p-3 text-xs leading-relaxed text-muted" role="alert">{error}</p>}
+      <p className="mt-2 text-[11px] leading-relaxed text-subtle">Speak uses your browser’s speech recognition, when supported, and may request microphone permission. AI answers use the displayed summary and metadata; they cannot inspect raw radar measurements or prove a fire caused a land change.</p>
+    </aside>
+  );
+}

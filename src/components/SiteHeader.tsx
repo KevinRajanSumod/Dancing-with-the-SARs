@@ -1,10 +1,12 @@
-import { useEffect, useId, useState } from 'react';
-import { ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
+import { useEffect, useId, useState, type RefObject } from 'react';
+import { ArrowUpRight, ChevronDown, Menu, MessageCircle, X } from 'lucide-react';
 import AppLink from '@/components/AppLink';
 import { routes } from '@/lib/routes';
 
 interface SiteHeaderProps {
   pathname: string;
+  assistantTriggerRef: RefObject<HTMLButtonElement | null>;
+  onOpenAssistant: () => void;
 }
 
 const desktopPaths = ['/', '/study-map', '/case-study', '/future-applications', '/sources', '/upcoming'];
@@ -16,7 +18,7 @@ function linkClass(isActive: boolean): string {
     : `${base} text-muted hover:bg-white/[.06] hover:text-white`;
 }
 
-export default function SiteHeader({ pathname }: SiteHeaderProps) {
+export default function SiteHeader({ pathname, assistantTriggerRef, onOpenAssistant }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
   const learnActive = pathname === '/how-sar-works' || pathname === '/physical-drivers';
@@ -70,6 +72,9 @@ export default function SiteHeader({ pathname }: SiteHeaderProps) {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-2 xl:ml-0">
+          <button ref={assistantTriggerRef} type="button" onClick={onOpenAssistant} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-radar/25 px-3 text-sm font-semibold text-radar transition hover:bg-radar/10 sm:px-4" aria-label="Open EchoGuide assistant" title="Ask the project’s AI assistant">
+            <MessageCircle className="h-4 w-4" aria-hidden="true" /><span className="hidden sm:inline">Ask EchoGuide</span>
+          </button>
           <AppLink to="/study-map" className="hidden min-h-10 items-center gap-2 rounded-full bg-radar px-4 py-2 text-sm font-bold text-canvas transition hover:bg-radar-200 sm:inline-flex">Open the map <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></AppLink>
           <button
             type="button"

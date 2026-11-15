@@ -54,13 +54,13 @@ type RadarScene = {
   comparisonKey: string;
 };
 
-function jsonResponse(body: unknown, status = 200, cacheSeconds = 600): Response {
+function jsonResponse(body: unknown, status = 200, cacheSeconds = 0): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       ...corsHeaders,
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': `public, max-age=${cacheSeconds}`,
+      'Cache-Control': cacheSeconds > 0 ? `public, max-age=${cacheSeconds}` : 'no-store, no-cache, must-revalidate',
     },
   });
 }

@@ -9,20 +9,18 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from shapely.geometry import Point, shape
+from shapely.geometry import Point, mapping, shape
+from shapely.ops import unary_union
+from mp_boundaries import load_mp_district_features
+from project_data_policy import EXCLUDED_OBSERVATION_DATES
 
 
 PROJECT_DIR = Path(__file__).resolve().parents[2]
-BOUNDARIES_DIR = PROJECT_DIR / "data" / "raw" / "boundaries"
 PROCESSED_DIR = PROJECT_DIR / "data" / "processed"
 PUBLIC_DATA_DIR = PROJECT_DIR / "public" / "data"
 
-ADMIN1_FILE = BOUNDARIES_DIR / "gadm41_IND_1.json"
-ADMIN2_FILE = BOUNDARIES_DIR / "geoboundaries_ind_adm2_simplified.geojson"
 DETECTIONS_FILE = PROCESSED_DIR / "mp_firms.geojson"
 FOOTPRINT_FILE = PROCESSED_DIR / "project_footprint.geojson"
-
-
 def read_json(path: Path) -> dict:
     with path.open(encoding="utf-8") as source:
         return json.load(source)
@@ -35,22 +33,11 @@ def write_json(path: Path, payload: dict) -> None:
 
 
 def main() -> None:
-    admin1 = read_json(ADMIN1_FILE)
-    state_feature = next(
-        feature
-        for feature in admin1["features"]
-        if feature.get("properties", {}).get("NAME_1") == "MadhyaPradesh"
-    )
-    state_geometry = shape(state_feature["geometry"])
-
-    admin2 = read_json(ADMIN2_FILE)
+    admin2_features = load_mp_district_features()
     districts = []
     district_shapes = []
-    for feature in admin2["features"]:
+    for feature in admin2_features:
         geometry = shape(feature["geometry"])
-        if not state_geometry.covers(geometry.representative_point()):
-            continue
-
         name = str(feature.get("properties", {}).get("shapeName", "District"))
         label_point = geometry.representative_point()
         districts.append(
@@ -75,6 +62,10 @@ def main() -> None:
         coordinates = feature.get("geometry", {}).get("coordinates", [])
         if len(coordinates) < 2:
             continue
+        properties = feature.get("properties", {})
+        date = str(properties.get("date", ""))
+        if date in EXCLUDED_OBSERVATION_DATES:
+            continue
         longitude, latitude = float(coordinates[0]), float(coordinates[1])
         point = Point(longitude, latitude)
         district_name = next(
@@ -84,7 +75,6 @@ def main() -> None:
         if not district_name:
             unmatched += 1
 
-        properties = feature.get("properties", {})
         detections.append(
             {
                 "type": "Feature",
@@ -101,13 +91,21 @@ def main() -> None:
             }
         )
 
+    state_geometry = unary_union([geometry for _, geometry in district_shapes])
+    if state_geometry.is_empty or not state_geometry.is_valid:
+        raise ValueError("The dissolved geoBoundaries Madhya Pradesh outline is empty or invalid.")
+
     state = {
         "type": "FeatureCollection",
         "features": [
             {
                 "type": "Feature",
-                "properties": {"name": "Madhya Pradesh", "boundarySource": "GADM v4.1"},
-                "geometry": state_feature["geometry"],
+                "properties": {
+                    "name": "Madhya Pradesh",
+                    "boundarySource": "geoBoundaries India ADM2 simplified 2021, dissolved districts",
+                    "boundaryLicense": "ODbL-1.0",
+                },
+                "geometry": mapping(state_geometry),
             }
         ],
     }

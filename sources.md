@@ -6,9 +6,9 @@ TerraScope is a date-driven Earth-observation dashboard focused on Madhya Prades
 
 - NASA-ISRO NISAR L-band browse visualizations are requested by date from NASA GIBS. These are image layers, not source GCOV measurement rasters.
 - OPERA Sentinel-1 RTC and MODIS true-color imagery are requested by date from NASA GIBS as separate context layers.
-- NASA FIRMS VIIRS records are queried for the selected date when the service is configured. A bundled NOAA-21 archive is available as a fallback and contains 38 daily source files.
-- The bundled FIRMS records include 2,050 detections in the study-area footprint (435 low, 1,604 nominal, and 11 high confidence) and 4,762 detections within the Madhya Pradesh boundary. These are record counts, not counts of confirmed or unique fires.
-- State boundaries are from GADM v4.1; district boundaries are from the 2021 geoBoundaries India ADM2 simplified dataset.
+- NASA FIRMS VIIRS records are queried for the selected date when the service is configured. A bundled NOAA-21 archive is available as a fallback and contains 36 daily source files.
+- The current bundled snapshot contains 2,014 study-footprint records (433 low, 1,571 nominal, 10 high) and 4,701 records within the Madhya Pradesh outline (998 low, 3,667 nominal, 36 high). These are detection records, not confirmed or unique fires.
+- State and district outlines use the 2021 geoBoundaries India ADM2 simplified dataset. The state outline is dissolved from the selected 52 district polygons; both files are covered by ODbL 1.0.
 
 ## Processing
 
@@ -28,4 +28,7 @@ TerraScope is a date-driven Earth-observation dashboard focused on Madhya Prades
 - [ASF NISAR Data User Guide](https://nisar-docs.asf.alaska.edu/)
 - [NASA FIRMS active-fire data](https://firms.modaps.eosdis.nasa.gov/active_fire/)
 - [NASA/JPL OPERA products](https://www.jpl.nasa.gov/go/opera/products/)
-- [GADM](https://gadm.org/)
+- [geoBoundaries India ADM2 metadata and license](https://www.geoboundaries.org/api/current/gbOpen/IND/ADM2/)
+- [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/)
+
+Code and third-party data/software terms are documented separately in `LICENSE` and `THIRD_PARTY_NOTICES.md`.

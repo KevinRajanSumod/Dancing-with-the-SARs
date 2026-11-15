@@ -48,7 +48,7 @@ Start or reload the frontend, open **Fire story → Live · latest feeds**, then
 
 ## 6. Enable EchoGuide (Gemini research assistant)
 
-The **Drivers** and **Applications** pages include **EchoGuide**, an opt-in research assistant powered by Gemini and Google Search grounding. It answers a submitted question and returns source links. It sends the question and fixed project notes to Gemini; it does not upload or analyze the NISAR browse images. The assistant supports research and interpretation, not change detection.
+The **Drivers** and **Applications** pages include **EchoGuide**, an opt-in chatbot powered by Gemini. It keeps recent messages in the current chat so users can ask follow-up questions using model knowledge and fixed project notes. It does not browse the web, return web citations, upload or analyze NISAR browse images, or create new measurements. The assistant supports research and interpretation, not change detection.
 
 1. Create a Gemini API key in [Google AI Studio](https://aistudio.google.com/app/apikey). Review the current Gemini API pricing and set any available usage limits for your project.
 2. In the Supabase Dashboard, open **Project Settings → Edge Functions → Secrets** (or **Edge Functions → Secrets**) and add `GEMINI_API_KEY` with the key value. Keep it out of `.env.local`, every `VITE_` variable, frontend code, and Git.
@@ -61,7 +61,7 @@ The **Drivers** and **Applications** pages include **EchoGuide**, an opt-in rese
    ```
 
    `supabase/config.toml` keeps JWT verification enabled. The browser sends only the public Supabase key; Gemini credentials stay in the Edge Function secret store.
-4. Open **Drivers** or **Applications**, choose a suggested question or enter your own, and submit it. The assistant checks current sources and displays citations with its response. Requests may consume Gemini API quota and Google Search grounding can incur charges.
+4. Open **Drivers** or **Applications**, choose a suggested question or enter your own, and send it. Continue with follow-up messages in the same chat, or choose **New chat** to clear the conversation. Responses use Gemini model knowledge and project notes, so verify time-sensitive facts against current sources. Requests may consume Gemini API quota.
 
 Until the secret is set and the function is deployed, the page displays a setup error. Do not paste API keys into the website's question box or into chat.
 
@@ -83,4 +83,5 @@ Until the secret is set and the function is deployed, the page displays a setup 
 - **“Add FIRMS_MAP_KEY…”**: the function is deployed, but its Supabase Edge Function secret is not set.
 - **“Add GEMINI_API_KEY…”**: add the secret in Supabase, then deploy `evidence-assistant`.
 - **“Function not found” from Drivers or Applications**: deploy `evidence-assistant` to the Supabase project used by the frontend.
+- **“EchoGuide could not reach its research service”**: open **Edge Functions → evidence-assistant → Logs** in Supabase and check that Gemini is reachable and `GEMINI_API_KEY` is valid. Deploy `evidence-assistant` again after code changes so the hosted function supports conversation history.
 - **ASF has no matching pair**: catalog availability can vary; this is not necessarily an API connection failure.

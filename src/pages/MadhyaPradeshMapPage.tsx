@@ -375,11 +375,10 @@ export default function MadhyaPradeshMapPage() {
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-radar" aria-hidden="true" />
                   <div>
                     <h3 className="text-base">Boundary and radar context</h3>
-                    <p className="mt-2 text-xs leading-relaxed text-muted">District outlines use geoBoundaries India ADM2 simplified geometry (2021, ODbL 1.0). The state outline uses GADM v4.1. The dashed NISAR outline marks the project's original study footprint, not statewide radar coverage.</p>
+                    <p className="mt-2 text-xs leading-relaxed text-muted">The state and district outlines use the same 2021 geoBoundaries India ADM2 district shapes (ODbL 1.0); the state line is their dissolved outline. The dashed NISAR outline marks the project’s original study footprint, not statewide radar coverage.</p>
                     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold">
                       <a href="https://github.com/wmgeolab/geoBoundaries/tree/9469f09/releaseData/gbOpen/IND/ADM2" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4">geoBoundaries dataset <ExternalLink className="h-3 w-3" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
                       <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4">ODbL 1.0 license <ExternalLink className="h-3 w-3" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
-                      <a href="https://gadm.org/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4">GADM source <ExternalLink className="h-3 w-3" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
                       <a href="https://firms.modaps.eosdis.nasa.gov/active_fire/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-radar underline underline-offset-4">NASA FIRMS data <ExternalLink className="h-3 w-3" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
                     </div>
                   </div>

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ComponentType } from 'react';
-import { MessageCircle, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import AppLink, { buttonClass } from '@/components/AppLink';
 import SiteFooter from '@/components/SiteFooter';
 import SiteHeader from '@/components/SiteHeader';
@@ -47,6 +47,7 @@ export default function App() {
   const routeTitle = routes.find((route) => route.path === pathname)?.label;
   const title = routeTitle;
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const [assistantMounted, setAssistantMounted] = useState(false);
   const assistantTriggerRef = useRef<HTMLButtonElement>(null);
   const assistantCloseRef = useRef<HTMLButtonElement>(null);
   const assistantPanelRef = useRef<HTMLElement>(null);
@@ -99,25 +100,22 @@ export default function App() {
       >
         Skip to content
       </a>
-      <SiteHeader pathname={pathname} />
+      <SiteHeader pathname={pathname} assistantTriggerRef={assistantTriggerRef} onOpenAssistant={() => { setAssistantMounted(true); setAssistantOpen(true); }} />
       <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
         <PageEffects key={pathname}><Suspense fallback={<div className="mx-auto max-w-7xl px-5 py-20 text-sm text-muted" role="status">Opening this study section…</div>}><Page /></Suspense></PageEffects>
       </main>
       <SiteFooter />
-      {assistantOpen && (
-        <div className="fixed inset-0 z-[60] bg-black/55" onMouseDown={(event) => { if (event.target === event.currentTarget) setAssistantOpen(false); }}>
+      {assistantMounted && (
+        <div hidden={!assistantOpen} className="fixed inset-0 z-[60] bg-black/55" onMouseDown={(event) => { if (event.target === event.currentTarget) setAssistantOpen(false); }}>
           <aside ref={assistantPanelRef} className="absolute inset-y-0 right-0 w-full max-w-xl overflow-y-auto border-l border-line bg-paper text-ink shadow-2xl" role="dialog" aria-modal="true" aria-label="EchoGuide assistant">
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-paper/95 px-5 py-4 backdrop-blur">
-              <span className="font-semibold text-ink">EchoGuide · SAR research assistant</span>
+              <span className="font-semibold text-ink">EchoGuide · satellite research guide</span>
               <button ref={assistantCloseRef} type="button" onClick={() => setAssistantOpen(false)} className="rounded-lg p-2 text-ink hover:bg-raised" aria-label="Close EchoGuide"><X className="h-5 w-5" /></button>
             </div>
-            <ProjectEvidenceAssistant topic={topic} />
+            <ProjectEvidenceAssistant key={topic} topic={topic} />
           </aside>
         </div>
       )}
-      <button ref={assistantTriggerRef} type="button" onClick={() => setAssistantOpen(true)} className="fixed bottom-24 right-4 z-50 grid h-12 w-12 place-items-center rounded-full bg-radar text-canvas shadow-xl transition hover:bg-radar-200 sm:bottom-24 sm:right-5 sm:flex sm:h-auto sm:w-auto sm:gap-2 sm:px-5 sm:py-3 sm:font-bold" aria-label="Open EchoGuide assistant" title="Open the AI research assistant">
-        <MessageCircle className="h-5 w-5" aria-hidden="true" /><span className="sr-only sm:not-sr-only">Ask EchoGuide</span>
-      </button>
       </div>
     </>
   );
