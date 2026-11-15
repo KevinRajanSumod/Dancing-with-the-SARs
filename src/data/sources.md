@@ -32,6 +32,13 @@ This story pairs a project-provided radar browse image set with a local snapshot
 - Result: 2,050 detection records in the footprint: 435 low, 1,604 nominal and 11 high confidence. On 9 Oct, the project record contains 24 detections, 17 nominal and 7 low.
 - A FIRMS row is one thermal detection record. It does not necessarily represent a unique or confirmed fire, and it does not measure burned area. Near-real-time values may be revised.
 
+## Madhya Pradesh statewide map
+
+- The state map uses the supplied NASA FIRMS VIIRS NOAA-21 archive filtered to the GADM v4.1 Madhya Pradesh boundary: 4,762 records from 30 Sep through 5 Nov 2026 (998 low, 3,727 nominal and 37 high confidence).
+- District outlines use the geoBoundaries India ADM2 simplified dataset, pinned from the geoBoundaries GitHub release data at commit `9469f09`. Its boundary vintage is 2021 and its reported license is Open Database License 1.0 (ODbL). See the [geoBoundaries API metadata](https://www.geoboundaries.org/api/current/gbOpen/IND/ADM2/) and [ODbL terms](https://opendatacommons.org/licenses/odbl/1-0/).
+- The 2021 district polygons are selected by representative point within the GADM Madhya Pradesh state outline. Twelve state-filtered FIRMS points do not intersect those district polygons; they remain available under the unassigned map filter. District counts are counts of detection records, not distinct fires.
+- The NISAR outline on the state map is the project's original study footprint only. It does not represent statewide NISAR coverage.
+
 ## Study footprint and method
 
 - Approximate extent: 21.2–24.3° N, 76.6–80.0° E; NISAR Track 5, Frame 77. FIRMS points were selected against the project footprint polygon.

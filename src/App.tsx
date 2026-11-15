@@ -12,10 +12,12 @@ import PhysicalDriversPage from '@/pages/PhysicalDriversPage';
 import FutureApplicationsPage from '@/pages/FutureApplicationsPage';
 import SourcesPage from '@/pages/SourcesPage';
 import UpcomingPage from '@/pages/UpcomingPage';
+import MadhyaPradeshMapPage from '@/pages/MadhyaPradeshMapPage';
 import ProjectEvidenceAssistant from '@/components/ProjectEvidenceAssistant';
 
 const pages: Record<string, ComponentType> = {
   '/': HomePage,
+  '/madhya-pradesh-map': MadhyaPradeshMapPage,
   '/how-sar-works': HowSarWorksPage,
   '/forest-fire-change': ForestFireChangePage,
   '/physical-drivers': PhysicalDriversPage,

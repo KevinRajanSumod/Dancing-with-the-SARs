@@ -198,6 +198,7 @@ export default function SourcesPage() {
               { icon: CloudRain, title: 'NASA POWER · weather context', text: 'Daily precipitation and air-temperature context is fetched for Home, Drivers, and Applications for the study window.' },
               { icon: Droplets, title: 'NASA POWER · SMAP L4 moisture', text: 'Drivers fetches daily SMAP L4 surface and root-zone moisture through POWER’s Hydrology endpoint for a nearby regional grid point.' },
               { icon: Layers3, title: 'NASA MODIS MCD64A1 · burned area', text: 'Fire Story can request a monthly 500 m burned-area map through a protected server connection. It appears as a separate image, never painted over NISAR or FIRMS.' },
+              { icon: Layers3, title: 'Madhya Pradesh · statewide FIRMS map', text: 'The state map shows 4,762 archived detection records by date, confidence and district, with grouped marks, a relative density grid and individual detail. District outlines use a 2021 boundary vintage.' },
               { icon: BookOpenCheck, title: 'Supplied archive materials', text: 'The two NISAR browse previews and the 30 Sep–5 Nov FIRMS record are supplied project materials. Their visual contrast has not been quantified as a change result.' },
             ].map((item) => (
               <article key={item.title} className="rounded-xl border border-line bg-canvas/65 p-4">

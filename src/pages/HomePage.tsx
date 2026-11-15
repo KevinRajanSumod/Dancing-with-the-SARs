@@ -208,8 +208,8 @@ export default function HomePage() {
               Step inside a live-looking field notebook built from two NISAR radar passes and a separate snapshot of satellite heat detections, 36 days apart.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <AppLink to="/forest-fire-change" className={buttonClass('primary')}>
-                Explore the map <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <AppLink to="/madhya-pradesh-map" className={buttonClass('primary')}>
+                Explore the state map <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </AppLink>
               <AppLink to="/how-sar-works" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/[0.06] px-6 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:border-white/50 hover:bg-white/10">
                 How SAR works

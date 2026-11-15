@@ -6,6 +6,7 @@ export interface AppRoute {
 // Order here is the order of the navigation links.
 export const routes: AppRoute[] = [
   { path: '/', label: 'Home' },
+  { path: '/madhya-pradesh-map', label: 'MP map' },
   { path: '/how-sar-works', label: 'SAR basics' },
   { path: '/forest-fire-change', label: 'Fire story' },
   { path: '/physical-drivers', label: 'Drivers' },

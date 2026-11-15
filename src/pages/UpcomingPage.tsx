@@ -1,4 +1,4 @@
-import { Check, Database, Satellite, Waves } from 'lucide-react';
+import { Check, Database, Map, Satellite, Waves } from 'lucide-react';
 import Card from '@/components/Card';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
@@ -22,9 +22,15 @@ const nextSteps = [
     title: 'Build a seasonal radar series',
     description: 'Add earlier and later acquisitions so temporary moisture differences can be separated from persistent changes and seasonal patterns.',
   },
+  {
+    icon: Map,
+    tag: 'Expand geographic coverage',
+    title: 'Extend the map across India',
+    description: 'After the Madhya Pradesh release, add state-level summaries and drill down to districts across India while preserving each dataset’s dates, source, and coverage limits.',
+  },
 ];
 
-const roadmapIconTones = ['bg-radar/10 text-radar', 'bg-ember/10 text-ember', 'bg-analysis/10 text-analysis'];
+const roadmapIconTones = ['bg-radar/10 text-radar', 'bg-ember/10 text-ember', 'bg-analysis/10 text-analysis', 'bg-eco/10 text-eco'];
 
 export default function UpcomingPage() {
   return (
@@ -33,14 +39,14 @@ export default function UpcomingPage() {
         <p className="eyebrow">Roadmap / Next questions</p>
         <PageIntro title="What would make the next answer stronger?">
           <p>
-            The current story is deliberately observational. These are practical follow-up investigations that would add
-            evidence or make the radar comparison more rigorous; they are not completed analyses or live data feeds.
+            The Madhya Pradesh map is the first regional release. These proposed next steps would expand its reach or
+            strengthen the evidence; they are not completed analyses or new data feeds.
           </p>
         </PageIntro>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 pb-14 sm:px-8 md:pb-20" aria-label="Follow-up investigations">
-        <ol className="grid gap-4 lg:grid-cols-3">
+        <ol className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {nextSteps.map((step, index) => (
             <li key={step.title} className="list-none">
               <Reveal delayMs={index * 80} className="h-full">
@@ -64,7 +70,7 @@ export default function UpcomingPage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <p className="eyebrow">Other NISAR science directions</p>
           <h2 className="mt-3 max-w-2xl">The same radar mission can support many Earth stories.</h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted">NISAR’s mission objectives include ecosystem and agricultural change, surface deformation and the dynamics of ice. This project currently presents one central India case study only.</p>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted">NISAR’s mission objectives include ecosystem and agricultural change, surface deformation and the dynamics of ice. The site now pairs a statewide Madhya Pradesh FIRMS view with one focused NISAR case study; expanding the map across India remains a next stage.</p>
           <div className="mt-7 flex flex-wrap gap-2 text-xs font-semibold text-ink">
             {['Wetlands & inundation', 'Crop cycles', 'Glacier & sea ice motion', 'Earthquake & landslide deformation'].map((label) => <span key={label} className="rounded-full border border-line bg-canvas px-3 py-2">{label}</span>)}
           </div>
