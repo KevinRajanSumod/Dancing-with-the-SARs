@@ -5,7 +5,7 @@ import SiteFooter from '@/components/SiteFooter';
 import SiteHeader from '@/components/SiteHeader';
 import PageEffects from '@/components/PageEffects';
 import { usePathname } from '@/hooks/usePathname';
-import { routes } from '@/lib/routes';
+import { legacyPageTitles, routes } from '@/lib/routes';
 const HowSarWorksPage = lazy(() => import('@/pages/HowSarWorksPage'));
 const HomePage = lazy(() => import('@/pages/HomePage'));
 const PhysicalDriversPage = lazy(() => import('@/pages/PhysicalDriversPage'));
@@ -44,8 +44,9 @@ function NotFoundPage() {
 export default function App() {
   const pathname = usePathname();
   const Page = pages[pathname] ?? NotFoundPage;
-  const routeTitle = routes.find((route) => route.path === pathname)?.label;
-  const title = routeTitle;
+  const title = routes.find((route) => route.path === pathname)?.pageTitle
+    ?? legacyPageTitles[pathname]
+    ?? 'Page not found';
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [assistantMounted, setAssistantMounted] = useState(false);
   const assistantTriggerRef = useRef<HTMLButtonElement>(null);
@@ -54,7 +55,10 @@ export default function App() {
   const topic = pathname === '/how-sar-works' ? 'drivers' : 'applications';
 
   useEffect(() => {
-    document.title = title ? `${title} | TerraScope` : 'TerraScope';
+    const documentTitle = `${title} | TerraScope`;
+    document.title = documentTitle;
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', documentTitle);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', documentTitle);
   }, [title]);
 
   useEffect(() => {

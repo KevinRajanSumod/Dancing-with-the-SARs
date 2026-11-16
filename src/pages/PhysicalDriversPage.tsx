@@ -77,7 +77,7 @@ export default function PhysicalDriversPage() {
     <>
       <section className="mx-auto max-w-7xl px-5 pb-10 pt-14 sm:px-8 md:pb-14 md:pt-20">
         <p className="eyebrow">Interpretation / Candidate explanations</p>
-        <PageIntro title="What could drive a radar change?">
+        <PageIntro title="Environmental drivers of radar backscatter">
           <p>
             NASA’s SAR guidance describes backscatter as a response to both the observed surface and the radar setup.
             The map uses browse visualizations for exploration. The explanations below are sourced hypotheses to

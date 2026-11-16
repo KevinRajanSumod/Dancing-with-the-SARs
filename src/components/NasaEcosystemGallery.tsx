@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { ExternalLink } from 'lucide-react';
 
 const imageExamples = [
@@ -45,9 +46,10 @@ interface NasaEcosystemGalleryProps {
   maxVideos?: number;
   title?: string;
   description?: string;
+  companion?: ReactNode;
 }
 
-export default function NasaEcosystemGallery({ compact = false, maxVideos, title, description }: NasaEcosystemGalleryProps) {
+export default function NasaEcosystemGallery({ compact = false, maxVideos, title, description, companion }: NasaEcosystemGalleryProps) {
   const visibleVideos = typeof maxVideos === 'number' ? videos.slice(0, maxVideos) : videos;
   return (
     <section className={`mx-auto max-w-7xl px-5 sm:px-8 ${compact ? 'py-14 md:py-16' : 'pb-16 md:pb-24'}`} aria-labelledby="nasa-ecosystem-heading">
@@ -77,7 +79,7 @@ export default function NasaEcosystemGallery({ compact = false, maxVideos, title
 
       {visibleVideos.length > 0 && <div className={`grid gap-5 ${compact ? 'mt-5 md:grid-cols-2' : 'mt-10 lg:grid-cols-2'}`}>
         {visibleVideos.map((video) => (
-          <article key={video.videoId} className="surface-card overflow-hidden p-3 sm:p-4">
+          <article key={video.videoId} className="surface-card lift flex h-full flex-col overflow-hidden p-3 sm:p-4">
             <div className="relative aspect-video overflow-hidden rounded-xl border border-white/10 bg-[#061522]">
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${video.videoId}`}
@@ -92,6 +94,7 @@ export default function NasaEcosystemGallery({ compact = false, maxVideos, title
             <div className="px-2 pb-2 pt-4"><h3 className="text-lg">{video.title}</h3><p className="mt-1 text-xs leading-relaxed text-muted">{video.note}</p></div>
           </article>
         ))}
+        {companion}
       </div>}
     </section>
   );
