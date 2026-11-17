@@ -9,6 +9,12 @@ const drivers = [
   {
     icon: Trees,
     title: 'Vegetation and surface structure',
+    visual: {
+      src: 'https://d2pn8kiwq2w21t.cloudfront.net/original_images/jpegPIA26615.jpg',
+      alt: 'NASA NISAR false-color radar image of North Dakota forests, wetlands, and farmland.',
+      caption: 'NISAR forest and farmland example · North Dakota',
+      credit: 'NASA/JPL-Caltech',
+    },
     readout:
       'Canopy density, branches, trunks, exposed soil, and surface roughness shape how much radar energy returns. Forest disturbance can change that structure, but the direction and size of a backscatter change depend on the site and the acquisition.',
     evidence:
@@ -23,6 +29,12 @@ const drivers = [
   {
     icon: Droplets,
     title: 'Moisture and inundation',
+    visual: {
+      src: 'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia26/pia26112/PIA26112.jpg',
+      alt: 'NASA airborne radar image showing floodwater and flooded vegetation in the Peruvian Amazon.',
+      caption: 'Radar view of flooded forest · Peru',
+      credit: 'NASA/JPL-Caltech · UAVSAR',
+    },
     readout:
       'Soil moisture, water on leaves, and standing water beneath vegetation can alter backscatter. Rainfall, irrigation, seasonal flooding, and plant water content can therefore create contrast without a lasting land-cover change.',
     evidence:
@@ -37,6 +49,12 @@ const drivers = [
   {
     icon: Flame,
     title: 'Fire or another disturbance',
+    visual: {
+      src: 'https://images-assets.nasa.gov/image/PIA26616/PIA26616~large.jpg',
+      alt: 'NASA NISAR false-color radar image of Mount Desert Island, Maine, showing water, forest, and built areas.',
+      caption: 'Radar responds to many surfaces · Maine',
+      credit: 'NASA/JPL-Caltech · NISAR',
+    },
     readout:
       'Fire can alter vegetation structure, but so can logging, harvest, storms, insects, or land conversion. A radar contrast alone cannot identify which process occurred or establish a burn scar.',
     evidence:
@@ -59,7 +77,7 @@ export default function PhysicalDriversPage() {
     <>
       <section className="mx-auto max-w-7xl px-5 pb-10 pt-14 sm:px-8 md:pb-14 md:pt-20">
         <p className="eyebrow">Interpretation / Candidate explanations</p>
-        <PageIntro title="What could drive a radar change?">
+        <PageIntro title="Environmental drivers of radar backscatter">
           <p>
             NASA’s SAR guidance describes backscatter as a response to both the observed surface and the radar setup.
             The map uses browse visualizations for exploration. The explanations below are sourced hypotheses to
@@ -78,6 +96,10 @@ export default function PhysicalDriversPage() {
           {drivers.map((driver, index) => (
             <Reveal key={driver.title} delayMs={index * 80} className="h-full">
               <Card className="h-full" interactive>
+                <figure className="mb-5 overflow-hidden rounded-xl border border-line bg-[#07131d]">
+                  <img src={driver.visual.src} alt={driver.visual.alt} loading="lazy" className="aspect-[1.6] w-full object-contain" />
+                  <figcaption className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-[10px] text-muted"><span>{driver.visual.caption}</span><strong className="font-semibold text-radar">{driver.visual.credit}</strong></figcaption>
+                </figure>
                 <span className={`grid h-11 w-11 place-items-center rounded-xl border border-white/10 ${driverIconTones[index]}`}><driver.icon className="h-5 w-5" aria-hidden="true" /></span>
                 <h3 className="mt-5">{driver.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted">{driver.readout}</p>

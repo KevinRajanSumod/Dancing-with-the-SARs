@@ -18,8 +18,9 @@ export default function SiteFooter() {
       <div className="pointer-events-none absolute -bottom-40 left-1/4 h-80 w-80 rounded-full bg-ember/[.07] blur-3xl" aria-hidden="true" />
       <div className="relative mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 md:grid-cols-[1.35fr_.8fr_.8fr] md:py-16">
         <div className="max-w-md">
-          <AppLink to="/" className="inline-flex items-center text-white" aria-label="TerraScope home">
+          <AppLink to="/" className="inline-flex items-center gap-3 text-white" aria-label="TerraScope home">
             <img src="/images/brand/terrascope-logo.png" alt="TerraScope — See Earth. Think Bigger." className="h-28 w-28 object-contain transition-transform duration-300 hover:scale-[1.03]" />
+            <span className="text-2xl font-bold tracking-tight">TerraScope</span>
           </AppLink>
           <p className="mt-5 text-sm font-medium italic text-radar">See our planet differently. Act more wisely.</p>
           <p className="mt-3 text-sm leading-relaxed text-white/70">An independent Earth-observation research dashboard. The current study explores fire-related satellite evidence across Madhya Pradesh; broader land and water studies are planned.</p>

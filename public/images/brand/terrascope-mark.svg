@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title description">
+  <title id="title">TerraScope</title>
+  <desc id="description">An original violet Earth-observation badge with an orbiting radar signal.</desc>
+  <defs>
+    <linearGradient id="space" x1="28" y1="24" x2="224" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#40145f" />
+      <stop offset="1" stop-color="#160b2d" />
+    </linearGradient>
+    <linearGradient id="orbit" x1="47" y1="185" x2="213" y2="79" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f3c4ff" />
+      <stop offset=".54" stop-color="#c8a4ff" />
+      <stop offset="1" stop-color="#67dceb" />
+    </linearGradient>
+    <path id="top-arc" d="M 39 126 A 89 89 0 0 1 217 126" />
+    <path id="bottom-arc" d="M 33 136 A 95 95 0 0 0 223 136" />
+  </defs>
+
+  <circle cx="128" cy="128" r="119" fill="#0d0918" stroke="#b77be1" stroke-width="3" />
+  <circle cx="128" cy="128" r="108" fill="url(#space)" stroke="#71469a" stroke-width="1.5" />
+  <circle cx="128" cy="128" r="89" fill="none" stroke="#d6b7f3" stroke-opacity=".45" stroke-width="1.5" />
+
+  <g fill="#fff4ff">
+    <path d="m82 79 3 8 8 3-8 3-3 8-3-8-8-3 8-3z" />
+    <path d="m175 91 2.5 6 6 2.5-6 2.5-2.5 6-2.5-6-6-2.5 6-2.5z" />
+    <circle cx="71" cy="119" r="2.5" />
+    <circle cx="186" cy="145" r="2" />
+    <circle cx="102" cy="181" r="2" />
+  </g>
+
+  <g transform="rotate(-28 128 128)" fill="none" stroke="url(#orbit)" stroke-linecap="round">
+    <ellipse cx="128" cy="128" rx="73" ry="27" stroke-width="8" />
+    <ellipse cx="128" cy="128" rx="52" ry="18" stroke="#fff3ff" stroke-width="3" />
+    <ellipse cx="128" cy="128" rx="31" ry="10" stroke="#dcbaff" stroke-width="2" />
+  </g>
+  <path d="M91 157c17-26 42-42 74-49-9 17-24 32-44 42-10 5-20 8-30 7Z" fill="#f8eaff" fill-opacity=".92" />
+  <path d="m173 103 13-17 8 15-17 8" fill="#67dceb" stroke="#e9d4ff" stroke-width="2" stroke-linejoin="round" />
+  <path d="m185 88 8-8m-4 18 11-2m-23-8-3-9" stroke="#e9d4ff" stroke-width="2" stroke-linecap="round" />
+  <circle cx="195" cy="78" r="3" fill="#ffe08b" />
+
+  <circle cx="128" cy="128" r="119" fill="none" stroke="#d3adf0" stroke-opacity=".5" stroke-width="1" />
+  <text fill="#ead7fb" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="3">
+    <textPath href="#top-arc" startOffset="50%" text-anchor="middle">TERRASCOPE</textPath>
+  </text>
+  <text fill="#d9c1ef" font-family="Arial, sans-serif" font-size="7.2" font-weight="700" letter-spacing="1.1">
+    <textPath href="#bottom-arc" startOffset="50%" text-anchor="middle">SEE EARTH · THINK BIGGER</textPath>
+  </text>
+</svg>

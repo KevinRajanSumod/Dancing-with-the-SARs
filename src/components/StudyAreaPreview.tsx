@@ -1,44 +1,37 @@
 import { useEffect, useState } from 'react';
 
 type Position = [number, number];
-type FeatureCollection = {
-  features?: Array<{
-    geometry?: {
-      type?: string;
-      coordinates?: Position[][][];
-    };
-  }>;
-};
+type Geometry = { type?: string; coordinates?: unknown };
+type BoundaryCollection = { features?: Array<{ geometry?: Geometry }> };
+type Bounds = { minLongitude: number; maxLongitude: number; minLatitude: number; maxLatitude: number };
 
-function projectState(coordinates: Position[][][]): string {
-  const points = coordinates.flat(2);
-  if (points.length === 0) return '';
+function positionRings(geometry: Geometry): Position[][] {
+  const coordinates = geometry.coordinates;
+  if (!Array.isArray(coordinates)) return [];
+  if (geometry.type === 'Polygon') return coordinates as Position[][];
+  if (geometry.type === 'MultiPolygon') return (coordinates as Position[][][]).flat();
+  return [];
+}
 
-  const longitudes = points.map(([longitude]) => longitude);
-  const latitudes = points.map(([, latitude]) => latitude);
-  const minLongitude = Math.min(...longitudes);
-  const maxLongitude = Math.max(...longitudes);
-  const minLatitude = Math.min(...latitudes);
-  const maxLatitude = Math.max(...latitudes);
-  const width = maxLongitude - minLongitude || 1;
-  const height = maxLatitude - minLatitude || 1;
-  const inset = 22;
+function projectGeometry(geometry: Geometry, bounds: Bounds): string {
   const svgWidth = 400;
   const svgHeight = 300;
+  const inset = 24;
+  const width = bounds.maxLongitude - bounds.minLongitude || 1;
+  const height = bounds.maxLatitude - bounds.minLatitude || 1;
   const scale = Math.min((svgWidth - inset * 2) / width, (svgHeight - inset * 2) / height);
-  const drawnWidth = width * scale;
-  const drawnHeight = height * scale;
-  const offsetX = (svgWidth - drawnWidth) / 2;
-  const offsetY = (svgHeight - drawnHeight) / 2;
+  const offsetX = (svgWidth - width * scale) / 2;
+  const offsetY = (svgHeight - height * scale) / 2;
 
-  return coordinates.map((polygon) => polygon.map((ring) => {
+  return positionRings(geometry).map((ring) => {
+    if (ring.length < 3) return '';
     const commands = ring.map(([longitude, latitude], index) => {
-      const x = offsetX + (longitude - minLongitude) * scale;
-      const y = svgHeight - offsetY - (latitude - minLatitude) * scale;
+      const x = offsetX + (longitude - bounds.minLongitude) * scale;
+      const y = svgHeight - offsetY - (latitude - bounds.minLatitude) * scale;
       return `${index === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
     });
-    return `${commands.join(' ')} Z`;
-  }).join(' ')).join(' ');
+    return `${commands.join(' ')}Z`;
+  }).join(' ');
 }
 
 export default function StudyAreaPreview() {
@@ -46,16 +39,23 @@ export default function StudyAreaPreview() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/data/madhya-pradesh-boundary.geojson', { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error('Study-area boundary is unavailable.');
-        return response.json() as Promise<FeatureCollection>;
+    void fetch('/data/madhya-pradesh-boundary.geojson', { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('State boundary is unavailable.');
+        return await response.json() as BoundaryCollection;
       })
       .then((collection) => {
-        const geometry = collection.features?.[0]?.geometry;
-        if (geometry?.type === 'MultiPolygon' && geometry.coordinates) {
-          setOutline(projectState(geometry.coordinates));
-        }
+        const shape = collection.features?.[0]?.geometry;
+        if (!shape) return;
+        const points = positionRings(shape).flat();
+        if (!points.length) return;
+        const bounds = {
+          minLongitude: Math.min(...points.map(([longitude]) => longitude)),
+          maxLongitude: Math.max(...points.map(([longitude]) => longitude)),
+          minLatitude: Math.min(...points.map(([, latitude]) => latitude)),
+          maxLatitude: Math.max(...points.map(([, latitude]) => latitude)),
+        };
+        setOutline(projectGeometry(shape, bounds));
       })
       .catch((error: unknown) => {
         if (!(error instanceof DOMException && error.name === 'AbortError')) setOutline('');
@@ -76,32 +76,33 @@ export default function StudyAreaPreview() {
       </div>
 
       <svg viewBox="0 0 400 300" role="img" aria-labelledby="study-preview-title study-preview-desc" className="relative mt-2 h-auto w-full">
-        <title id="study-preview-title">Madhya Pradesh study area outline</title>
-        <desc id="study-preview-desc">A stylized preview using the project’s state boundary. Satellite coverage and detections are not shown here.</desc>
+        <title id="study-preview-title">Illustrative outline of Madhya Pradesh</title>
+        <desc id="study-preview-desc">The state boundary is shown with decorative radar rings for visual context. The rings are not a satellite footprint, and no detections or measurements are plotted.</desc>
         <defs>
           <linearGradient id="state-fill" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor="#67d9ec" stopOpacity=".25" />
             <stop offset="1" stopColor="#67d9ec" stopOpacity=".04" />
           </linearGradient>
           <filter id="state-glow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feGaussianBlur stdDeviation="4" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
         </defs>
-        <path d={outline} fill="url(#state-fill)" fillRule="evenodd" stroke="#67d9ec" strokeWidth="1.6" vectorEffect="non-scaling-stroke" filter="url(#state-glow)" />
-        <path d={outline} fill="none" fillRule="evenodd" stroke="#c4f5fa" strokeOpacity=".4" strokeWidth=".55" vectorEffect="non-scaling-stroke" strokeDasharray="2 4" />
-        <g aria-hidden="true" fill="none" stroke="#ffb84d" strokeOpacity=".62">
-          <circle cx="200" cy="148" r="38" strokeDasharray="3 5" />
-          <circle cx="200" cy="148" r="64" strokeOpacity=".26" />
-        </g>
-        <circle cx="200" cy="148" r="3" fill="#ffb84d" aria-hidden="true" />
+        {outline && <>
+          <path d={outline} fill="url(#state-fill)" fillRule="evenodd" />
+          <circle cx="200" cy="150" r="54" fill="none" stroke="#f5ad4e" strokeOpacity=".3" strokeWidth="1.2" />
+          <circle cx="200" cy="150" r="34" fill="none" stroke="#f5ad4e" strokeDasharray="2 5" strokeLinecap="round" strokeOpacity=".9" strokeWidth="1.2" />
+          <circle cx="200" cy="150" r="3" fill="#ffb84f" />
+          <path d={outline} fill="none" stroke="#55d5e9" strokeOpacity=".7" strokeWidth="4" filter="url(#state-glow)" />
+          <path d={outline} fill="none" stroke="#77e0ef" strokeWidth="1.5" />
+        </>}
       </svg>
 
       <div className="relative flex flex-wrap items-center justify-between gap-2 border-t border-white/10 px-1 pt-3 text-[10px] text-white/75">
-        <span>Boundary: project study area</span>
+        <span>Boundary: Madhya Pradesh state</span>
         <span>Coverage varies by sensor and date</span>
       </div>
-      <p className="relative mt-2 text-[10px] leading-relaxed text-white/60">Preview only · no detections or measurements are plotted. Open the map for dated satellite layers.</p>
+      <p className="relative mt-2 text-[10px] leading-relaxed text-white/60">Illustrative preview · no detections or measurements are plotted. Open the map for dated satellite layers.</p>
     </div>
   );
 }

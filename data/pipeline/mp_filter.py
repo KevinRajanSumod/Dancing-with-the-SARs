@@ -18,21 +18,18 @@ from pathlib import Path
 
 import geopandas as gpd
 import pandas as pd
+from mp_boundaries import load_mp_state_geometry
+from project_data_policy import EXCLUDED_OBSERVATION_DATES
 
 # This file lives in data/pipeline/. The project folder is two levels up.
 PROJECT_DIR = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_DIR / "data"
 
 # Original files. We open these to read them. We do not write to data/raw.
-BOUNDARY_FILE = DATA_DIR / "raw" / "boundaries" / "gadm41_IND_1.json"
 FIRMS_DIR = DATA_DIR / "raw" / "firms_raw"
 
 # The new file this script is allowed to create.
 OUTPUT_FILE = DATA_DIR / "processed" / "mp_firms.geojson"
-
-# The state name is stored with no space in the boundary file.
-STATE_NAME = "MadhyaPradesh"
-STATE_HASC = "IN.MP"
 
 # Columns we keep from each daily file. Extra columns are ignored.
 KEEP_COLUMNS = [
@@ -52,52 +49,18 @@ def stop(message):
 
 
 def load_state():
-    """Step 1. Load the state shapes and pick Madhya Pradesh."""
-    print("Step 1 — state boundary")
-    states = gpd.read_file(BOUNDARY_FILE)
-
-    if "NAME_1" not in states.columns:
-        stop("The boundary file has no NAME_1 column. Stopping.")
-
-    matches = states[states["NAME_1"] == STATE_NAME]
-    print(f"Matching rows for NAME_1 == '{STATE_NAME}': {len(matches)}")
-
-    if len(matches) == 0:
-        print("No row matches. NAME_1 values that contain 'Pradesh':")
-        pradesh_names = states.loc[
-            states["NAME_1"].astype(str).str.contains("Pradesh", na=False),
-            "NAME_1",
-        ]
-        for name in pradesh_names.tolist():
-            print(name)
-        stop("Stopping. The state name was not found, so nothing was guessed.")
-
-    if len(matches) != 1:
-        stop("Stopping. More than one row matched, so nothing was guessed.")
-
-    state = matches.iloc[[0]].copy()
-    name_value = state["NAME_1"].iloc[0]
-    if name_value != STATE_NAME:
-        stop(f"NAME_1 is {name_value!r}. Stopping because it does not match.")
-
-    if "HASC_1" not in state.columns:
-        stop("The matching row has no HASC_1 column. Stopping.")
-
-    hasc_value = state["HASC_1"].iloc[0]
-    print(f"NAME_1 is {name_value!r}. HASC_1 is {hasc_value!r}.")
-    if hasc_value != STATE_HASC:
-        stop(f"HASC_1 is {hasc_value!r}, not '{STATE_HASC}'. Stopping.")
-
-    # The boundary file is longitude/latitude (EPSG:4326). If the reader
-    # does not attach that label, we set it. We do not move any coordinates.
-    print(f"Boundary CRS reported by the reader: {state.crs}")
-    if state.crs is None:
-        state = state.set_crs("EPSG:4326")
-        print("No CRS label was stored in the file. Using EPSG:4326, as specified.")
-    elif state.crs.to_epsg() != 4326:
-        stop(f"The boundary CRS is {state.crs}, not EPSG:4326. Stopping.")
-
-    return state
+    """Step 1. Dissolve the reviewed 2021 geoBoundaries district shapes."""
+    print("Step 1 — open 2021 district boundaries")
+    try:
+        geometry = load_mp_state_geometry()
+    except (OSError, ValueError, KeyError) as error:
+        stop(f"Could not load the geoBoundaries Madhya Pradesh outline: {error}")
+    print("Loaded 52 district shapes and dissolved them into one outline.")
+    return gpd.GeoDataFrame(
+        {"name": ["Madhya Pradesh"]},
+        geometry=[geometry],
+        crs="EPSG:4326",
+    )
 
 
 def read_detection_files():
@@ -135,6 +98,9 @@ def read_detection_files():
 
     detections = pd.concat(tables, ignore_index=True)
     print(f"Total detection rows read: {len(detections)}")
+    excluded = detections["acq_date"].astype(str).isin(EXCLUDED_OBSERVATION_DATES)
+    print(f"Rows on excluded observation dates: {int(excluded.sum())}")
+    detections = detections.loc[~excluded].copy()
     return detections
 
 
@@ -220,7 +186,7 @@ def main():
     print_confidence(detections)
     saved = save_geojson(detections)
     print_dates(saved)
-    print("Done. The original files in data/raw were only read.")
+    print("Done. The remaining source files in data/raw were only read.")
 
 
 if __name__ == "__main__":

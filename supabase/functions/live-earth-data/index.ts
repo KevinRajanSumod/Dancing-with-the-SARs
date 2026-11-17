@@ -40,23 +40,27 @@ type RadarScene = {
   acquiredAt: string;
   polarization: string;
   frequency: string;
+  mode: string;
   track: string;
   direction: string;
   frame: string;
+  orbitAccuracy: string;
+  frameCoverage: string;
   browseUrl: string;
   sourceUrl: string;
   collection: string;
+  maturity: 'VALIDATED' | 'PROVISIONAL' | 'BETA' | 'UNKNOWN';
   processingVersion: string;
   comparisonKey: string;
 };
 
-function jsonResponse(body: unknown, status = 200, cacheSeconds = 600): Response {
+function jsonResponse(body: unknown, status = 200, cacheSeconds = 0): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       ...corsHeaders,
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': `public, max-age=${cacheSeconds}`,
+      'Cache-Control': cacheSeconds > 0 ? `public, max-age=${cacheSeconds}` : 'no-store, no-cache, must-revalidate',
     },
   });
 }
@@ -352,8 +356,11 @@ function parseRadarScene(value: unknown): RadarScene | null {
   const track = parts[5];
   const direction = parts[6];
   const frame = parts[7];
+  const mode = parts[8];
   const polarization = parts[9];
   const frequency = parts[10];
+  const orbitAccuracy = parts[14] ?? 'Unknown';
+  const frameCoverage = parts[15] ?? 'Unknown';
   const acquisitionToken = parts[11];
   if (!/^\d{3}$/.test(track) || !/^\d{3}$/.test(frame) || !/^[AD]$/.test(direction)) return null;
   const sceneDate = acquisitionToken.match(/^(\d{4})(\d{2})(\d{2})T/);
@@ -362,32 +369,42 @@ function parseRadarScene(value: unknown): RadarScene | null {
     : firstText(properties.startTime, properties.acquisitionDate, item.startTime);
   const browseUrl = readBrowse(properties.browse ?? properties.browseURL ?? properties.browseUrl ?? item.browse);
   const sourceUrl = firstText(properties.url, properties.productUrl, item.url) || ASF_SOURCE_URL;
-  const collection = firstText(properties.collectionName, properties.shortName, properties.collection, item.collection);
+  const downloadUrl = firstText(properties.downloadUrl, item.downloadUrl, properties.dataUrl);
+  const collectionFromPath = downloadUrl.match(/\/(NISAR_L2_GCOV_[^/]+)\//)?.[1] ?? '';
+  const collection = firstText(properties.collectionName, properties.shortName, properties.collection, item.collection, collectionFromPath);
+  const maturity = collection === 'NISAR_L2_GCOV_V1'
+    ? 'VALIDATED'
+    : collection.includes('PROVISIONAL') ? 'PROVISIONAL'
+      : collection.includes('BETA') ? 'BETA' : 'UNKNOWN';
   const processingVersion = parts[13] ?? 'Not encoded';
-  const comparisonKey = [track, direction, frame, polarization, frequency, collection].join(':');
+  const comparisonKey = [track, direction, frame, mode, polarization, frequency, collection].join(':');
   return {
     sceneName,
     acquiredAt: acquiredAt.slice(0, 10),
     polarization,
     frequency,
+    mode,
     track,
     direction,
     frame,
+    orbitAccuracy,
+    frameCoverage,
     browseUrl: /^https:\/\//i.test(browseUrl) ? browseUrl : '',
     sourceUrl,
     collection,
+    maturity,
     processingVersion,
     comparisonKey,
   };
 }
 
 function findResults(payload: unknown): unknown[] {
-  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload)) return payload.flatMap(findResults);
   const root = asRecord(payload);
-  if (Array.isArray(root.features)) return root.features;
-  if (Array.isArray(root.results)) return root.results;
-  if (Array.isArray(root.Results)) return root.Results;
-  if (Array.isArray(root.data)) return root.data;
+  for (const key of ['features', 'results', 'Results', 'data']) {
+    if (Array.isArray(root[key])) return (root[key] as unknown[]).flatMap(findResults);
+  }
+  if (root.productName || root.sceneName || root.fileName || root.granuleName || root.scene_name) return [payload];
   return [];
 }
 

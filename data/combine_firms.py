@@ -6,17 +6,20 @@ Each row is one satellite detection (not called a "fire" here).
 """
 
 from pathlib import Path  # Path helps us find folders and files on the computer
+import sys
 
 import pandas as pd  # pandas reads tables and filters rows
 
 # This folder is Data/, where this script lives.
 DATA_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(DATA_DIR / "pipeline"))
+from project_data_policy import EXCLUDED_OBSERVATION_DATES
 
 # The original NASA files stay here. We only open them to read.
-RAW_DIR = DATA_DIR / "firms_raw"
+RAW_DIR = DATA_DIR / "raw" / "firms_raw"
 
-# The one new combined file we will create (outside firms_raw).
-OUTPUT_FILE = DATA_DIR / "firms_combined.csv"
+# The one new combined file we will create outside the raw source folder.
+OUTPUT_FILE = DATA_DIR / "processed" / "firms_combined.csv"
 
 # Columns we keep in the output (the NASA files have extra columns we drop).
 KEEP_COLUMNS = [
@@ -37,7 +40,6 @@ FOOTPRINT = [
     (79.971, 24.235),
     (76.622, 24.307),
 ]
-
 
 def point_in_polygon(x, y, polygon):
     """
@@ -104,6 +106,9 @@ def main():
     # Turn acq_date text into real dates and discard rows with no usable date.
     all_rows["acq_date"] = pd.to_datetime(all_rows["acq_date"], errors="coerce")
     all_rows = all_rows[all_rows["acq_date"].notna()].copy()
+    excluded = all_rows["acq_date"].dt.strftime("%Y-%m-%d").isin(EXCLUDED_OBSERVATION_DATES)
+    print(f"Rows on excluded observation dates: {int(excluded.sum())}")
+    all_rows = all_rows.loc[~excluded].copy()
 
     # Keep detections whose lon/lat fall inside the four-corner footprint.
     inside_mask = [
@@ -121,6 +126,7 @@ def main():
     kept["acq_date"] = kept["acq_date"].dt.strftime("%Y-%m-%d")
 
     # Save one new file with the header row once at the top.
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     kept.to_csv(OUTPUT_FILE, index=False)
 
     # Count kept rows by confidence (low / nominal / high). Do not drop any of them.

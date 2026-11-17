@@ -16,6 +16,7 @@ import {
 import AppLink from '@/components/AppLink';
 import Reveal from '@/components/Reveal';
 import StudyAreaPreview from '@/components/StudyAreaPreview';
+import NasaEcosystemGallery from '@/components/NasaEcosystemGallery';
 
 const sources = [
   { name: 'NISAR', note: 'L-band radar browse', tone: 'text-radar' },
@@ -25,14 +26,6 @@ const sources = [
 ];
 
 const featureCards = [
-  {
-    icon: Satellite,
-    title: 'Radar sees beyond the visible',
-    eyebrow: 'NISAR · L-BAND',
-    body: 'Explore dated NISAR browse imagery across Madhya Pradesh. These visual mosaics help you study radar patterns, but they are not calibrated change measurements.',
-    type: 'radar' as const,
-    size: 'md:col-span-2',
-  },
   {
     icon: Flame,
     title: 'Heat detections, with context',
@@ -55,7 +48,7 @@ const featureCards = [
     eyebrow: 'ECHOGUIDE',
     body: 'Ask for plain-language explanations of the project’s data and method. Answers are research support and can depend on service availability.',
     type: 'guide' as const,
-    size: 'md:col-span-2',
+    size: '',
   },
 ];
 
@@ -66,20 +59,14 @@ const roadmap = [
   { state: 'Planned', tone: 'text-amber', title: 'India-wide coverage', body: 'Extend the regional workflow across India after national data coverage and methods are prepared.' },
 ];
 
-function PreviewGraphic({ kind }: { kind: 'radar' | 'detections' | 'map' | 'guide' }) {
+function PreviewGraphic({ kind, mediaClassName = 'mt-5' }: { kind: 'radar' | 'detections' | 'map' | 'guide'; mediaClassName?: string }) {
   if (kind === 'radar') {
     return (
-      <div className="relative mt-5 overflow-hidden rounded-xl border border-white/10 bg-[#081b28] p-4" aria-label="Illustrative radar image interface preview">
-        <div className="absolute inset-0 mission-grid opacity-50" aria-hidden="true" />
-        <div className="relative grid h-28 place-items-center overflow-hidden rounded-lg border border-white/10 bg-radar/[.035]">
-          <span className="absolute h-40 w-40 rounded-full border border-radar/15" />
-          <span className="absolute h-28 w-28 rounded-full border border-radar/20" />
-          <span className="absolute h-16 w-16 rounded-full border border-ember/25" />
-          <span className="absolute h-px w-[130%] rotate-[-17deg] bg-gradient-to-r from-transparent via-radar/75 to-transparent" />
-          <span className="relative rounded-full border border-radar/20 bg-canvas/85 px-3 py-1 text-[10px] font-semibold text-radar">L-band radar · visual context</span>
-        </div>
-        <div className="relative mt-3 flex items-center justify-between text-[10px] text-white/65"><span>Selected date</span><span className="h-1.5 w-1.5 rounded-full bg-radar" /><span>Browse layer</span></div>
-      </div>
+      <figure className={`relative aspect-video overflow-hidden rounded-xl border border-white/10 bg-[#07131d] ${mediaClassName}`}>
+        <img src="https://images-assets.nasa.gov/image/PIA26616/PIA26616~large.jpg" alt="NASA NISAR false-color radar image showing forest, water, and built surfaces on Mount Desert Island, Maine." loading="lazy" className="h-full w-full object-contain" />
+        <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-navy/90 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.12em] text-radar">NISAR · L-band</span>
+        <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-[#081b28]/90 px-3 py-2 text-[10px]"><span className="font-semibold text-radar">Real NISAR image · Maine</span><span className="text-white/70">NASA/JPL-Caltech · example, not study data</span></figcaption>
+      </figure>
     );
   }
 
@@ -115,6 +102,18 @@ function PreviewGraphic({ kind }: { kind: 'radar' | 'detections' | 'map' | 'guid
         <p className="ml-auto w-4/5 rounded-md bg-white/[.06] px-3 py-2 text-[10px] leading-relaxed text-white/75">It shows radar patterns. A separate validation step is needed to explain their cause.</p>
       </div>
     </div>
+  );
+}
+
+function RadarFeatureCard() {
+  return (
+    <article className="surface-card lift flex h-full flex-col overflow-hidden p-3 sm:p-4">
+      <PreviewGraphic kind="radar" mediaClassName="mt-0" />
+      <div className="px-2 pb-2 pt-4">
+        <h3 className="text-lg text-white">Radar sees beyond the visible</h3>
+        <p className="mt-1 text-xs leading-relaxed text-muted">Explore dated Madhya Pradesh radar patterns. Browse imagery is visual context, not a calibrated change measurement.</p>
+      </div>
+    </article>
   );
 }
 
@@ -202,6 +201,8 @@ export default function HomePage() {
             </div>
           </section>
         </Reveal>
+
+        <NasaEcosystemGallery compact maxVideos={1} title="See what radar images really look like." description="Explore three real NASA radar scenes and a short NISAR mission video. These examples come from other places; the Madhya Pradesh study observations are on the map." companion={<RadarFeatureCard />} />
 
         <section id="project-tour" className="scroll-mt-28 pt-20 md:pt-28" aria-labelledby="features-title">
           <Reveal>

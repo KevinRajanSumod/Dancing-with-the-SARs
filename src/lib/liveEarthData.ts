@@ -6,12 +6,16 @@ export interface LiveRadarScene {
   acquiredAt: string;
   polarization: string;
   frequency: string;
+  mode: string;
   track: string;
   direction: string;
   frame: string;
+  orbitAccuracy: string;
+  frameCoverage: string;
   browseUrl: string;
   sourceUrl: string;
   collection: string;
+  maturity: 'VALIDATED' | 'PROVISIONAL' | 'BETA' | 'UNKNOWN';
   processingVersion: string;
   comparisonKey: string;
 }

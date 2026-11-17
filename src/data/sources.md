@@ -8,7 +8,7 @@ TerraScope is an educational, date-driven view of Madhya Pradesh using satellite
 - OPERA Sentinel-1 RTC is requested from NASA GIBS at the selected date. It is a separate C-band radar source with different acquisition and processing characteristics; it is not interchangeable with NISAR.
 - MODIS Terra corrected reflectance provides optical context beneath radar swaths where available. It differs in resolution, spectral response, and observation timing.
 - VIIRS thermal detections are requested from the NASA FIRMS archive for the selected date and filtered to Madhya Pradesh. A bundled NOAA-21 snapshot provides a fallback where available. Platform and product coverage varies by date; near-real-time records can be revised.
-- Madhya Pradesh and district boundaries come from GADM v4.1 and the 2021 geoBoundaries India ADM2 simplified dataset. The study-area outline is geographic context, not a statement that satellite coverage is limited to that boundary.
+- Madhya Pradesh and district boundaries come from the 2021 geoBoundaries India ADM2 simplified dataset. The state outline is dissolved from the selected district polygons; both use ODbL 1.0. The study-area outline is geographic context, not a statement that satellite coverage is limited to that boundary.
 
 ## Method and interpretation
 
